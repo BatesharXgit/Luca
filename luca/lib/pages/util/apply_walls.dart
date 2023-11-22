@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:async_wallpaper/async_wallpaper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
@@ -359,7 +358,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         return Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage('assets/success.gif'),
                   filterQuality: FilterQuality.high,
@@ -589,8 +588,11 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                   bottom: MediaQuery.of(context).padding.bottom + 10,
                   child: GestureDetector(
                     onTap: () {
-                      // openDialog();
-                      _showRewardedAd();
+                      if (_rewardedAd != null) {
+                        _showRewardedAd();
+                      } else {
+                        _loadRewardedAd();
+                      }
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

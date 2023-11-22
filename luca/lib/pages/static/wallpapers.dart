@@ -142,42 +142,35 @@ class CategoryState extends State<Category> {
         _isGamesLoaded = true;
       });
     });
-    loadRewardedAd();
+    _createInterstitialAd();
   }
 
-  RewardedAd? _rewardedAd;
-
-  void loadRewardedAd() {
-    RewardedAd.loadWithAdManagerAdRequest(
-      adUnitId: AdMobService.rewardedAdUnitId!,
-      adManagerRequest: const AdManagerAdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (ad) {
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-              onAdShowedFullScreenContent: (ad) {},
-              onAdImpression: (ad) {},
-              onAdFailedToShowFullScreenContent: (ad, err) {
-                ad.dispose();
-              },
-              onAdDismissedFullScreenContent: (ad) {
-                ad.dispose();
-                loadRewardedAd();
-              },
-              onAdClicked: (ad) {});
-          debugPrint('$ad loaded.');
-          _rewardedAd = ad;
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          debugPrint('RewardedAd failed to load: $error');
-        },
-      ),
+  InterstitialAd? _interstitialAd;
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdMobService.interstitialAdUnitId!,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (ad) => _interstitialAd = ad,
+          onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null),
     );
   }
 
-  void _showRewardedAd() {
-    _rewardedAd?.show(
-      onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {},
-    );
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    }
   }
 
   @override
@@ -234,7 +227,7 @@ class CategoryState extends State<Category> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showRewardedAd();
+                            _showInterstitialAd();
                             Get.to(const AmoledWallpaper());
                           },
                           child: const Row(
@@ -306,7 +299,7 @@ class CategoryState extends State<Category> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showRewardedAd();
+                            _showInterstitialAd();
                             Get.to(const NatureWallpaper());
                           },
                           child: const Row(
@@ -381,7 +374,7 @@ class CategoryState extends State<Category> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showRewardedAd();
+                            _showInterstitialAd();
                             Get.to(const SpaceWallpaper());
                           },
                           child: const Row(
@@ -456,7 +449,7 @@ class CategoryState extends State<Category> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showRewardedAd();
+                            _showInterstitialAd();
                             Get.to(const MinimalistWallpaper());
                           },
                           child: const Row(
@@ -532,7 +525,7 @@ class CategoryState extends State<Category> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showRewardedAd();
+                            _showInterstitialAd();
                             Get.to(const AnimeWallpapers());
                           },
                           child: const Row(
@@ -607,7 +600,7 @@ class CategoryState extends State<Category> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showRewardedAd();
+                            _showInterstitialAd();
                             Get.to(const AnimalsWallpaper());
                           },
                           child: const Row(
@@ -682,7 +675,7 @@ class CategoryState extends State<Category> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showRewardedAd();
+                            _showInterstitialAd();
                             Get.to(const ScifiWallpaper());
                           },
                           child: const Row(
@@ -757,7 +750,7 @@ class CategoryState extends State<Category> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showRewardedAd();
+                            _showInterstitialAd();
                             Get.to(const GamesWallpaper());
                           },
                           child: const Row(
