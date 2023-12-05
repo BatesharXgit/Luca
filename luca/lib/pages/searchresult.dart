@@ -28,18 +28,24 @@ const String API_KEY =
     'tLLFbgWVeyvt2Onc1QYv0R1BZ3IfLH7iT7zduYlsHkDyB8eSpddwR2th';
 
 class SearchWallpaper extends StatefulWidget {
-  const SearchWallpaper({Key? key, required this.title}) : super(key: key);
+  const SearchWallpaper({Key? key, required this.title, required this.query})
+      : super(key: key);
 
   final String title;
+  final String query;
 
   @override
-  State<SearchWallpaper> createState() => SearchWallpaperState();
+  State<SearchWallpaper> createState() => SearchWallpaperState(query);
 }
 
 class SearchWallpaperState extends State<SearchWallpaper> {
   List<dynamic> _images = [];
   final TextEditingController _searchController = TextEditingController();
   bool _isLoading = false;
+  final String query;
+
+  SearchWallpaperState(this.query);
+
 
   @override
   void dispose() {
@@ -73,11 +79,15 @@ class SearchWallpaperState extends State<SearchWallpaper> {
 
   final TextEditingController searchController = TextEditingController();
 
-  @override
+    @override
   void initState() {
     super.initState();
-    _createBannerAd();
+      _createBannerAd();
     _createInterstitialAd();
+    // Set the initial value of _searchController with the passed query
+    _searchController.text = widget.query;
+    // Perform the initial search
+    _searchImages(widget.query);
   }
 
   BannerAd? _banner;

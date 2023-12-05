@@ -39,6 +39,8 @@ class MyHomePageState extends State<MyHomePage>
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  final TextEditingController _searchController = TextEditingController();
+
   List<Reference> wallpaperRefs = [];
   List<Reference> aiRefs = [];
   List<Reference> carsRefs = [];
@@ -99,6 +101,8 @@ class MyHomePageState extends State<MyHomePage>
     _tabController.dispose();
     super.dispose();
   }
+
+  bool isSearchVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -173,10 +177,7 @@ class MyHomePageState extends State<MyHomePage>
                                             .tertiary,
                                         shape: BoxShape.circle),
                                     child: IconButton(
-                                      onPressed: () {
-                                        Get.to(const SearchWallpaper(title: ''),
-                                            transition: Transition.native);
-                                      },
+                                      onPressed: () {},
                                       icon: Icon(
                                         BootstrapIcons.search,
                                         color: primaryColor,
@@ -195,8 +196,8 @@ class MyHomePageState extends State<MyHomePage>
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Discover',
-                              style: TextStyle(
-                                fontFamily: "Anurati",
+                              style: GoogleFonts.kanit(
+                                // fontFamily: "Anurati",
                                 fontSize: 24,
                                 color: primaryColor,
                                 // fontWeight: FontWeight.bold,
@@ -212,6 +213,7 @@ class MyHomePageState extends State<MyHomePage>
                             scrollPhysics: const BouncingScrollPhysics(),
                             height: 160.0,
                             autoPlay: true,
+                            autoPlayInterval: Duration(seconds: 3),
                             enlargeCenterPage: true,
                             viewportFraction: 0.8,
                             enlargeFactor: 0.2,
@@ -241,9 +243,104 @@ class MyHomePageState extends State<MyHomePage>
                   // ),
                 ),
               ),
-              SliverPersistentHeader(
+              SliverAppBar(
                 pinned: true,
-                delegate: _SliverAppBarDelegate(_buildTabBar()),
+                expandedHeight: 50.0,
+                backgroundColor: Theme.of(context).colorScheme.background,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                    child: Row(
+                      children: [
+                        Visibility(
+                          visible: !isSearchVisible,
+                          child: IconButton(
+                            icon: Icon(
+                              BootstrapIcons.search,
+                              color: primaryColor,
+                              size: 22,
+                            ),
+                            onPressed: () {
+                              // Handle search icon click
+                              setState(() {
+                                // Toggle the search box visibility
+                                isSearchVisible = true;
+                              });
+
+                              // Navigate to the SearchWallpaper page and pass the query
+                            },
+                          ),
+                        ),
+                        AnimatedContainer(
+                          duration: Duration(milliseconds: 400),
+                          width: isSearchVisible ? 150.0 : 0.0,
+                          alignment: isSearchVisible
+                              ? Alignment.center
+                              : Alignment.centerRight,
+                          child: isSearchVisible
+                              ? Container(
+                                  height: 44,
+                                  child: TextField(
+                                    controller: _searchController,
+                                    style: TextStyle(color: backgroundColor),
+                                    decoration: InputDecoration(
+                                      hintText: 'Search...',
+                                      hintStyle:
+                                          TextStyle(color: backgroundColor),
+                                      filled: true,
+                                      fillColor: primaryColor,
+                                      contentPadding: EdgeInsets.all(10.0),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0),
+                                        borderSide:
+                                            BorderSide(color: backgroundColor),
+                                      ),
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          Icons.close,
+                                          color: Colors.grey,
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            isSearchVisible = false;
+                                            _searchController.clear();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    onSubmitted: (query) {
+                                      setState(() {
+                                        isSearchVisible = false;
+                                      });
+
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => SearchWallpaper(
+                                            title: "Search Wallpaper",
+                                            query: query,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : null,
+                        ),
+                        Expanded(
+                          child: _buildTabBar(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ];
           },
@@ -255,34 +352,31 @@ class MyHomePageState extends State<MyHomePage>
 
   Widget _buildTabBar() {
     Color primaryColor = Theme.of(context).colorScheme.primary;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-      child: TabBar(
-        tabAlignment: TabAlignment.start,
-        dividerColor: Colors.transparent,
-        physics: const BouncingScrollPhysics(),
-        indicatorPadding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-        controller: _tabController,
-        indicatorColor: Theme.of(context).colorScheme.background,
-        indicator: BoxDecoration(
-          color: Theme.of(context).colorScheme.tertiary,
-          borderRadius: BorderRadius.circular(15),
-        ),
-        labelColor: primaryColor,
-        unselectedLabelColor: primaryColor,
-        isScrollable: true,
-        labelPadding: const EdgeInsets.symmetric(horizontal: 10),
-        tabs: data.map((tab) {
-          return Tab(
-            child: Text(
-              tab,
-              style: GoogleFonts.kanit(
-                fontSize: 14,
-              ),
-            ),
-          );
-        }).toList(),
+    return TabBar(
+      tabAlignment: TabAlignment.start,
+      dividerColor: Colors.transparent,
+      physics: const BouncingScrollPhysics(),
+      indicatorPadding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+      controller: _tabController,
+      indicatorColor: Theme.of(context).colorScheme.background,
+      indicator: BoxDecoration(
+        color: Theme.of(context).colorScheme.tertiary,
+        borderRadius: BorderRadius.circular(15),
       ),
+      labelColor: primaryColor,
+      unselectedLabelColor: primaryColor,
+      isScrollable: true,
+      labelPadding: const EdgeInsets.symmetric(horizontal: 10),
+      tabs: data.map((tab) {
+        return Tab(
+          child: Text(
+            tab,
+            style: GoogleFonts.kanit(
+              fontSize: 14,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 
