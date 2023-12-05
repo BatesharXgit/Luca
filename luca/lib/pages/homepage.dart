@@ -15,13 +15,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 final FirebaseStorage storage = FirebaseStorage.instance;
 
-final Reference wallpaperRef = storage.ref().child('wallpaper');
-final Reference aiRef = storage.ref().child('ai');
-final Reference abstractRef = storage.ref().child('abstract');
-final Reference carsRef = storage.ref().child('cars');
-final Reference illustrationRef = storage.ref().child('illustration');
-final Reference fantasyRef = storage.ref().child('fantasy');
-
 class MyHomePage extends StatefulWidget {
   // final ScrollController controller;
   const MyHomePage({
@@ -40,6 +33,13 @@ class MyHomePageState extends State<MyHomePage>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final TextEditingController _searchController = TextEditingController();
+
+  final Reference wallpaperRef = storage.ref().child('wallpaper');
+  final Reference aiRef = storage.ref().child('ai');
+  final Reference abstractRef = storage.ref().child('abstract');
+  final Reference carsRef = storage.ref().child('cars');
+  final Reference illustrationRef = storage.ref().child('illustration');
+  final Reference fantasyRef = storage.ref().child('fantasy');
 
   List<Reference> wallpaperRefs = [];
   List<Reference> aiRefs = [];
@@ -179,7 +179,7 @@ class MyHomePageState extends State<MyHomePage>
                                     child: IconButton(
                                       onPressed: () {},
                                       icon: Icon(
-                                        BootstrapIcons.search,
+                                        BootstrapIcons.person_fill_check,
                                         color: primaryColor,
                                         size: 22,
                                       ),
@@ -239,8 +239,6 @@ class MyHomePageState extends State<MyHomePage>
                       ],
                     ),
                   ),
-                  // ),
-                  // ),
                 ),
               ),
               SliverAppBar(
@@ -261,13 +259,9 @@ class MyHomePageState extends State<MyHomePage>
                               size: 22,
                             ),
                             onPressed: () {
-                              // Handle search icon click
                               setState(() {
-                                // Toggle the search box visibility
                                 isSearchVisible = true;
                               });
-
-                              // Navigate to the SearchWallpaper page and pass the query
                             },
                           ),
                         ),
