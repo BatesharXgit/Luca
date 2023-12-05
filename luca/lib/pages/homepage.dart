@@ -1,5 +1,6 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -247,10 +248,12 @@ class MyHomePageState extends State<MyHomePage>
     return Container(
       color: Theme.of(context).colorScheme.background,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: TabBar(
+          tabAlignment: TabAlignment.start,
+          dividerColor: Colors.transparent,
           physics: const BouncingScrollPhysics(),
-          indicatorPadding: const EdgeInsets.fromLTRB(6, 2, 6, 2),
+          indicatorPadding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
           controller: _tabController,
           indicatorColor: Theme.of(context).colorScheme.background,
           indicator: BoxDecoration(
