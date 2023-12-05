@@ -130,51 +130,61 @@ class MyHomePageState extends State<MyHomePage>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.tertiary,
-                                    shape: BoxShape.circle),
-                                child: IconButton(
-                                  onPressed: () {
-                                    Get.to(const NotificationsPage(),
-                                        transition: Transition.native);
-                                  },
-                                  icon: Icon(
-                                    Iconsax.notification,
-                                    color: primaryColor,
-                                    size: 26,
-                                  ),
-                                ),
-                              ),
                               Text(
-                                'LUCA',
+                                'Prism',
                                 style: TextStyle(
                                   fontFamily: "Anurati",
-                                  fontSize: 30,
+                                  fontSize: 28,
                                   color: primaryColor,
                                 ),
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                    color:
-                                        Theme.of(context).colorScheme.tertiary,
-                                    shape: BoxShape.circle),
-                                child: IconButton(
-                                  onPressed: () {
-                                    Get.to(const SearchWallpaper(title: ''),
-                                        transition: Transition.native);
-                                  },
-                                  icon: Icon(
-                                    BootstrapIcons.search,
-                                    color: primaryColor,
-                                    size: 22,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                        shape: BoxShape.circle),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        Get.to(const NotificationsPage(),
+                                            transition: Transition.native);
+                                      },
+                                      icon: Icon(
+                                        Iconsax.notification,
+                                        color: primaryColor,
+                                        size: 26,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary,
+                                        shape: BoxShape.circle),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        Get.to(const SearchWallpaper(title: ''),
+                                            transition: Transition.native);
+                                      },
+                                      icon: Icon(
+                                        BootstrapIcons.search,
+                                        color: primaryColor,
+                                        size: 22,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -245,36 +255,33 @@ class MyHomePageState extends State<MyHomePage>
 
   Widget _buildTabBar() {
     Color primaryColor = Theme.of(context).colorScheme.primary;
-    return Container(
-      color: Theme.of(context).colorScheme.background,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-        child: TabBar(
-          tabAlignment: TabAlignment.start,
-          dividerColor: Colors.transparent,
-          physics: const BouncingScrollPhysics(),
-          indicatorPadding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
-          controller: _tabController,
-          indicatorColor: Theme.of(context).colorScheme.background,
-          indicator: BoxDecoration(
-            color: Theme.of(context).colorScheme.tertiary,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          labelColor: primaryColor,
-          unselectedLabelColor: primaryColor,
-          isScrollable: true,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 10),
-          tabs: data.map((tab) {
-            return Tab(
-              child: Text(
-                tab,
-                style: GoogleFonts.kanit(
-                  fontSize: 14,
-                ),
-              ),
-            );
-          }).toList(),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      child: TabBar(
+        tabAlignment: TabAlignment.start,
+        dividerColor: Colors.transparent,
+        physics: const BouncingScrollPhysics(),
+        indicatorPadding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+        controller: _tabController,
+        indicatorColor: Theme.of(context).colorScheme.background,
+        indicator: BoxDecoration(
+          color: Theme.of(context).colorScheme.tertiary,
+          borderRadius: BorderRadius.circular(15),
         ),
+        labelColor: primaryColor,
+        unselectedLabelColor: primaryColor,
+        isScrollable: true,
+        labelPadding: const EdgeInsets.symmetric(horizontal: 10),
+        tabs: data.map((tab) {
+          return Tab(
+            child: Text(
+              tab,
+              style: GoogleFonts.kanit(
+                fontSize: 14,
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
