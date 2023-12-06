@@ -8,6 +8,7 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
@@ -91,6 +92,13 @@ class MyHomePageState extends State<MyHomePage>
     }
   }
 
+  String _getImagePath() {
+    var brightness = Theme.of(context).brightness;
+    return brightness == Brightness.light
+        ? 'assets/logo1.png'
+        : 'assets/logo.png';
+  }
+
   Future<void> loadImages() async {
     final ListResult wallpaperResult = await wallpaperRef.listAll();
     wallpaperRefs = wallpaperResult.items.toList();
@@ -134,7 +142,7 @@ class MyHomePageState extends State<MyHomePage>
             return <Widget>[
               SliverAppBar(
                 forceMaterialTransparency: true,
-                expandedHeight: MediaQuery.of(context).size.height * 0.35,
+                expandedHeight: MediaQuery.of(context).size.height * 0.37,
                 floating: true,
                 pinned: false,
                 backgroundColor: Theme.of(context).colorScheme.background,
@@ -150,7 +158,7 @@ class MyHomePageState extends State<MyHomePage>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -162,13 +170,18 @@ class MyHomePageState extends State<MyHomePage>
                               //     color: primaryColor,
                               //   ),
                               // ),
-                              Container(
-                                width: 30,
-                                height: 40,
-                                decoration: BoxDecoration(
+                              GestureDetector(
+                                onTap: () => Get.to(SettingsPage()),
+                                child: Container(
+                                  width: 30,
+                                  height: 40,
+                                  decoration: BoxDecoration(
                                     image: DecorationImage(
-                                        image: AssetImage('assets/logo.png'),
-                                        fit: BoxFit.fill)),
+                                      image: AssetImage(_getImagePath()),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -206,14 +219,14 @@ class MyHomePageState extends State<MyHomePage>
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 20),
+                          padding: const EdgeInsets.only(left: 20, bottom: 10),
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Discover',
+                              'Discover Collections',
                               style: GoogleFonts.kanit(
                                 // fontFamily: "Anurati",
-                                fontSize: 24,
+                                fontSize: 18,
                                 color: primaryColor,
                                 // fontWeight: FontWeight.bold,
                               ),
@@ -360,28 +373,37 @@ class MyHomePageState extends State<MyHomePage>
   }
 
   Widget _buildTabBar() {
-    Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color primaryColour = Theme.of(context).colorScheme.primary;
     return TabBar(
-      tabAlignment: TabAlignment.start,
       dividerColor: Colors.transparent,
+      tabAlignment: TabAlignment.start,
       physics: const BouncingScrollPhysics(),
       indicatorPadding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
       controller: _tabController,
-      indicatorColor: Theme.of(context).colorScheme.background,
+      indicatorColor: Theme.of(context).colorScheme.tertiary,
       indicator: BoxDecoration(
         color: Theme.of(context).colorScheme.tertiary,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(20),
       ),
-      labelColor: primaryColor,
-      unselectedLabelColor: primaryColor,
+      labelColor: Color.fromARGB(255, 175, 202, 0),
+      unselectedLabelColor: primaryColour,
       isScrollable: true,
-      labelPadding: const EdgeInsets.symmetric(horizontal: 10),
+      labelPadding: const EdgeInsets.symmetric(horizontal: 5),
       tabs: data.map((tab) {
-        return Tab(
-          child: Text(
-            tab,
-            style: GoogleFonts.kanit(
-              fontSize: 14,
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.046,
+          width: MediaQuery.of(context).size.width * 0.25,
+          decoration: BoxDecoration(
+            border: Border.all(
+                width: 2.0, color: Theme.of(context).colorScheme.tertiary),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Tab(
+            child: Text(
+              tab,
+              style: GoogleFonts.kanit(
+                fontSize: 14,
+              ),
             ),
           ),
         );

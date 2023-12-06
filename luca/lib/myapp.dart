@@ -1,3 +1,4 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/live_wall.dart';
@@ -27,7 +28,7 @@ class _LucaHomeState extends State<LucaHome> {
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = Theme.of(context).colorScheme.tertiary;
+    Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
     Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
     return Scaffold(
@@ -50,31 +51,36 @@ class _LucaHomeState extends State<LucaHome> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
             child: GNav(
+              backgroundColor: tertiaryColor,
               rippleColor: Colors.grey[300]!,
               hoverColor: Colors.grey[100]!,
               gap: 8,
-              activeColor: Colors.black,
+              activeColor: Color.fromARGB(255, 175, 202, 0),
               iconSize: 24,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               duration: Duration(milliseconds: 400),
-              tabBackgroundColor: primaryColor,
+              tabBackgroundColor: backgroundColor,
               color: Colors.grey,
               tabs: [
                 GButton(
-                  icon: LineIcons.home,
+                  iconSize: 26,
+                  icon: Icons.home,
                   text: 'Home',
                 ),
                 GButton(
-                  icon: LineIcons.search,
-                  text: 'Search',
+                  iconSize: 26,
+                  icon: LineIcons.compass,
+                  text: 'Explore',
                 ),
                 GButton(
+                  iconSize: 26,
                   icon: LineIcons.video,
-                  text: 'Likes',
+                  text: 'Live',
                 ),
                 GButton(
-                  icon: LineIcons.user,
-                  text: 'Profile',
+                  iconSize: 26,
+                  icon: LineIcons.heart,
+                  text: 'Liked',
                 ),
               ],
               selectedIndex: _selectedIndex,
