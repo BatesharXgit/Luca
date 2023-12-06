@@ -1,5 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
@@ -48,6 +50,8 @@ class MyHomePageState extends State<MyHomePage>
   List<Reference> illustrationRefs = [];
   List<Reference> fantasyRefs = [];
 
+  String? userPhotoUrl;
+
   List<String> kImages = [
     'assets/slider/1.jpg',
     'assets/slider/2.jpg',
@@ -73,6 +77,18 @@ class MyHomePageState extends State<MyHomePage>
     super.initState();
     _tabController = TabController(length: 6, vsync: this);
     loadImages();
+
+    fetchUserProfileData();
+  }
+
+  Future<void> fetchUserProfileData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      setState(() {
+        userPhotoUrl = user.photoURL;
+      });
+    }
   }
 
   Future<void> loadImages() async {
@@ -134,57 +150,56 @@ class MyHomePageState extends State<MyHomePage>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
+                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                'Prism',
-                                style: TextStyle(
-                                  fontFamily: "Anurati",
-                                  fontSize: 28,
-                                  color: primaryColor,
-                                ),
+                              // Text(
+                              //   'Prism',
+                              //   style: TextStyle(
+                              //     fontFamily: "Anurati",
+                              //     fontSize: 28,
+                              //     color: primaryColor,
+                              //   ),
+                              // ),
+                              Container(
+                                width: 30,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: AssetImage('assets/logo.png'),
+                                        fit: BoxFit.fill)),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .tertiary,
-                                        shape: BoxShape.circle),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        Get.to(const NotificationsPage(),
-                                            transition: Transition.native);
-                                      },
-                                      icon: Icon(
-                                        Iconsax.notification,
-                                        color: primaryColor,
-                                        size: 26,
-                                      ),
+                                  IconButton(
+                                    onPressed: () {
+                                      Get.to(const NotificationsPage(),
+                                          transition: Transition.native);
+                                    },
+                                    icon: Icon(
+                                      Icons.notifications,
+                                      color: primaryColor,
+                                      size: 28,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .tertiary,
-                                        shape: BoxShape.circle),
-                                    child: IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        BootstrapIcons.person_fill_check,
-                                        color: primaryColor,
-                                        size: 22,
-                                      ),
-                                    ),
-                                  ),
+                                  // const SizedBox(
+                                  //   width: 8,
+                                  // ),
+                                  (userPhotoUrl != null)
+                                      ? CircleAvatar(
+                                          radius: 18,
+                                          backgroundImage:
+                                              CachedNetworkImageProvider(
+                                            userPhotoUrl!,
+                                          ),
+                                        )
+                                      : Icon(
+                                          Icons.person,
+                                          color: primaryColor,
+                                          size: 28,
+                                        ),
                                 ],
                               ),
                             ],
