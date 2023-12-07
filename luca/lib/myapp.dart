@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/live_wall.dart';
-import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/wallpapers.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';

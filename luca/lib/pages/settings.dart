@@ -179,7 +179,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   const SizedBox(height: 20),
                   Text(
-                    'LUCA',
+                    'Prism',
                     style: TextStyle(
                       fontFamily: 'Anurati',
                       color: primaryColor,
@@ -209,7 +209,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             size: 28,
                           ),
                           title: const Text('About'),
-                          subtitle: Text('Find out more about Luca',
+                          subtitle: Text('Find out more about Prism',
                               style: TextStyle(color: secondaryColor)),
                           iconColor: primaryColor,
                           textColor: primaryColor,
@@ -275,7 +275,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ListTile(
                             leading: const Icon(Icons.policy_outlined),
                             title: const Text('Privacy Policy'),
-                            subtitle: const Text('Luca privacy policy',
+                            subtitle: const Text('Prism privacy policy',
                                 style: TextStyle(color: Colors.grey)),
                             iconColor: primaryColor,
                             textColor: primaryColor,
@@ -375,7 +375,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      'Luca v 1.0.0',
+                      'Prism v 1.0.0',
                       style:
                           GoogleFonts.kanit(color: primaryColor, fontSize: 12),
                     ),
@@ -424,7 +424,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  '🌟 Immerse yourself in the world of Luca – the ultimate wallpaper app. Discover an extensive selection of static and dynamic wallpapers across various categories, all presented through a beautifully designed and intuitive interface. Elevate your device\'s aesthetic with Luca\'s stunning visuals that cater to every mood and style. 🎨📱',
+                  '🌟 Immerse yourself in the world of Prism – the ultimate wallpaper app. Discover an extensive selection of static and dynamic wallpapers across various categories, all presented through a beautifully designed and intuitive interface. Elevate your device\'s aesthetic with Prism\'s stunning visuals that cater to every mood and style. 🎨📱',
                   style: TextStyle(
                     color: Colors.grey[400],
                     fontSize: 16,
@@ -463,7 +463,7 @@ void _showChangelogPopup(BuildContext context) {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '🚀 Luca Initial Release Changelog',
+                '🚀 Prism Initial Release Changelog',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -475,7 +475,7 @@ void _showChangelogPopup(BuildContext context) {
                 version: '1.0.0',
                 date: 'October, 2023',
                 changes: [
-                  '🎉 Welcome to the world of Luca - Your Ultimate Wallpaper Experience!',
+                  '🎉 Welcome to the world of Prism - Your Ultimate Wallpaper Experience!',
                   '🖼️ Explore a captivating collection of dynamic and static wallpapers.',
                   '🎨 Immerse yourself in the beautifully designed user interface for seamless browsing.',
                 ],

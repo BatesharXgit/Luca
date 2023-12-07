@@ -7,6 +7,7 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:luca/pages/settings.dart';
+import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
@@ -160,23 +161,32 @@ class MyHomePageState extends State<MyHomePage>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                width: 30,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage(_getImagePath()),
-                                    fit: BoxFit.fill,
-                                  ),
+                              Text(
+                                'Prism',
+                                style: TextStyle(
+                                  fontFamily: "Anurati",
+                                  fontSize: 28,
+                                  color: primaryColor,
                                 ),
                               ),
+                              // Container(
+                              //   width: 32,
+                              //   height: 44,
+                              //   decoration: BoxDecoration(
+                              //     image: DecorationImage(
+                              //       image: AssetImage('assets/logo.png'),
+                              //       fit: BoxFit.cover,
+                              //     ),
+                              //   ),
+                              // ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
                                     onPressed: () {
                                       Get.to(const NotificationsPage(),
-                                          transition: Transition.native);
+                                          transition:
+                                              Transition.rightToLeftWithFade);
                                     },
                                     icon: Icon(
                                       Icons.notifications,
@@ -236,18 +246,50 @@ class MyHomePageState extends State<MyHomePage>
                             viewportFraction: 0.8,
                             enlargeFactor: 0.2,
                           ),
-                          items: kImages.map((String imageUrl) {
+                          items: kImages.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            String imageUrl = entry.value;
+
                             return Builder(
                               builder: (BuildContext context) {
-                                return Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    image: DecorationImage(
-                                        // image: AssetImage(imageUrl),
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (index == 0) {
+                                      Get.to(const AnimalsWallpaper(),
+                                          transition:
+                                              Transition.rightToLeftWithFade);
+                                    } else if (index == 1) {
+                                      Get.to(const GamesWallpaper(),
+                                          transition:
+                                              Transition.rightToLeftWithFade);
+                                    } else if (index == 2) {
+                                      Get.to(const GamesWallpaper(),
+                                          transition:
+                                              Transition.rightToLeftWithFade);
+                                    } else if (index == 3) {
+                                      Get.to(const NatureWallpaper(),
+                                          transition:
+                                              Transition.rightToLeftWithFade);
+                                    } else if (index == 4) {
+                                      Get.to(const AnimeWallpapers(),
+                                          transition:
+                                              Transition.rightToLeftWithFade);
+                                    } else if (index == 5) {
+                                      Get.to(const AmoledWallpaper(),
+                                          transition:
+                                              Transition.rightToLeftWithFade);
+                                    }
+                                  },
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      image: DecorationImage(
                                         image: AssetImage(imageUrl),
                                         fit: BoxFit.cover,
-                                        filterQuality: FilterQuality.high),
+                                        filterQuality: FilterQuality.high,
+                                      ),
+                                    ),
                                   ),
                                 );
                               },
