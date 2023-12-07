@@ -2,12 +2,10 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
@@ -170,16 +168,13 @@ class MyHomePageState extends State<MyHomePage>
                               //     color: primaryColor,
                               //   ),
                               // ),
-                              GestureDetector(
-                                onTap: () => Get.to(SettingsPage()),
-                                child: Container(
-                                  width: 30,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(_getImagePath()),
-                                      fit: BoxFit.fill,
-                                    ),
+                              Container(
+                                width: 30,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: AssetImage(_getImagePath()),
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
                               ),
@@ -200,19 +195,22 @@ class MyHomePageState extends State<MyHomePage>
                                   // const SizedBox(
                                   //   width: 8,
                                   // ),
-                                  (userPhotoUrl != null)
-                                      ? CircleAvatar(
-                                          radius: 18,
-                                          backgroundImage:
-                                              CachedNetworkImageProvider(
-                                            userPhotoUrl!,
+                                  GestureDetector(
+                                    onTap: () => Get.to(const SettingsPage()),
+                                    child: (userPhotoUrl != null)
+                                        ? CircleAvatar(
+                                            radius: 18,
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                              userPhotoUrl!,
+                                            ),
+                                          )
+                                        : Icon(
+                                            Icons.person,
+                                            color: primaryColor,
+                                            size: 28,
                                           ),
-                                        )
-                                      : Icon(
-                                          Icons.person,
-                                          color: primaryColor,
-                                          size: 28,
-                                        ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -241,7 +239,7 @@ class MyHomePageState extends State<MyHomePage>
                             scrollPhysics: const BouncingScrollPhysics(),
                             height: 160.0,
                             autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 3),
+                            autoPlayInterval: const Duration(seconds: 3),
                             enlargeCenterPage: true,
                             viewportFraction: 0.8,
                             enlargeFactor: 0.2,
@@ -294,13 +292,13 @@ class MyHomePageState extends State<MyHomePage>
                           ),
                         ),
                         AnimatedContainer(
-                          duration: Duration(milliseconds: 400),
+                          duration: const Duration(milliseconds: 400),
                           width: isSearchVisible ? 150.0 : 0.0,
                           alignment: isSearchVisible
                               ? Alignment.center
                               : Alignment.centerRight,
                           child: isSearchVisible
-                              ? Container(
+                              ? SizedBox(
                                   height: 44,
                                   child: TextField(
                                     controller: _searchController,
@@ -311,11 +309,12 @@ class MyHomePageState extends State<MyHomePage>
                                           TextStyle(color: backgroundColor),
                                       filled: true,
                                       fillColor: primaryColor,
-                                      contentPadding: EdgeInsets.all(10.0),
+                                      contentPadding:
+                                          const EdgeInsets.all(10.0),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(20.0),
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                             color: Colors.transparent),
                                       ),
                                       focusedBorder: OutlineInputBorder(
@@ -325,7 +324,7 @@ class MyHomePageState extends State<MyHomePage>
                                             BorderSide(color: backgroundColor),
                                       ),
                                       suffixIcon: IconButton(
-                                        icon: Icon(
+                                        icon: const Icon(
                                           Icons.close,
                                           color: Colors.grey,
                                         ),
@@ -385,7 +384,7 @@ class MyHomePageState extends State<MyHomePage>
         color: Theme.of(context).colorScheme.tertiary,
         borderRadius: BorderRadius.circular(20),
       ),
-      labelColor: Color.fromARGB(255, 175, 202, 0),
+      labelColor: const Color.fromARGB(255, 175, 202, 0),
       unselectedLabelColor: primaryColour,
       isScrollable: true,
       labelPadding: const EdgeInsets.symmetric(horizontal: 5),
@@ -507,10 +506,10 @@ class MyHomePageState extends State<MyHomePage>
   }
 }
 
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final Widget tab;
 
-  _SliverAppBarDelegate(this.tab);
+  SliverAppBarDelegate(this.tab);
 
   @override
   double get minExtent => 40;

@@ -35,6 +35,7 @@ class SearchWallpaper extends StatefulWidget {
   final String query;
 
   @override
+  // ignore: no_logic_in_create_state
   State<SearchWallpaper> createState() => SearchWallpaperState(query);
 }
 
@@ -45,7 +46,6 @@ class SearchWallpaperState extends State<SearchWallpaper> {
   final String query;
 
   SearchWallpaperState(this.query);
-
 
   @override
   void dispose() {
@@ -79,10 +79,10 @@ class SearchWallpaperState extends State<SearchWallpaper> {
 
   final TextEditingController searchController = TextEditingController();
 
-    @override
+  @override
   void initState() {
     super.initState();
-      _createBannerAd();
+    _createBannerAd();
     _createInterstitialAd();
     // Set the initial value of _searchController with the passed query
     _searchController.text = widget.query;
