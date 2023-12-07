@@ -160,14 +160,6 @@ class MyHomePageState extends State<MyHomePage>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Text(
-                              //   'Prism',
-                              //   style: TextStyle(
-                              //     fontFamily: "Anurati",
-                              //     fontSize: 28,
-                              //     color: primaryColor,
-                              //   ),
-                              // ),
                               Container(
                                 width: 30,
                                 height: 40,

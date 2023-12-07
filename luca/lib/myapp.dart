@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/live_wall.dart';
 import 'package:luca/pages/settings.dart';
@@ -19,7 +20,7 @@ class LucaHomeState extends State<LucaHome> {
     MyHomePage(),
     Category(),
     LiveWallBeta(),
-    SettingsPage(),
+    FavoriteImagesPage()
   ];
 
   @override

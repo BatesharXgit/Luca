@@ -388,7 +388,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           GoogleFonts.kanit(color: primaryColor, fontSize: 12),
                     ),
                   ),
-                  const SizedBox(height: 74),
+                  const SizedBox(height: 15),
                 ],
               ),
             ),
