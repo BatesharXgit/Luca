@@ -41,7 +41,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     _loadFavoriteImages();
     _createBannerAd();
     _createInterstitialAd();
-    _loadRewardedAd();
+    // _loadRewardedAd();
   }
 
   BannerAd? _banner;
@@ -83,40 +83,40 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     }
   }
 
-  void _loadRewardedAd() {
-    RewardedAd.loadWithAdManagerAdRequest(
-      adUnitId: AdMobService.rewardedAdUnitId!,
-      adManagerRequest: const AdManagerAdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (ad) {
-          ad.fullScreenContentCallback = FullScreenContentCallback(
-              onAdShowedFullScreenContent: (ad) {},
-              onAdImpression: (ad) {},
-              onAdFailedToShowFullScreenContent: (ad, err) {
-                ad.dispose();
-              },
-              onAdDismissedFullScreenContent: (ad) {
-                ad.dispose();
-                _loadRewardedAd();
-              },
-              onAdClicked: (ad) {});
-          debugPrint('$ad loaded.');
-          _rewardedAd = ad;
-        },
-        onAdFailedToLoad: (LoadAdError error) {
-          debugPrint('RewardedAd failed to load: $error');
-        },
-      ),
-    );
-  }
+  // void _loadRewardedAd() {
+  //   RewardedAd.loadWithAdManagerAdRequest(
+  //     adUnitId: AdMobService.rewardedAdUnitId!,
+  //     adManagerRequest: const AdManagerAdRequest(),
+  //     rewardedAdLoadCallback: RewardedAdLoadCallback(
+  //       onAdLoaded: (ad) {
+  //         ad.fullScreenContentCallback = FullScreenContentCallback(
+  //             onAdShowedFullScreenContent: (ad) {},
+  //             onAdImpression: (ad) {},
+  //             onAdFailedToShowFullScreenContent: (ad, err) {
+  //               ad.dispose();
+  //             },
+  //             onAdDismissedFullScreenContent: (ad) {
+  //               ad.dispose();
+  //               _loadRewardedAd();
+  //             },
+  //             onAdClicked: (ad) {});
+  //         debugPrint('$ad loaded.');
+  //         _rewardedAd = ad;
+  //       },
+  //       onAdFailedToLoad: (LoadAdError error) {
+  //         debugPrint('RewardedAd failed to load: $error');
+  //       },
+  //     ),
+  //   );
+  // }
 
-  void _showRewardedAd() {
-    _rewardedAd?.show(
-      onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
-        openDialog();
-      },
-    );
-  }
+  // void _showRewardedAd() {
+  //   _rewardedAd?.show(
+  //     onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
+  //       openDialog();
+  //     },
+  //   );
+  // }
 
   Future<void> _loadFavoriteImages() async {
     _prefs = await SharedPreferences.getInstance();
@@ -587,12 +587,16 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                   right: 0,
                   bottom: MediaQuery.of(context).padding.bottom + 10,
                   child: GestureDetector(
+                    // onTap: () {
+                    //   if (_rewardedAd != null) {
+                    //     _showRewardedAd();
+                    //   } else {
+                    //     _loadRewardedAd();
+                    //   }
+                    // },
                     onTap: () {
-                      if (_rewardedAd != null) {
-                        _showRewardedAd();
-                      } else {
-                        _loadRewardedAd();
-                      }
+                      _showInterstitialAd();
+                      openDialog();
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

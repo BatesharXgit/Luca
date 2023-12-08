@@ -91,13 +91,6 @@ class MyHomePageState extends State<MyHomePage>
     }
   }
 
-  String _getImagePath() {
-    var brightness = Theme.of(context).brightness;
-    return brightness == Brightness.light
-        ? 'assets/logo1.png'
-        : 'assets/logo.png';
-  }
-
   Future<void> loadImages() async {
     final ListResult wallpaperResult = await wallpaperRef.listAll();
     wallpaperRefs = wallpaperResult.items.toList();
@@ -302,9 +295,11 @@ class MyHomePageState extends State<MyHomePage>
                 ),
               ),
               SliverAppBar(
+                forceMaterialTransparency: true,
                 pinned: true,
                 expandedHeight: 50.0,
-                backgroundColor: Theme.of(context).colorScheme.background,
+                // backgroundColor: Theme.of(context).colorScheme.tertiary,
+
                 flexibleSpace: FlexibleSpaceBar(
                   background: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
