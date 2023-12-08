@@ -177,14 +177,14 @@ class _LiveWallBetaState extends State<LiveWallBeta> {
             icon: const Icon(Iconsax.info_circle),
           )
         ],
-        centerTitle: true,
+        // centerTitle: true,
         backgroundColor: backgroundColor,
         title: Text(
           'Live Wallpapers',
-          style: GoogleFonts.orbitron(
+          style: GoogleFonts.kanit(
             color: primaryColor,
             fontSize: 22,
-            fontWeight: FontWeight.bold,
+            // fontWeight: FontWeight.bold,
           ),
         ),
       ),

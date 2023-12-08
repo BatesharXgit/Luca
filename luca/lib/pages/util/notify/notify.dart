@@ -20,14 +20,14 @@ class NotificationsPage extends StatelessWidget {
           )
         ],
         elevation: 0,
-        centerTitle: true,
+        // centerTitle: true,
         backgroundColor: backgroundColor,
         title: Text(
           'Notifications',
-          style: GoogleFonts.orbitron(
+          style: GoogleFonts.kanit(
             color: primaryColor,
             fontSize: 22,
-            fontWeight: FontWeight.bold,
+            // fontWeight: FontWeight.bold,
           ),
         ),
       ),

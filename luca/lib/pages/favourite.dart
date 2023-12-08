@@ -14,9 +14,6 @@ class FavoriteImagesPage extends StatefulWidget {
 }
 
 class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
-
-
-
   @override
   void initState() {
     super.initState();
@@ -39,14 +36,14 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
         ],
         // elevation: 0,
         iconTheme: Theme.of(context).iconTheme,
-        centerTitle: true,
+        // centerTitle: true,
         backgroundColor: backgroundColor,
         title: Text(
           'Favourites',
-          style: GoogleFonts.orbitron(
+          style: GoogleFonts.kanit(
             color: primaryColor,
             fontSize: 22,
-            fontWeight: FontWeight.bold,
+            // fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -87,7 +84,6 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
           },
         ),
       ),
-
     );
   }
 

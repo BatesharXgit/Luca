@@ -187,15 +187,15 @@ class CategoryState extends State<Category> {
     return Scaffold(
       appBar: AppBar(
         // elevation: 0,
-        centerTitle: true,
+        // centerTitle: true,
 
         backgroundColor: backgroundColor,
         title: Text(
           'Categories',
-          style: GoogleFonts.orbitron(
+          style: GoogleFonts.kanit(
             color: primaryColor,
             fontSize: 22,
-            fontWeight: FontWeight.bold,
+            // fontWeight: FontWeight.bold,
           ),
         ),
       ),

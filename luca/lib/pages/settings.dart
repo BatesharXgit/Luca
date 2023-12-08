@@ -149,12 +149,12 @@ class _SettingsPageState extends State<SettingsPage> {
     Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
+        // centerTitle: true,
         iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
         title: Text(
           'Settings',
-          style: GoogleFonts.orbitron(
-              fontWeight: FontWeight.bold,
+          style: GoogleFonts.kanit(
+              // fontWeight: FontWeight.bold,
               fontSize: 22,
               color: Theme.of(context).colorScheme.primary),
         ),
