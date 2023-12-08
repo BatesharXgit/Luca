@@ -817,7 +817,7 @@ class CategoryState extends State<Category> {
                     style: TextStyle(color: primaryColor),
                   ),
                   const SizedBox(
-                    height: 74,
+                    height: 20,
                   ),
                 ],
               ),
