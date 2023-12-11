@@ -2,7 +2,9 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/parallax.dart';
+// ignore: unused_import
 import 'package:shimmer/shimmer.dart';
 
 class LocationListItem extends StatelessWidget {
@@ -13,7 +15,7 @@ class LocationListItem extends StatelessWidget {
     Uint8List? imageBytes,
   }) : super(key: key);
 
-  final dynamic imageUrl;
+  final String imageUrl;
   final ScrollController scrollController;
 
   final GlobalKey _backgroundImageKey = GlobalKey();
@@ -31,38 +33,31 @@ class LocationListItem extends StatelessWidget {
         backgroundImageKey: _backgroundImageKey,
       ),
       children: [
-        if (imageUrl is String)
-          CachedNetworkImage(
-            fadeInDuration: const Duration(milliseconds: 200),
-            fadeOutDuration: const Duration(milliseconds: 200),
-            imageUrl: imageUrl,
-            key: _backgroundImageKey,
-            fit: BoxFit.cover,
-            cacheManager: DefaultCacheManager(),
-            placeholder: (context, url) => buildShimmerEffect(),
-          ),
-        if (imageUrl is Uint8List)
-          Image.memory(
-            imageUrl,
-            key: _backgroundImageKey,
-            fit: BoxFit.cover,
-          ),
+        CachedNetworkImage(
+          fadeInDuration: const Duration(milliseconds: 200),
+          fadeOutDuration: const Duration(milliseconds: 200),
+          imageUrl: imageUrl,
+          key: _backgroundImageKey,
+          fit: BoxFit.cover,
+          cacheManager: DefaultCacheManager(),
+          placeholder: (context, url) => Components.buildShimmerEffect(),
+        ),
       ],
     );
   }
-}
 
-Widget buildShimmerEffect() {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Shimmer.fromColors(
-        baseColor: Colors.grey,
-        highlightColor: Colors.black,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Container(
-            color: Colors.black,
-          ),
-        )),
-  );
+  // Widget buildShimmerEffect() {
+  //   return Padding(
+  //     padding: const EdgeInsets.all(8.0),
+  //     child: Shimmer.fromColors(
+  //         baseColor: Colors.grey,
+  //         highlightColor: Colors.black,
+  //         child: ClipRRect(
+  //           borderRadius: BorderRadius.circular(20),
+  //           child: Container(
+  //             color: Colors.black,
+  //           ),
+  //         )),
+  //   );
+  // }
 }

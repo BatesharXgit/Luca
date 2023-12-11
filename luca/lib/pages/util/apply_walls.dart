@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:async_wallpaper/async_wallpaper.dart';
@@ -21,12 +20,13 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 
 class ApplyWallpaperPage extends StatefulWidget {
-  final dynamic imageUrl; // Change the type to dynamic
+  final String imageUrl;
 
   const ApplyWallpaperPage({Key? key, required this.imageUrl})
       : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _ApplyWallpaperPageState createState() => _ApplyWallpaperPageState();
 }
 
@@ -87,41 +87,6 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       _interstitialAd = null;
     }
   }
-
-  // void _loadRewardedAd() {
-  //   RewardedAd.loadWithAdManagerAdRequest(
-  //     adUnitId: AdMobService.rewardedAdUnitId!,
-  //     adManagerRequest: const AdManagerAdRequest(),
-  //     rewardedAdLoadCallback: RewardedAdLoadCallback(
-  //       onAdLoaded: (ad) {
-  //         ad.fullScreenContentCallback = FullScreenContentCallback(
-  //             onAdShowedFullScreenContent: (ad) {},
-  //             onAdImpression: (ad) {},
-  //             onAdFailedToShowFullScreenContent: (ad, err) {
-  //               ad.dispose();
-  //             },
-  //             onAdDismissedFullScreenContent: (ad) {
-  //               ad.dispose();
-  //               _loadRewardedAd();
-  //             },
-  //             onAdClicked: (ad) {});
-  //         debugPrint('$ad loaded.');
-  //         _rewardedAd = ad;
-  //       },
-  //       onAdFailedToLoad: (LoadAdError error) {
-  //         debugPrint('RewardedAd failed to load: $error');
-  //       },
-  //     ),
-  //   );
-  // }
-
-  // void _showRewardedAd() {
-  //   _rewardedAd?.show(
-  //     onUserEarnedReward: (AdWithoutView ad, RewardItem rewardItem) {
-  //       openDialog();
-  //     },
-  //   );
-  // }
 
   Future<void> _loadFavoriteImages() async {
     _prefs = await SharedPreferences.getInstance();
@@ -210,14 +175,9 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         backgroundColor: Colors.green,
         textColor: Colors.white,
       );
-      List<int> imageBytes = base64.decode(widget.imageUrl);
 
-      Directory tempDir = await getTemporaryDirectory();
-      String filePath = '${tempDir.path}/temp_image.png';
-      await File(filePath).writeAsBytes(imageBytes);
-
-      bool success = await AsyncWallpaper.setWallpaperFromFile(
-        filePath: filePath,
+      bool success = await AsyncWallpaper.setWallpaperFromFileNative(
+        filePath: widget.imageUrl,
         wallpaperLocation: AsyncWallpaper.HOME_SCREEN,
         goToHome: false,
       );
@@ -255,27 +215,23 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   Future<void> applyLockscreen(BuildContext context) async {
     try {
       Fluttertoast.showToast(
-        msg: 'Applying wallpaper to Lock screen...',
+        msg: 'Applying wallpaper to lock screen...',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.green,
         textColor: Colors.white,
       );
-      List<int> imageBytes = base64.decode(widget.imageUrl);
 
-      Directory tempDir = await getTemporaryDirectory();
-      String filePath = '${tempDir.path}/temp_image.png';
-      await File(filePath).writeAsBytes(imageBytes);
-
-      bool success = await AsyncWallpaper.setWallpaperFromFile(
-        filePath: filePath,
+      bool success = await AsyncWallpaper.setWallpaperFromFileNative(
+        filePath: widget.imageUrl,
         wallpaperLocation: AsyncWallpaper.LOCK_SCREEN,
         goToHome: false,
       );
+      // ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
       if (success) {
-        _controllerCenter.play();
         successScreen();
+        _controllerCenter.play();
         Fluttertoast.showToast(
           msg: 'Wallpaper set Successfully 😊',
           toastLength: Toast.LENGTH_SHORT,
@@ -293,6 +249,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         );
       }
     } on PlatformException {
+      // ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
       Fluttertoast.showToast(
         msg: 'Failed to set wallpaper',
         toastLength: Toast.LENGTH_SHORT,
@@ -306,23 +264,20 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   Future<void> applyBoth(BuildContext context) async {
     try {
       Fluttertoast.showToast(
-        msg: 'Applying wallpaper to Both screens...',
+        msg: 'Applying wallpaper to both screens...',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.green,
         textColor: Colors.white,
       );
-      List<int> imageBytes = base64.decode(widget.imageUrl);
 
-      Directory tempDir = await getTemporaryDirectory();
-      String filePath = '${tempDir.path}/temp_image.png';
-      await File(filePath).writeAsBytes(imageBytes);
-
-      bool success = await AsyncWallpaper.setWallpaperFromFile(
-        filePath: filePath,
+      bool success = await AsyncWallpaper.setWallpaperFromFileNative(
+        filePath: widget.imageUrl,
         wallpaperLocation: AsyncWallpaper.BOTH_SCREENS,
         goToHome: false,
       );
+
+      // ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
       if (success) {
         _controllerCenter.play();
@@ -344,6 +299,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         );
       }
     } on PlatformException {
+      // ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
       Fluttertoast.showToast(
         msg: 'Failed to set wallpaper',
         toastLength: Toast.LENGTH_SHORT,
@@ -567,7 +524,30 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                     key: _globalKey,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: _buildImageWidget(),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.imageUrl,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.high,
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) {
+                          if (downloadProgress.progress == 1.0) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            );
+                          } else {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).colorScheme.primary,
+                                value: downloadProgress.progress,
+                              ),
+                            );
+                          }
+                        },
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
                     ),
                   ),
                 ),
@@ -608,6 +588,13 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                   right: 0,
                   bottom: MediaQuery.of(context).padding.bottom + 10,
                   child: GestureDetector(
+                    // onTap: () {
+                    //   if (_rewardedAd != null) {
+                    //     _showRewardedAd();
+                    //   } else {
+                    //     _loadRewardedAd();
+                    //   }
+                    // },
                     onTap: () {
                       _showInterstitialAd();
                       openDialog();
@@ -716,48 +703,5 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
               child: AdWidget(ad: _banner!),
             ),
     );
-  }
-
-  Widget _buildImageWidget() {
-    if (widget.imageUrl is String) {
-      if (widget.imageUrl.startsWith('http')) {
-        return CachedNetworkImage(
-          imageUrl: widget.imageUrl,
-          fit: BoxFit.cover,
-          filterQuality: FilterQuality.high,
-          progressIndicatorBuilder: (context, url, downloadProgress) {
-            if (downloadProgress.progress == 1.0) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.primary,
-                  value: downloadProgress.progress,
-                ),
-              );
-            }
-          },
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-        );
-      } else {
-        // Assuming it's a base64-encoded image string
-        Uint8List bytes = base64.decode(widget.imageUrl);
-        return Image.memory(
-          bytes,
-          fit: BoxFit.cover,
-        );
-      }
-    } else if (widget.imageUrl is Uint8List) {
-      return Image.memory(
-        widget.imageUrl,
-        fit: BoxFit.cover,
-      );
-    } else {
-      return Container();
-    }
   }
 }
