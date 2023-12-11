@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:luca/pages/image_test.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
@@ -523,7 +526,7 @@ class MyHomePageState extends State<MyHomePage>
       child: TabBarView(
         controller: _tabController,
         children: [
-          _buildImageGridFromRef(wallpaperRef),
+          ImageScreen(),
           _buildImageGridFromRef(aiRef),
           _buildImageGridFromRef(illustrationRef),
           _buildImageGridFromRef(carsRef),

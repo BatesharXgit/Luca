@@ -13,7 +13,7 @@ class LocationListItem extends StatelessWidget {
     Uint8List? imageBytes,
   }) : super(key: key);
 
-  final String imageUrl;
+  final dynamic imageUrl;
   final ScrollController scrollController;
 
   final GlobalKey _backgroundImageKey = GlobalKey();
@@ -31,31 +31,38 @@ class LocationListItem extends StatelessWidget {
         backgroundImageKey: _backgroundImageKey,
       ),
       children: [
-        CachedNetworkImage(
-          fadeInDuration: const Duration(milliseconds: 200),
-          fadeOutDuration: const Duration(milliseconds: 200),
-          imageUrl: imageUrl,
-          key: _backgroundImageKey,
-          fit: BoxFit.cover,
-          cacheManager: DefaultCacheManager(),
-          placeholder: (context, url) => buildShimmerEffect(),
-        ),
+        if (imageUrl is String)
+          CachedNetworkImage(
+            fadeInDuration: const Duration(milliseconds: 200),
+            fadeOutDuration: const Duration(milliseconds: 200),
+            imageUrl: imageUrl,
+            key: _backgroundImageKey,
+            fit: BoxFit.cover,
+            cacheManager: DefaultCacheManager(),
+            placeholder: (context, url) => buildShimmerEffect(),
+          ),
+        if (imageUrl is Uint8List)
+          Image.memory(
+            imageUrl,
+            key: _backgroundImageKey,
+            fit: BoxFit.cover,
+          ),
       ],
     );
   }
+}
 
-  Widget buildShimmerEffect() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Shimmer.fromColors(
-          baseColor: Colors.grey,
-          highlightColor: Colors.black,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Container(
-              color: Colors.black,
-            ),
-          )),
-    );
-  }
+Widget buildShimmerEffect() {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Shimmer.fromColors(
+        baseColor: Colors.grey,
+        highlightColor: Colors.black,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            color: Colors.black,
+          ),
+        )),
+  );
 }
