@@ -450,11 +450,12 @@ class MyHomePageState extends State<MyHomePage>
         } else if (snapshot.hasData && snapshot.data!.items.isNotEmpty) {
           List<Reference> imageRefs = snapshot.data!.items;
           return CustomScrollView(
+            physics: const ClampingScrollPhysics(),
             slivers: <Widget>[
               SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.75,
+                  crossAxisCount: 1,
+                  childAspectRatio: 0.85,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {

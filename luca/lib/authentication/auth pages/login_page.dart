@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/icons/square.png'),
+                  image: AssetImage('assets/bg.jpg'),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 150,
                     decoration: BoxDecoration(
                       image: const DecorationImage(
-                          image: AssetImage('assets/luca.png'),
+                          image: AssetImage('assets/icons/square.png'),
                           fit: BoxFit.cover),
                       border: Border.all(
                           width: 4.0,
@@ -74,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const Center(
                     child: Text(
-                      'LUCA',
+                      'Prism',
                       style: TextStyle(
                         fontFamily: 'Anurati',
                         color: Colors.white,
@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'By Continuing, you agree with Luca',
+                            'By Continuing, you agree with Prism',
                             style: TextStyle(
                               color: Colors.grey[500],
                               fontSize: 12,

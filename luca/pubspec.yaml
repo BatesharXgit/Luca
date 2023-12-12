@@ -57,10 +57,14 @@ dependencies:
   path_provider: ^2.1.1
   carousel_slider: ^4.2.1
   google_mobile_ads: ^3.1.0
-  shimmer: ^3.0.0
+  
   google_nav_bar: ^5.0.6
   line_icons: ^2.0.3
   confetti: ^0.7.0
+  http: ^1.1.2
+  crystal_navigation_bar: ^1.0.0
+  iconly: ^1.0.1
+  flutter_floating_bottom_bar: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -85,6 +89,7 @@ flutter:
   assets:
       - assets/
       - assets/slider/
+      - assets/icons/
 
   fonts:
     - family: Anurati

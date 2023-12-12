@@ -21,14 +21,14 @@ class Category extends StatefulWidget {
 
 class CategoryState extends State<Category> {
   final List<String> _amoled = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F93.jpg?alt=media&token=dd4741da-9f8c-4c03-80b6-b2df77e5de74',
     'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F83.jpg?alt=media&token=52cb7707-0ab0-4961-b3ad-8c79ff5c3b70',
     'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F79.jpg?alt=media&token=ffd1a801-53c8-4df9-8269-d4a0cd394a19',
     'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F76.jpg?alt=media&token=0f0b1b82-879b-421e-9382-e6fb5f1074ee',
     'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F71.jpg?alt=media&token=98ede1b5-f454-43c5-a8d3-75431eb133a9',
     'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F66.jpg?alt=media&token=3025b56b-c208-4844-8d37-c18df18b0843',
     'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F59.jpg?alt=media&token=6db4ae15-1ea3-47c3-aa6e-b5db13ac759d',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F90.jpg?alt=media&token=5bac6a75-a3f0-4ce4-8f69-0b127c650d46'
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F90.jpg?alt=media&token=5bac6a75-a3f0-4ce4-8f69-0b127c650d46',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F93.jpg?alt=media&token=dd4741da-9f8c-4c03-80b6-b2df77e5de74',
   ];
 
   final List<String> _space = [
@@ -119,24 +119,24 @@ class CategoryState extends State<Category> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {
         _isNatureLoaded = true;
       });
     });
-    Future.delayed(const Duration(milliseconds: 700), () {
+    Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
         _isSpaceLoaded = true;
         _isMinimalLoaded = true;
       });
     });
-    Future.delayed(const Duration(milliseconds: 900), () {
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         _isAnimeLoaded = true;
         _isAnimalsLoaded = true;
       });
     });
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _isSciFiLoaded = true;
         _isGamesLoaded = true;
@@ -203,10 +203,10 @@ class CategoryState extends State<Category> {
       body: SafeArea(
         child: AnimationLimiter(
           child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             child: Column(
               children: AnimationConfiguration.toStaggeredList(
-                duration: const Duration(milliseconds: 375),
+                duration: const Duration(milliseconds: 200),
                 childAnimationBuilder: (widget) => SlideAnimation(
                   horizontalOffset: 50.0,
                   child: FadeInAnimation(
@@ -248,9 +248,9 @@ class CategoryState extends State<Category> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
-                      height: 200,
+                      height: 300,
                       child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
+                        physics: const ClampingScrollPhysics(),
                         itemCount: 8,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
@@ -267,11 +267,13 @@ class CategoryState extends State<Category> {
                                 );
                               },
                               child: SizedBox(
-                                width: 120,
+                                width: 280,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(20),
                                   child: CachedNetworkImage(
                                     fadeInDuration:
+                                        const Duration(milliseconds: 200),
+                                    fadeOutDuration:
                                         const Duration(milliseconds: 200),
                                     imageUrl: _amoled[index],
                                     placeholder: (context, url) =>
@@ -320,7 +322,7 @@ class CategoryState extends State<Category> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
-                      height: 200,
+                      height: 300,
                       child: (_isNatureLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
@@ -341,7 +343,7 @@ class CategoryState extends State<Category> {
                                       );
                                     },
                                     child: SizedBox(
-                                      width: 120,
+                                      width: 280,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: CachedNetworkImage(
@@ -395,7 +397,7 @@ class CategoryState extends State<Category> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
-                      height: 200,
+                      height: 300,
                       child: (_isSpaceLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
@@ -405,7 +407,7 @@ class CategoryState extends State<Category> {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: SizedBox(
-                                    width: 120,
+                                    width: 280,
                                     child: GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -470,7 +472,7 @@ class CategoryState extends State<Category> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
-                      height: 200,
+                      height: 300,
                       child: (_isMinimalLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
@@ -480,7 +482,7 @@ class CategoryState extends State<Category> {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: SizedBox(
-                                    width: 120,
+                                    width: 280,
                                     child: GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -546,7 +548,7 @@ class CategoryState extends State<Category> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
-                      height: 200,
+                      height: 300,
                       child: (_isAnimeLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
@@ -556,7 +558,7 @@ class CategoryState extends State<Category> {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: SizedBox(
-                                    width: 120,
+                                    width: 280,
                                     child: GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -577,6 +579,7 @@ class CategoryState extends State<Category> {
                                           placeholder: (context, url) =>
                                               Components.buildShimmerEffect(),
                                           imageUrl: _anime[index],
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
@@ -621,7 +624,7 @@ class CategoryState extends State<Category> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
-                      height: 200,
+                      height: 300,
                       child: (_isAnimalsLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
@@ -642,7 +645,7 @@ class CategoryState extends State<Category> {
                                       );
                                     },
                                     child: SizedBox(
-                                      width: 120,
+                                      width: 280,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: CachedNetworkImage(
@@ -696,7 +699,7 @@ class CategoryState extends State<Category> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
-                      height: 200,
+                      height: 300,
                       child: (_isSciFiLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
@@ -717,7 +720,7 @@ class CategoryState extends State<Category> {
                                       );
                                     },
                                     child: SizedBox(
-                                      width: 120,
+                                      width: 280,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: CachedNetworkImage(
@@ -771,7 +774,7 @@ class CategoryState extends State<Category> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
-                      height: 200,
+                      height: 300,
                       child: (_isGamesLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
@@ -792,7 +795,7 @@ class CategoryState extends State<Category> {
                                       );
                                     },
                                     child: SizedBox(
-                                      width: 120,
+                                      width: 280,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: CachedNetworkImage(

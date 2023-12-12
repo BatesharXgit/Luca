@@ -271,7 +271,7 @@ class _LiveWallBetaState extends State<LiveWallBeta> {
             ],
           ),
           Positioned(
-            bottom: 40,
+            bottom: 85,
             right: 60,
             left: 60,
             child: GestureDetector(

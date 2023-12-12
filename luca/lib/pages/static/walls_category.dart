@@ -78,11 +78,11 @@ class _AmoledWallpaperState extends State<AmoledWallpaper> {
                     List<Reference> imageRefs = snapshot.data!.items;
 
                     return GridView.builder(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
                       ),
                       itemCount: amoledRefs.length,
                       itemBuilder: (context, index) {
@@ -180,11 +180,11 @@ class _SpaceWallpaperState extends State<SpaceWallpaper> {
                     List<Reference> imageRefs = snapshot.data!.items;
 
                     return GridView.builder(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
                       ),
                       itemCount: spaceRefs.length,
                       itemBuilder: (context, index) {
@@ -283,11 +283,11 @@ class _AnimeWallpapersState extends State<AnimeWallpapers> {
                     List<Reference> imageRefs = snapshot.data!.items;
 
                     return GridView.builder(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
                       ),
                       itemCount: animeRefs.length,
                       itemBuilder: (context, index) {
@@ -385,11 +385,11 @@ class _MinimalistWallpaperState extends State<MinimalistWallpaper> {
                     List<Reference> imageRefs = snapshot.data!.items;
 
                     return GridView.builder(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
                       ),
                       itemCount: minimalistRefs.length,
                       itemBuilder: (context, index) {
@@ -488,11 +488,11 @@ class _NatureWallpaperState extends State<NatureWallpaper> {
                     List<Reference> imageRefs = snapshot.data!.items;
 
                     return GridView.builder(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
                       ),
                       itemCount: natureRefs.length,
                       itemBuilder: (context, index) {
@@ -592,11 +592,11 @@ class _AnimalsWallpaperState extends State<AnimalsWallpaper> {
                     List<Reference> imageRefs = snapshot.data!.items;
 
                     return GridView.builder(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
                       ),
                       itemCount: animalsRefs.length,
                       itemBuilder: (context, index) {
@@ -695,11 +695,11 @@ class _ScifiWallpaperState extends State<ScifiWallpaper> {
                     List<Reference> imageRefs = snapshot.data!.items;
 
                     return GridView.builder(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
                       ),
                       itemCount: scifiRefs.length,
                       itemBuilder: (context, index) {
@@ -797,11 +797,11 @@ class _GamesWallpaperState extends State<GamesWallpaper> {
                     List<Reference> imageRefs = snapshot.data!.items;
 
                     return GridView.builder(
-                      physics: const BouncingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.75,
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
                       ),
                       itemCount: gamesRefs.length,
                       itemBuilder: (context, index) {

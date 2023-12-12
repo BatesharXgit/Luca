@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/parallax.dart';
-// ignore: unused_import
-import 'package:shimmer/shimmer.dart';
 
 class LocationListItem extends StatelessWidget {
   LocationListItem({
