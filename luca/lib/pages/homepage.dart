@@ -1,4 +1,3 @@
-import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconly/iconly.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
@@ -162,16 +162,6 @@ class MyHomePageState extends State<MyHomePage>
                                   color: primaryColor,
                                 ),
                               ),
-                              // Container(
-                              //   width: 32,
-                              //   height: 44,
-                              //   decoration: BoxDecoration(
-                              //     image: DecorationImage(
-                              //       image: AssetImage('assets/logo.png'),
-                              //       fit: BoxFit.cover,
-                              //     ),
-                              //   ),
-                              // ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -182,16 +172,15 @@ class MyHomePageState extends State<MyHomePage>
                                               Transition.rightToLeftWithFade);
                                     },
                                     icon: Icon(
-                                      Icons.notifications,
+                                      IconlyBold.notification,
                                       color: primaryColor,
                                       size: 28,
                                     ),
                                   ),
-                                  // const SizedBox(
-                                  //   width: 8,
-                                  // ),
                                   GestureDetector(
-                                    onTap: () => Get.to(const SettingsPage()),
+                                    onTap: () => Get.to(const SettingsPage(),
+                                        transition:
+                                            Transition.rightToLeftWithFade),
                                     child: (userPhotoUrl != null)
                                         ? CircleAvatar(
                                             radius: 18,
@@ -218,10 +207,8 @@ class MyHomePageState extends State<MyHomePage>
                             child: Text(
                               'Discover Collections',
                               style: GoogleFonts.kanit(
-                                // fontFamily: "Anurati",
                                 fontSize: 18,
                                 color: primaryColor,
-                                // fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -232,9 +219,9 @@ class MyHomePageState extends State<MyHomePage>
                         CarouselSlider(
                           options: CarouselOptions(
                             scrollPhysics: const BouncingScrollPhysics(),
-                            height: 160.0,
+                            height: MediaQuery.of(context).size.height * 0.2,
                             autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 3),
+                            autoPlayInterval: const Duration(seconds: 4),
                             enlargeCenterPage: true,
                             viewportFraction: 0.8,
                             enlargeFactor: 0.2,
@@ -309,9 +296,9 @@ class MyHomePageState extends State<MyHomePage>
                           visible: !isSearchVisible,
                           child: IconButton(
                             icon: Icon(
-                              BootstrapIcons.search,
+                              IconlyBold.search,
                               color: primaryColor,
-                              size: 22,
+                              size: 28,
                             ),
                             onPressed: () {
                               setState(() {
@@ -406,7 +393,7 @@ class MyHomePageState extends State<MyHomePage>
       dividerColor: Colors.transparent,
       tabAlignment: TabAlignment.start,
       physics: const BouncingScrollPhysics(),
-      indicatorPadding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+      indicatorPadding: const EdgeInsets.fromLTRB(0, 0, 0, 2),
       controller: _tabController,
       indicatorColor: Theme.of(context).colorScheme.tertiary,
       indicator: BoxDecoration(
@@ -423,7 +410,7 @@ class MyHomePageState extends State<MyHomePage>
           width: MediaQuery.of(context).size.width * 0.25,
           decoration: BoxDecoration(
             border: Border.all(
-                width: 2.0, color: Theme.of(context).colorScheme.tertiary),
+                width: 1.0, color: Theme.of(context).colorScheme.primary),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Tab(
@@ -465,7 +452,7 @@ class MyHomePageState extends State<MyHomePage>
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Components.buildShimmerEffect();
+                          return Components.buildShimmerEffect(context);
                         } else if (snapshot.hasError) {
                           return Components.buildErrorWidget();
                         } else if (snapshot.hasData) {
@@ -492,24 +479,15 @@ class MyHomePageState extends State<MyHomePage>
     return Builder(
       builder: (context) {
         return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ApplyWallpaperPage(imageUrl: imageUrl),
-              ),
-            );
-          },
-          child: Hero(
-            tag: imageUrl,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: LocationListItem(
-                  imageUrl: imageUrl,
-                  scrollController: scrollController,
-                ),
+          onTap: () => Get.to(ApplyWallpaperPage(imageUrl: imageUrl),
+              transition: Transition.rightToLeftWithFade),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: LocationListItem(
+                imageUrl: imageUrl,
+                scrollController: scrollController,
               ),
             ),
           ),

@@ -5,7 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:iconly/iconly.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'privacy_policy.dart';
@@ -205,7 +205,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         ListTile(
                           leading: const Icon(
-                            Iconsax.info_circle,
+                            IconlyBold.info_circle,
                             size: 28,
                           ),
                           title: const Text('About'),
@@ -219,7 +219,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         ListTile(
                           leading: const Icon(
-                            Iconsax.activity,
+                            IconlyBold.activity,
                             size: 28,
                           ),
                           title: const Text('Changelog'),
@@ -232,7 +232,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           },
                         ),
                         ListTile(
-                          leading: const Icon(Iconsax.trash),
+                          leading: const Icon(IconlyBold.delete),
                           title: const Text('Clear Cache'),
                           subtitle: const Text('Clear all cached data',
                               style: TextStyle(color: Colors.grey)),
@@ -259,7 +259,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         ListTile(
                           leading: const Icon(
-                            Iconsax.bookmark,
+                            IconlyBold.bookmark,
                             size: 28,
                           ),
                           title: const Text('Liscenses'),
@@ -273,7 +273,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           },
                         ),
                         ListTile(
-                            leading: const Icon(Icons.policy_outlined),
+                            leading: const Icon(IconlyBold.document),
                             title: const Text('Privacy Policy'),
                             subtitle: const Text('Prism privacy policy',
                                 style: TextStyle(color: Colors.grey)),
@@ -297,7 +297,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ListTile(
-                          leading: const Icon(Iconsax.logout),
+                          leading: const Icon(IconlyBold.logout),
                           title: const Text('Logout'),
                           subtitle: const Text('Logout of your account',
                               style: TextStyle(color: Colors.grey)),
@@ -306,7 +306,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           onTap: signUserOut,
                         ),
                         ListTile(
-                          leading: const Icon(Iconsax.trash),
+                          leading: const Icon(IconlyBold.delete),
                           title: const Text('Delete Account'),
                           subtitle: const Text(
                             'Warning! This cannot be undone',
@@ -380,14 +380,6 @@ class _SettingsPageState extends State<SettingsPage> {
                           GoogleFonts.kanit(color: primaryColor, fontSize: 12),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Made in India.',
-                      style:
-                          GoogleFonts.kanit(color: primaryColor, fontSize: 12),
-                    ),
-                  ),
                   const SizedBox(height: 15),
                 ],
               ),
@@ -408,7 +400,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           backgroundColor: const Color(0xFF1E1E2A),
           content: Container(
-            color: const Color(0xFF1E1E2A),
+            color: Colors.transparent,
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -473,7 +465,7 @@ void _showChangelogPopup(BuildContext context) {
               SizedBox(height: 20),
               ChangelogEntry(
                 version: '1.0.0',
-                date: 'October, 2023',
+                date: 'November, 2023',
                 changes: [
                   '🎉 Welcome to the world of Prism - Your Ultimate Wallpaper Experience!',
                   '🖼️ Explore a captivating collection of dynamic and static wallpapers.',

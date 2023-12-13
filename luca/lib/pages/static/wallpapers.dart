@@ -277,7 +277,7 @@ class CategoryState extends State<Category> {
                                         const Duration(milliseconds: 200),
                                     imageUrl: _amoled[index],
                                     placeholder: (context, url) =>
-                                        Components.buildShimmerEffect(),
+                                        Components.buildShimmerEffect(context),
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -351,7 +351,7 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _nature[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(),
+                                              Components.buildShimmerEffect(context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -426,7 +426,7 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _space[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(),
+                                              Components.buildShimmerEffect(context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -502,7 +502,7 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _minimalist[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(),
+                                              Components.buildShimmerEffect(context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -577,7 +577,7 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           // imageUrl: _stock[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(),
+                                              Components.buildShimmerEffect(context),
                                           imageUrl: _anime[index],
                                           fit: BoxFit.cover,
                                         ),
@@ -653,7 +653,7 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _animals[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(),
+                                              Components.buildShimmerEffect(context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -728,7 +728,7 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _scifi[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(),
+                                              Components.buildShimmerEffect(context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -803,7 +803,7 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _games[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(),
+                                              Components.buildShimmerEffect(context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),

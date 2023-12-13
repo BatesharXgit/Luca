@@ -92,7 +92,7 @@ class _AmoledWallpaperState extends State<AmoledWallpaper> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Components.buildShimmerEffect();
+                              return Components.buildShimmerEffect(context);
                             } else if (snapshot.hasError) {
                               return Components.buildErrorWidget();
                             } else if (snapshot.hasData) {
@@ -194,7 +194,7 @@ class _SpaceWallpaperState extends State<SpaceWallpaper> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Components.buildShimmerEffect();
+                              return Components.buildShimmerEffect(context);
                             } else if (snapshot.hasError) {
                               return Components.buildErrorWidget();
                             } else if (snapshot.hasData) {
@@ -297,7 +297,7 @@ class _AnimeWallpapersState extends State<AnimeWallpapers> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Components.buildShimmerEffect();
+                              return Components.buildShimmerEffect(context);
                             } else if (snapshot.hasError) {
                               return Components.buildErrorWidget();
                             } else if (snapshot.hasData) {
@@ -399,7 +399,7 @@ class _MinimalistWallpaperState extends State<MinimalistWallpaper> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Components.buildShimmerEffect();
+                              return Components.buildShimmerEffect(context);
                             } else if (snapshot.hasError) {
                               return Components.buildErrorWidget();
                             } else if (snapshot.hasData) {
@@ -502,7 +502,7 @@ class _NatureWallpaperState extends State<NatureWallpaper> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Components.buildShimmerEffect();
+                              return Components.buildShimmerEffect(context);
                             } else if (snapshot.hasError) {
                               return Components.buildErrorWidget();
                             } else if (snapshot.hasData) {
@@ -606,7 +606,7 @@ class _AnimalsWallpaperState extends State<AnimalsWallpaper> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Components.buildShimmerEffect();
+                              return Components.buildShimmerEffect(context);
                             } else if (snapshot.hasError) {
                               return Components.buildErrorWidget();
                             } else if (snapshot.hasData) {
@@ -709,7 +709,7 @@ class _ScifiWallpaperState extends State<ScifiWallpaper> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Components.buildShimmerEffect();
+                              return Components.buildShimmerEffect(context);
                             } else if (snapshot.hasError) {
                               return Components.buildErrorWidget();
                             } else if (snapshot.hasData) {
@@ -811,7 +811,7 @@ class _GamesWallpaperState extends State<GamesWallpaper> {
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
-                              return Components.buildShimmerEffect();
+                              return Components.buildShimmerEffect(context);
                             } else if (snapshot.hasError) {
                               return Components.buildErrorWidget();
                             } else if (snapshot.hasData) {

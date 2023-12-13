@@ -11,6 +11,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:luca/services/admob_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -176,8 +177,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         textColor: Colors.white,
       );
 
-      bool success = await AsyncWallpaper.setWallpaperFromFileNative(
-        filePath: widget.imageUrl,
+      bool success = await AsyncWallpaper.setWallpaper(
+        url: widget.imageUrl,
         wallpaperLocation: AsyncWallpaper.HOME_SCREEN,
         goToHome: false,
       );
@@ -222,8 +223,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         textColor: Colors.white,
       );
 
-      bool success = await AsyncWallpaper.setWallpaperFromFileNative(
-        filePath: widget.imageUrl,
+      bool success = await AsyncWallpaper.setWallpaper(
+        url: widget.imageUrl,
         wallpaperLocation: AsyncWallpaper.LOCK_SCREEN,
         goToHome: false,
       );
@@ -271,8 +272,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         textColor: Colors.white,
       );
 
-      bool success = await AsyncWallpaper.setWallpaperFromFileNative(
-        filePath: widget.imageUrl,
+      bool success = await AsyncWallpaper.setWallpaper(
+        url: widget.imageUrl,
         wallpaperLocation: AsyncWallpaper.BOTH_SCREENS,
         goToHome: false,
       );
@@ -391,9 +392,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap: () {
-                              applyHomescreen(context);
-                            },
+                            onTap: () => applyHomescreen(context),
                             child: Container(
                               height: 50,
                               width: 200,
@@ -418,9 +417,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                             height: 10,
                           ),
                           GestureDetector(
-                            onTap: () {
-                              applyLockscreen(context);
-                            },
+                            onTap: () => applyLockscreen(context),
                             child: Container(
                               height: 50,
                               width: 200,
@@ -445,9 +442,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                             height: 10,
                           ),
                           GestureDetector(
-                            onTap: () {
-                              applyBoth(context);
-                            },
+                            onTap: () => applyBoth(context),
                             child: Container(
                               height: 50,
                               width: 200,
@@ -587,106 +582,92 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                   left: 0,
                   right: 0,
                   bottom: MediaQuery.of(context).padding.bottom + 10,
-                  child: GestureDetector(
-                    // onTap: () {
-                    //   if (_rewardedAd != null) {
-                    //     _showRewardedAd();
-                    //   } else {
-                    //     _loadRewardedAd();
-                    //   }
-                    // },
-                    onTap: () {
-                      _showInterstitialAd();
-                      openDialog();
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 500),
-                          opacity: isWidgetsVisible ? 1.0 : 0.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      AnimatedOpacity(
+                        duration: const Duration(milliseconds: 500),
+                        opacity: isWidgetsVisible ? 1.0 : 0.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.background,
+                              shape: BoxShape.circle),
+                          child: IconButton(
+                            onPressed: () {
+                              _showInterstitialAd();
+                              setState(() {
+                                if (favoriteImages.contains(widget.imageUrl)) {
+                                  favoriteImages.remove(widget.imageUrl);
+                                } else {
+                                  favoriteImages.add(widget.imageUrl);
+                                }
+                              });
+                              _prefs.setStringList(
+                                  'favoriteImages', favoriteImages);
+                            },
+                            icon: Icon(
+                              favoriteImages.contains(widget.imageUrl)
+                                  ? IconlyBold.heart
+                                  : IconlyLight.heart,
+                              color: Theme.of(context).iconTheme.color,
+                              size: 34,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8.0,
+                      ),
+                      AnimatedOpacity(
+                        duration: const Duration(milliseconds: 500),
+                        opacity: isWidgetsVisible ? 1.0 : 0.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.background,
+                              shape: BoxShape.circle),
+                          child: IconButton(
+                            onPressed: () {
+                              _showInterstitialAd();
+                              savetoGallery(context);
+                            },
+                            icon: Icon(
+                              IconlyBold.download,
+                              color: Theme.of(context).iconTheme.color,
+                              size: 34,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8.0,
+                      ),
+                      AnimatedOpacity(
+                        duration: const Duration(milliseconds: 500),
+                        opacity: isWidgetsVisible ? 1.0 : 0.0,
+                        child: Align(
+                          alignment: Alignment.center,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.background,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
+                                color: Theme.of(context).colorScheme.background,
+                                shape: BoxShape.circle),
                             child: IconButton(
                               onPressed: () {
                                 _showInterstitialAd();
-                                setState(() {
-                                  if (favoriteImages
-                                      .contains(widget.imageUrl)) {
-                                    favoriteImages.remove(widget.imageUrl);
-                                  } else {
-                                    favoriteImages.add(widget.imageUrl);
-                                  }
-                                });
-                                _prefs.setStringList(
-                                    'favoriteImages', favoriteImages);
+                                openDialog();
                               },
                               icon: Icon(
-                                favoriteImages.contains(widget.imageUrl)
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
+                                Icons.format_paint,
                                 color: Theme.of(context).iconTheme.color,
-                                size: 30,
+                                size: 34,
                               ),
                             ),
                           ),
                         ),
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 500),
-                          opacity: isWidgetsVisible ? 1.0 : 0.0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.background,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: IconButton(
-                              onPressed: () {
-                                _showInterstitialAd();
-                                savetoGallery(context);
-                              },
-                              icon: Icon(
-                                Icons.download,
-                                color: Theme.of(context).iconTheme.color,
-                                size: 30,
-                              ),
-                            ),
-                          ),
-                        ),
-                        AnimatedOpacity(
-                          duration: const Duration(milliseconds: 500),
-                          opacity: isWidgetsVisible ? 1.0 : 0.0,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Container(
-                                height: 50,
-                                width: 200,
-                                decoration: BoxDecoration(
-                                  color:
-                                      Theme.of(context).colorScheme.background,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    'Apply Wallpaper',
-                                    style: GoogleFonts.kanit(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      fontSize: 22,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -694,13 +675,13 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
           ),
         ),
       ),
-      bottomNavigationBar: _banner == null
-          ? const SizedBox(
-              height: 0,
-            )
-          : SizedBox(
+      bottomNavigationBar: _banner != null
+          ? SizedBox(
               height: 52,
               child: AdWidget(ad: _banner!),
+            )
+          : const SizedBox(
+              height: 0,
             ),
     );
   }

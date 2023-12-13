@@ -2,7 +2,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_floating_bottom_bar/flutter_floating_bottom_bar.dart';
 import 'package:iconly/iconly.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/live_wall.dart';
@@ -69,8 +68,6 @@ class LucaHomeState extends State<LucaHome>
   @override
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).colorScheme.tertiary;
-    Color primaryColor = Theme.of(context).colorScheme.primary;
-
     return Scaffold(
       body: SafeArea(
         child: BottomBar(

@@ -38,24 +38,9 @@ class LocationListItem extends StatelessWidget {
           key: _backgroundImageKey,
           fit: BoxFit.cover,
           cacheManager: DefaultCacheManager(),
-          placeholder: (context, url) => Components.buildShimmerEffect(),
+          placeholder: (context, url) => Components.buildShimmerEffect(context),
         ),
       ],
     );
   }
-
-  // Widget buildShimmerEffect() {
-  //   return Padding(
-  //     padding: const EdgeInsets.all(8.0),
-  //     child: Shimmer.fromColors(
-  //         baseColor: Colors.grey,
-  //         highlightColor: Colors.black,
-  //         child: ClipRRect(
-  //           borderRadius: BorderRadius.circular(20),
-  //           child: Container(
-  //             color: Colors.black,
-  //           ),
-  //         )),
-  //   );
-  // }
 }
