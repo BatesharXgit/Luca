@@ -46,6 +46,7 @@ class LucaHomeState extends State<LucaHome>
   }
 
   Color homeColor = const Color.fromARGB(255, 175, 202, 0);
+     
   Color searchColor = const Color.fromARGB(255, 59, 255, 226);
   Color videoColor = Colors.blue;
   Color heartColor = Colors.red;

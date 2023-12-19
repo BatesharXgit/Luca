@@ -6,6 +6,7 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
+import 'package:luca/livetest/preload_page.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
@@ -167,7 +168,7 @@ class MyHomePageState extends State<MyHomePage>
                                 children: [
                                   IconButton(
                                     onPressed: () {
-                                      Get.to(const NotificationsPage(),
+                                      Get.to(const PreloadPage(),
                                           transition:
                                               Transition.rightToLeftWithFade);
                                     },
