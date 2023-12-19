@@ -1,3 +1,4 @@
+import 'package:async_wallpaper/async_wallpaper.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -25,19 +26,15 @@ class PCC extends GetxController {
     if (i >= 0 && i < videoURLs.length) {
       late VideoPlayerController singleVideoController;
 
-      // Use cache manager for video URL caching
       var file = await cacheManager.getSingleFile(videoURLs[i]);
       singleVideoController = VideoPlayerController.file(file);
 
-      // Ensure the list is long enough to accommodate the index
       while (videoPlayerControllers.length <= i) {
         videoPlayerControllers.add(null);
       }
 
       videoPlayerControllers[i] = singleVideoController;
       initializedIndexes.add(i);
-
-      // Check if the controller is not null before initializing
       if (videoPlayerControllers[i] != null) {
         await videoPlayerControllers[i]!.initialize();
       }
@@ -50,7 +47,6 @@ class PCC extends GetxController {
     if (index >= 0 && index < videoURLs.length) {
       late VideoPlayerController singleVideoController;
 
-      // Use cache manager for video URL caching
       var file = await cacheManager.getSingleFile(videoURLs[index]);
       singleVideoController = VideoPlayerController.file(file);
 
@@ -71,6 +67,31 @@ class PCC extends GetxController {
 
   void disposeCacheManager() {
     cacheManager.dispose();
+  }
+
+  Future<void> applyLiveWallpaper(
+      int videoIndex, VideoPlayerController? controller) async {
+    try {
+      final httpUrl = await _getVideoUrl(videoIndex);
+
+      var file = await DefaultCacheManager().getSingleFile(httpUrl);
+      if (await file.exists()) {
+        await controller?.pause();
+        String result =
+            await AsyncWallpaper.setLiveWallpaper(filePath: file.path)
+                ? 'Live wallpaper set'
+                : 'Failed to set live wallpaper.';
+        print(result);
+      } else {
+        print('Error: File not found for video index $videoIndex');
+      }
+    } catch (e) {
+      print('Failed to set live wallpaper: $e');
+    }
+  }
+
+  Future<String> _getVideoUrl(int index) async {
+    return videoURLs[index];
   }
 
   final List<String> videoURLs = [

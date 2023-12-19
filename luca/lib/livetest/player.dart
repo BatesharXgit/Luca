@@ -46,6 +46,13 @@ class Player extends StatelessWidget {
           if (i < c.videoPlayerControllers.length) {
             if (c.videoPlayerControllers[c.api]!.value.isInitialized) {
               c.videoPlayerControllers[c.api]!.play();
+              c.videoPlayerControllers[c.api]!.addListener(() {
+                if (c.videoPlayerControllers[c.api]!.value.position ==
+                    c.videoPlayerControllers[c.api]!.value.duration) {
+                  c.videoPlayerControllers[c.api]!.seekTo(Duration.zero);
+                  c.videoPlayerControllers[c.api]!.play();
+                }
+              });
             }
           }
           print('AutoPlaying ${c.api}');
@@ -67,6 +74,16 @@ class Player extends StatelessWidget {
                     child: VideoPlayer(c.videoPlayerControllers[c.api]!),
                   )
                 : const Center(child: CircularProgressIndicator()),
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: ElevatedButton(
+                onPressed: () {
+                  c.applyLiveWallpaper(i, c.videoPlayerControllers[c.api]);
+                },
+                child: Text('Set Live Wallpaper'),
+              ),
+            ),
           ],
         );
       },
