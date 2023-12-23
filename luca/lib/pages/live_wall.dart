@@ -23,7 +23,6 @@ class _LiveWallBetaState extends State<LiveWallBeta> {
   // bool get wantKeepAlive => false;
 
   final PageController _pageController = PageController(viewportFraction: 0.8);
-  List<String> videoUrls = [];
   int _currentVideoIndex = 0;
   VideoPlayerController? _controller;
   bool _isPlaying = true;
@@ -35,6 +34,7 @@ class _LiveWallBetaState extends State<LiveWallBeta> {
     _fetchVideoUrls();
     _pageController.addListener(_onPageChange);
   }
+List<String> videoUrls = [];
 
   Future<void> _fetchVideoUrls() async {
     final storageRef = FirebaseStorage.instance.ref('live');

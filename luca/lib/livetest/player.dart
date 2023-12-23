@@ -33,6 +33,14 @@ class Player extends StatelessWidget {
           }
         }
       },
+      dispose: (_) {
+        if (c.videoPlayerControllers.isNotEmpty &&
+            c.api >= 0 &&
+            c.api < c.videoPlayerControllers.length &&
+            c.videoPlayerControllers[c.api] != null) {
+          c.videoPlayerControllers[c.api]!.dispose();
+        }
+      },
       builder: (_) {
         if (c.videoPlayerControllers.isEmpty ||
             c.api < 0 ||
@@ -81,7 +89,7 @@ class Player extends StatelessWidget {
                 onPressed: () {
                   c.applyLiveWallpaper(i, c.videoPlayerControllers[c.api]);
                 },
-                child: Text('Set Live Wallpaper'),
+                child: const Text('Set Live Wallpaper'),
               ),
             ),
           ],

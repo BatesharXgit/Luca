@@ -343,7 +343,7 @@ class CategoryState extends State<Category> {
                                       );
                                     },
                                     child: SizedBox(
-                                      width: 280,
+                                      width: 150,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: CachedNetworkImage(
@@ -351,7 +351,8 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _nature[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(context),
+                                              Components.buildShimmerEffect(
+                                                  context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -426,7 +427,8 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _space[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(context),
+                                              Components.buildShimmerEffect(
+                                                  context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -482,7 +484,7 @@ class CategoryState extends State<Category> {
                                 return Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: SizedBox(
-                                    width: 280,
+                                    width: 150,
                                     child: GestureDetector(
                                       onTap: () {
                                         Navigator.push(
@@ -502,7 +504,8 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _minimalist[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(context),
+                                              Components.buildShimmerEffect(
+                                                  context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -577,7 +580,8 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           // imageUrl: _stock[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(context),
+                                              Components.buildShimmerEffect(
+                                                  context),
                                           imageUrl: _anime[index],
                                           fit: BoxFit.cover,
                                         ),
@@ -645,7 +649,7 @@ class CategoryState extends State<Category> {
                                       );
                                     },
                                     child: SizedBox(
-                                      width: 280,
+                                      width: 150,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: CachedNetworkImage(
@@ -653,7 +657,8 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _animals[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(context),
+                                              Components.buildShimmerEffect(
+                                                  context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -728,7 +733,8 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _scifi[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(context),
+                                              Components.buildShimmerEffect(
+                                                  context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -795,7 +801,7 @@ class CategoryState extends State<Category> {
                                       );
                                     },
                                     child: SizedBox(
-                                      width: 280,
+                                      width: 150,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(20),
                                         child: CachedNetworkImage(
@@ -803,7 +809,8 @@ class CategoryState extends State<Category> {
                                               const Duration(milliseconds: 200),
                                           imageUrl: _games[index],
                                           placeholder: (context, url) =>
-                                              Components.buildShimmerEffect(context),
+                                              Components.buildShimmerEffect(
+                                                  context),
                                           fit: BoxFit.cover,
                                         ),
                                       ),

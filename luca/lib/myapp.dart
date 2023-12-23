@@ -46,7 +46,7 @@ class LucaHomeState extends State<LucaHome>
   }
 
   Color homeColor = const Color.fromARGB(255, 175, 202, 0);
-     
+
   Color searchColor = const Color.fromARGB(255, 59, 255, 226);
   Color videoColor = Colors.blue;
   Color heartColor = Colors.red;
@@ -118,7 +118,7 @@ class LucaHomeState extends State<LucaHome>
                 width: 40,
                 child: Center(
                   child: Icon(
-                    IconlyBold.search,
+                    IconlyBold.category,
                     color: currentPage == 1 ? searchColor : unselectedColor,
                   ),
                 ),

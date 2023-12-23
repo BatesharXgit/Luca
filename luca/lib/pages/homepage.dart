@@ -12,7 +12,6 @@ import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
-import 'package:luca/pages/util/notify/notify.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
@@ -167,11 +166,10 @@ class MyHomePageState extends State<MyHomePage>
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   IconButton(
-                                    onPressed: () {
-                                      Get.to(const PreloadPage(),
-                                          transition:
-                                              Transition.rightToLeftWithFade);
-                                    },
+                                    onPressed: () => Get.to(
+                                        () => const PreloadPage(),
+                                        transition:
+                                            Transition.rightToLeftWithFade),
                                     icon: Icon(
                                       IconlyBold.notification,
                                       color: primaryColor,
@@ -208,7 +206,7 @@ class MyHomePageState extends State<MyHomePage>
                             child: Text(
                               'Discover Collections',
                               style: GoogleFonts.kanit(
-                                fontSize: 18,
+                                fontSize: 20,
                                 color: primaryColor,
                               ),
                             ),
@@ -217,65 +215,69 @@ class MyHomePageState extends State<MyHomePage>
                         const SizedBox(
                           height: 10,
                         ),
-                        CarouselSlider(
-                          options: CarouselOptions(
-                            scrollPhysics: const BouncingScrollPhysics(),
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 4),
-                            enlargeCenterPage: true,
-                            viewportFraction: 0.8,
-                            enlargeFactor: 0.2,
-                          ),
-                          items: kImages.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            String imageUrl = entry.value;
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                              scrollPhysics: const BouncingScrollPhysics(),
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 5),
+                              enlargeCenterPage: true,
+                              viewportFraction: 0.75,
+                              enlargeFactor: 0.22,
+                              padEnds: false,
+                            ),
+                            items: kImages.asMap().entries.map((entry) {
+                              int index = entry.key;
+                              String imageUrl = entry.value;
 
-                            return Builder(
-                              builder: (BuildContext context) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    if (index == 0) {
-                                      Get.to(const AnimalsWallpaper(),
-                                          transition:
-                                              Transition.rightToLeftWithFade);
-                                    } else if (index == 1) {
-                                      Get.to(const GamesWallpaper(),
-                                          transition:
-                                              Transition.rightToLeftWithFade);
-                                    } else if (index == 2) {
-                                      Get.to(const GamesWallpaper(),
-                                          transition:
-                                              Transition.rightToLeftWithFade);
-                                    } else if (index == 3) {
-                                      Get.to(const NatureWallpaper(),
-                                          transition:
-                                              Transition.rightToLeftWithFade);
-                                    } else if (index == 4) {
-                                      Get.to(const AnimeWallpapers(),
-                                          transition:
-                                              Transition.rightToLeftWithFade);
-                                    } else if (index == 5) {
-                                      Get.to(const AmoledWallpaper(),
-                                          transition:
-                                              Transition.rightToLeftWithFade);
-                                    }
-                                  },
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      image: DecorationImage(
-                                        image: AssetImage(imageUrl),
-                                        fit: BoxFit.cover,
-                                        filterQuality: FilterQuality.high,
+                              return Builder(
+                                builder: (BuildContext context) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      if (index == 0) {
+                                        Get.to(const AnimalsWallpaper(),
+                                            transition:
+                                                Transition.rightToLeftWithFade);
+                                      } else if (index == 1) {
+                                        Get.to(const GamesWallpaper(),
+                                            transition:
+                                                Transition.rightToLeftWithFade);
+                                      } else if (index == 2) {
+                                        Get.to(const GamesWallpaper(),
+                                            transition:
+                                                Transition.rightToLeftWithFade);
+                                      } else if (index == 3) {
+                                        Get.to(const NatureWallpaper(),
+                                            transition:
+                                                Transition.rightToLeftWithFade);
+                                      } else if (index == 4) {
+                                        Get.to(const AnimeWallpapers(),
+                                            transition:
+                                                Transition.rightToLeftWithFade);
+                                      } else if (index == 5) {
+                                        Get.to(const AmoledWallpaper(),
+                                            transition:
+                                                Transition.rightToLeftWithFade);
+                                      }
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        image: DecorationImage(
+                                          image: AssetImage(imageUrl),
+                                          fit: BoxFit.cover,
+                                          filterQuality: FilterQuality.high,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-                          }).toList(),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ],
                     ),

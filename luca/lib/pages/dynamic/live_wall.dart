@@ -10,6 +10,8 @@ import 'package:async_wallpaper/async_wallpaper.dart';
 //##############################################################################################################################
 
 class CarsWallpaper extends StatefulWidget {
+  const CarsWallpaper({super.key});
+
   @override
   _CarsWallpaperState createState() => _CarsWallpaperState();
 }
@@ -152,7 +154,7 @@ class _CarsWallpaperState extends State<CarsWallpaper>
         children: [
           Expanded(
             child: PageView.builder(
-              physics: ClampingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               scrollDirection: Axis.horizontal,
               padEnds: true,
               controller: _pageController,
@@ -163,7 +165,7 @@ class _CarsWallpaperState extends State<CarsWallpaper>
                       ? Visibility(
                           visible: index == _currentVideoIndex,
                           child: AnimatedSwitcher(
-                            duration: Duration(milliseconds: 100),
+                            duration: const Duration(milliseconds: 100),
                             child: _controller!.value.isInitialized
                                 ? AnimatedContainer(
                                     duration: const Duration(milliseconds: 250),
@@ -193,12 +195,12 @@ class _CarsWallpaperState extends State<CarsWallpaper>
                                     alignment: Alignment.center,
                                     children: [
                                       VideoPlayer(_controller!),
-                                      CircularProgressIndicator(),
+                                      const CircularProgressIndicator(),
                                     ],
                                   ),
                           ),
                         )
-                      : CircularProgressIndicator(),
+                      : const CircularProgressIndicator(),
                 );
               },
             ),
@@ -206,7 +208,7 @@ class _CarsWallpaperState extends State<CarsWallpaper>
           if (!_isPlaying && _videoInitialized)
             Center(
               child: IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.play_arrow,
                   size: 48,
                 ),

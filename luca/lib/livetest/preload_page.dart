@@ -20,7 +20,6 @@ class PreloadPage extends StatelessWidget {
             onPageChanged: (i) async {
               c.updateAPI(i);
             },
-            //If you are increasing or descrising preaload page count change accordingly in the player widget
             preloadPagesCount: 1,
             controller: PreloadPageController(initialPage: 0),
             itemCount: c.videoURLs.length,
