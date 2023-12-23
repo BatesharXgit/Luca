@@ -134,7 +134,7 @@ class MyHomePageState extends State<MyHomePage>
             return <Widget>[
               SliverAppBar(
                 forceMaterialTransparency: true,
-                expandedHeight: MediaQuery.of(context).size.height * 0.37,
+                expandedHeight: MediaQuery.of(context).size.height * 0.4,
                 floating: true,
                 pinned: false,
                 backgroundColor: Theme.of(context).colorScheme.background,
@@ -220,12 +220,12 @@ class MyHomePageState extends State<MyHomePage>
                           child: CarouselSlider(
                             options: CarouselOptions(
                               scrollPhysics: const BouncingScrollPhysics(),
-                              height: MediaQuery.of(context).size.height * 0.2,
+                              height: MediaQuery.of(context).size.height * 0.24,
                               autoPlay: true,
                               autoPlayInterval: const Duration(seconds: 5),
                               enlargeCenterPage: true,
-                              viewportFraction: 0.75,
-                              enlargeFactor: 0.22,
+                              viewportFraction: 0.8,
+                              enlargeFactor: 0.15,
                               padEnds: false,
                             ),
                             items: kImages.asMap().entries.map((entry) {
