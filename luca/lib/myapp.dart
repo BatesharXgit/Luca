@@ -70,81 +70,79 @@ class LucaHomeState extends State<LucaHome>
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).colorScheme.tertiary;
     return Scaffold(
-      body: SafeArea(
-        child: BottomBar(
-          borderRadius: BorderRadius.circular(500),
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.decelerate,
-          showIcon: true,
-          width: MediaQuery.of(context).size.width * 0.75,
-          barColor: backgroundColor,
-          iconHeight: 35,
-          iconWidth: 35,
-          reverse: false,
-          hideOnScroll: false,
-          body: (context, controller) => TabBarView(
-            controller: tabController,
-            dragStartBehavior: DragStartBehavior.down,
-            physics: const NeverScrollableScrollPhysics(),
-            children: const [
-              MyHomePage(),
-              Category(),
-              LiveWallBeta(),
-              FavoriteImagesPage(),
-            ],
+      body: BottomBar(
+        borderRadius: BorderRadius.circular(500),
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.decelerate,
+        showIcon: true,
+        width: MediaQuery.of(context).size.width * 0.75,
+        barColor: backgroundColor,
+        iconHeight: 35,
+        iconWidth: 35,
+        reverse: false,
+        hideOnScroll: false,
+        body: (context, controller) => TabBarView(
+          controller: tabController,
+          dragStartBehavior: DragStartBehavior.down,
+          physics: const NeverScrollableScrollPhysics(),
+          children: const [
+            MyHomePage(),
+            Category(),
+            LiveWallBeta(),
+            FavoriteImagesPage(),
+          ],
+        ),
+        child: TabBar(
+          dividerColor: Colors.transparent,
+          indicatorPadding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+          controller: tabController,
+          indicator: UnderlineTabIndicator(
+            borderSide:
+                BorderSide(color: _getIndicatorColor(currentPage), width: 4),
+            insets: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           ),
-          child: TabBar(
-            dividerColor: Colors.transparent,
-            indicatorPadding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-            controller: tabController,
-            indicator: UnderlineTabIndicator(
-              borderSide:
-                  BorderSide(color: _getIndicatorColor(currentPage), width: 4),
-              insets: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          tabs: [
+            SizedBox(
+              height: 55,
+              width: 40,
+              child: Center(
+                child: Icon(
+                  IconlyBold.home,
+                  color: currentPage == 0 ? homeColor : unselectedColor,
+                ),
+              ),
             ),
-            tabs: [
-              SizedBox(
-                height: 55,
-                width: 40,
-                child: Center(
-                  child: Icon(
-                    IconlyBold.home,
-                    color: currentPage == 0 ? homeColor : unselectedColor,
-                  ),
+            SizedBox(
+              height: 55,
+              width: 40,
+              child: Center(
+                child: Icon(
+                  IconlyBold.category,
+                  color: currentPage == 1 ? searchColor : unselectedColor,
                 ),
               ),
-              SizedBox(
-                height: 55,
-                width: 40,
-                child: Center(
-                  child: Icon(
-                    IconlyBold.category,
-                    color: currentPage == 1 ? searchColor : unselectedColor,
-                  ),
+            ),
+            SizedBox(
+              height: 55,
+              width: 40,
+              child: Center(
+                child: Icon(
+                  IconlyBold.video,
+                  color: currentPage == 2 ? videoColor : unselectedColor,
                 ),
               ),
-              SizedBox(
-                height: 55,
-                width: 40,
-                child: Center(
-                  child: Icon(
-                    IconlyBold.video,
-                    color: currentPage == 2 ? videoColor : unselectedColor,
-                  ),
+            ),
+            SizedBox(
+              height: 55,
+              width: 40,
+              child: Center(
+                child: Icon(
+                  IconlyBold.heart,
+                  color: currentPage == 3 ? heartColor : unselectedColor,
                 ),
               ),
-              SizedBox(
-                height: 55,
-                width: 40,
-                child: Center(
-                  child: Icon(
-                    IconlyBold.heart,
-                    color: currentPage == 3 ? heartColor : unselectedColor,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
