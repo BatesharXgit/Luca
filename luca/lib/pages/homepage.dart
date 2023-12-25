@@ -6,7 +6,6 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconly/iconly.dart';
-import 'package:luca/livetest/preload_page.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
@@ -14,6 +13,7 @@ import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:luca/pages/util/notify/notify.dart';
 
 final FirebaseStorage storage = FirebaseStorage.instance;
 
@@ -33,7 +33,6 @@ class MyHomePageState extends State<MyHomePage>
   ScrollController scrollController = ScrollController();
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   final TextEditingController _searchController = TextEditingController();
 
   final Reference wallpaperRef = storage.ref().child('wallpaper');
@@ -76,8 +75,8 @@ class MyHomePageState extends State<MyHomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 6, vsync: this);
-    loadImages();
-
+    // loadImages();
+    _loadhomePageImages();
     fetchUserProfileData();
   }
 
@@ -94,7 +93,9 @@ class MyHomePageState extends State<MyHomePage>
   Future<void> loadImages() async {
     final ListResult wallpaperResult = await wallpaperRef.listAll();
     wallpaperRefs = wallpaperResult.items.toList();
+  }
 
+  Future<void> _loadhomePageImages() async {
     final ListResult aiResult = await aiRef.listAll();
     aiRefs = aiResult.items.toList();
 
@@ -167,7 +168,7 @@ class MyHomePageState extends State<MyHomePage>
                                 children: [
                                   IconButton(
                                     onPressed: () => Get.to(
-                                        () => const PreloadPage(),
+                                        () => const NotificationsPage(),
                                         transition:
                                             Transition.rightToLeftWithFade),
                                     icon: Icon(
@@ -483,7 +484,7 @@ class MyHomePageState extends State<MyHomePage>
       builder: (context) {
         return GestureDetector(
           onTap: () => Get.to(ApplyWallpaperPage(imageUrl: imageUrl),
-              transition: Transition.rightToLeftWithFade),
+              transition: Transition.downToUp),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ClipRRect(
