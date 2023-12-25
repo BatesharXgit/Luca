@@ -132,6 +132,8 @@ class CategoryState extends State<Category> {
 
   late bool _isNatureLoaded = false;
   late bool _isSpaceLoaded = false;
+  late bool _isSuperheroesLoaded = false;
+  late bool _isDevotionalLoaded = false;
   late bool _isMinimalLoaded = false;
   late bool _isAnimeLoaded = false;
   late bool _isAnimalsLoaded = false;
@@ -144,6 +146,12 @@ class CategoryState extends State<Category> {
     Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {
         _isNatureLoaded = true;
+      });
+    });
+    Future.delayed(const Duration(milliseconds: 700), () {
+      setState(() {
+        _isSuperheroesLoaded = true;
+        _isDevotionalLoaded = true;
       });
     });
     Future.delayed(const Duration(milliseconds: 1000), () {
@@ -421,43 +429,48 @@ class CategoryState extends State<Category> {
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
                       height: 300,
-                      child: ListView.builder(
-                        physics: const ClampingScrollPhysics(),
-                        itemCount: 8,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ApplyWallpaperPage(
-                                        imageUrl: _superheroes[index]),
+                      child: (_isSuperheroesLoaded)
+                          ? ListView.builder(
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: 8,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ApplyWallpaperPage(
+                                                  imageUrl:
+                                                      _superheroes[index]),
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 280,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                          fadeInDuration:
+                                              const Duration(milliseconds: 200),
+                                          fadeOutDuration:
+                                              const Duration(milliseconds: 200),
+                                          imageUrl: _superheroes[index],
+                                          placeholder: (context, url) =>
+                                              Components.buildShimmerEffect(
+                                                  context),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 );
                               },
-                              child: SizedBox(
-                                width: 280,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: CachedNetworkImage(
-                                    fadeInDuration:
-                                        const Duration(milliseconds: 200),
-                                    fadeOutDuration:
-                                        const Duration(milliseconds: 200),
-                                    imageUrl: _superheroes[index],
-                                    placeholder: (context, url) =>
-                                        Components.buildShimmerEffect(context),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                            )
+                          : null,
                     ),
                   ),
                   Padding(
@@ -495,7 +508,7 @@ class CategoryState extends State<Category> {
                     padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                     child: SizedBox(
                       height: 300,
-                      child: (_isNatureLoaded)
+                      child: (_isDevotionalLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
                               itemCount: 8,
