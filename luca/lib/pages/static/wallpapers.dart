@@ -42,6 +42,28 @@ class CategoryState extends State<Category> {
     'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F68.jpg?alt=media&token=1cff5422-cdf1-4e0c-998a-f67484fbaa5d'
   ];
 
+  final List<String> _superheroes = [
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F100.jpg?alt=media&token=da8e2b3c-829e-4b0e-bac4-caeab3b0aea0',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F99.jpg?alt=media&token=d87acef7-206e-43d2-8238-aac75dfc219b',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F88.jpg?alt=media&token=c654c368-b8f3-4ede-9b99-021ac0dfae6a',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F87.jpg?alt=media&token=b257ef51-4093-45a1-9860-febe9aabcc34',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F95.jpg?alt=media&token=e78bc678-a5bd-47ec-9a3d-c08808cd1966',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F97.jpg?alt=media&token=da42e144-fc3a-4cd8-b2f0-b2ad3f569dcc',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F78.jpg?alt=media&token=e143e309-288a-44d5-8f68-e8426b8c18d9',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F82.jpg?alt=media&token=d19bc043-3a4e-4440-bda3-b20ca433088e',
+  ];
+
+  final List<String> _devotional = [
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F100.jpg?alt=media&token=9a6bcec6-328d-4325-af97-a626cf50680d',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F88.jpg?alt=media&token=2169ac31-862d-4583-884e-2aaf150361e5',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F94.jpg?alt=media&token=3025d4aa-8202-43cd-a04c-4705966848b8',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F84.jpg?alt=media&token=ec8ac98a-fcaf-4a86-9773-9dacf70c5c40',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F92.jpg?alt=media&token=4793593d-66b6-474f-9ea0-6998c2153e4b',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F83.jpg?alt=media&token=abf38948-1e61-407b-948b-8bab932a7c0e',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F75.jpg?alt=media&token=615374c4-230d-4fb4-8346-84152cf798ba',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F85.jpg?alt=media&token=2417a123-904f-4e41-85fb-5c948969fa1a'
+  ];
+
   final List<String> _anime = [
     'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F71.jpg?alt=media&token=2fffdff5-b525-49e3-accd-6b2c0a43919d',
     'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F72.jpg?alt=media&token=e2b1105a-46c8-4f7c-aad0-1359f5f3fd97',
@@ -350,6 +372,156 @@ class CategoryState extends State<Category> {
                                           fadeInDuration:
                                               const Duration(milliseconds: 200),
                                           imageUrl: _nature[index],
+                                          placeholder: (context, url) =>
+                                              Components.buildShimmerEffect(
+                                                  context),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : null,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "SuperHeroes",
+                          style: GoogleFonts.kanit(
+                            fontSize: 18,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _showInterstitialAd();
+                            Get.to(const AmoledWallpaper());
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "See All",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                    child: SizedBox(
+                      height: 300,
+                      child: ListView.builder(
+                        physics: const ClampingScrollPhysics(),
+                        itemCount: 8,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ApplyWallpaperPage(
+                                        imageUrl: _superheroes[index]),
+                                  ),
+                                );
+                              },
+                              child: SizedBox(
+                                width: 280,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: CachedNetworkImage(
+                                    fadeInDuration:
+                                        const Duration(milliseconds: 200),
+                                    fadeOutDuration:
+                                        const Duration(milliseconds: 200),
+                                    imageUrl: _superheroes[index],
+                                    placeholder: (context, url) =>
+                                        Components.buildShimmerEffect(context),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Devotional",
+                          style: GoogleFonts.kanit(
+                            fontSize: 18,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _showInterstitialAd();
+                            Get.to(const DevotionalWallpaper());
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "See All",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                    child: SizedBox(
+                      height: 300,
+                      child: (_isNatureLoaded)
+                          ? ListView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: 8,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ApplyWallpaperPage(
+                                                  imageUrl: _devotional[index]),
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 150,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                          fadeInDuration:
+                                              const Duration(milliseconds: 200),
+                                          imageUrl: _devotional[index],
                                           placeholder: (context, url) =>
                                               Components.buildShimmerEffect(
                                                   context),
