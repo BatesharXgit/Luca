@@ -12,6 +12,8 @@ final Reference natureRef = storage.ref().child('category/nature');
 final Reference animalsRef = storage.ref().child('category/animals');
 final Reference scifiRef = storage.ref().child('category/scifi');
 final Reference gamesRef = storage.ref().child('category/games');
+final Reference superheroesRef = storage.ref().child('category/superheroes');
+final Reference devotionalRef = storage.ref().child('category/devotional');
 
 ScrollController scrollController = ScrollController();
 
@@ -808,6 +810,206 @@ class _GamesWallpaperState extends State<GamesWallpaper> {
                         final imageRef = imageRefs[index];
                         return FutureBuilder<String>(
                           future: imageRef.getDownloadURL(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Components.buildShimmerEffect(context);
+                            } else if (snapshot.hasError) {
+                              return Components.buildErrorWidget();
+                            } else if (snapshot.hasData) {
+                              return Components.buildImageWidget(
+                                  snapshot.data!);
+                            } else {
+                              return Container();
+                            }
+                          },
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(child: Text('No images available'));
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SuperheroesWallpaper extends StatefulWidget {
+  const SuperheroesWallpaper({super.key});
+
+  @override
+  State<SuperheroesWallpaper> createState() => _SuperheroesWallpaper();
+}
+
+class _SuperheroesWallpaper extends State<SuperheroesWallpaper> {
+  List<Reference> superheroesRefs = [];
+  @override
+  void initState() {
+    super.initState();
+    loadamoledImages();
+  }
+
+  Future<void> loadamoledImages() async {
+    final ListResult result = await amoledRef.listAll();
+    superheroesRefs = result.items.toList();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    // Color secondaryColor = Theme.of(context).colorScheme.secondary;
+    // Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: Theme.of(context).iconTheme,
+        backgroundColor: backgroundColor,
+        title: Text(
+          'Super Heroes',
+          style: GoogleFonts.kanit(
+            color: primaryColor,
+            fontSize: 22,
+          ),
+        ),
+      ),
+      backgroundColor: backgroundColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: FutureBuilder<ListResult>(
+                future: superheroesRef.listAll(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Components.buildPlaceholder();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData &&
+                      snapshot.data!.items.isNotEmpty) {
+                    List<Reference> imageRefs = snapshot.data!.items;
+
+                    return GridView.builder(
+                      physics: const ClampingScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
+                      ),
+                      itemCount: superheroesRefs.length,
+                      itemBuilder: (context, index) {
+                        final amoRef = imageRefs[index];
+                        return FutureBuilder<String>(
+                          future: amoRef.getDownloadURL(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Components.buildShimmerEffect(context);
+                            } else if (snapshot.hasError) {
+                              return Components.buildErrorWidget();
+                            } else if (snapshot.hasData) {
+                              return Components.buildImageWidget(
+                                  snapshot.data!);
+                            } else {
+                              return Container();
+                            }
+                          },
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(child: Text('No images available'));
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DevotionalWallpaper extends StatefulWidget {
+  const DevotionalWallpaper({super.key});
+
+  @override
+  State<DevotionalWallpaper> createState() => _DevotionalWallpaper();
+}
+
+class _DevotionalWallpaper extends State<DevotionalWallpaper> {
+  List<Reference> devotionalRefs = [];
+  @override
+  void initState() {
+    super.initState();
+    loadamoledImages();
+  }
+
+  Future<void> loadamoledImages() async {
+    final ListResult result = await amoledRef.listAll();
+    devotionalRefs = result.items.toList();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    // Color secondaryColor = Theme.of(context).colorScheme.secondary;
+    // Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: Theme.of(context).iconTheme,
+        backgroundColor: backgroundColor,
+        title: Text(
+          'Super Heroes',
+          style: GoogleFonts.kanit(
+            color: primaryColor,
+            fontSize: 22,
+          ),
+        ),
+      ),
+      backgroundColor: backgroundColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: FutureBuilder<ListResult>(
+                future: devotionalRef.listAll(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Components.buildPlaceholder();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData &&
+                      snapshot.data!.items.isNotEmpty) {
+                    List<Reference> imageRefs = snapshot.data!.items;
+
+                    return GridView.builder(
+                      physics: const ClampingScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
+                      ),
+                      itemCount: devotionalRefs.length,
+                      itemBuilder: (context, index) {
+                        final amoRef = imageRefs[index];
+                        return FutureBuilder<String>(
+                          future: amoRef.getDownloadURL(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
