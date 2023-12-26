@@ -178,7 +178,8 @@ class MyHomePageState extends State<MyHomePage>
                                     ),
                                   ),
                                   GestureDetector(
-                                    onTap: () => Get.to(const SettingsPage(),
+                                    onTap: () => Get.to(
+                                        () => const SettingsPage(),
                                         transition:
                                             Transition.rightToLeftWithFade),
                                     child: (userPhotoUrl != null)

@@ -408,7 +408,7 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const AmoledWallpaper());
+                            Get.to(const SuperheroesWallpaper());
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1006,10 +1006,6 @@ class CategoryState extends State<Category> {
                             )
                           : null,
                     ),
-                  ),
-                  Text(
-                    "More Categories will be added soon...",
-                    style: TextStyle(color: primaryColor),
                   ),
                   const SizedBox(
                     height: 20,

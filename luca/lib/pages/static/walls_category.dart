@@ -975,7 +975,7 @@ class _DevotionalWallpaper extends State<DevotionalWallpaper> {
         iconTheme: Theme.of(context).iconTheme,
         backgroundColor: backgroundColor,
         title: Text(
-          'Super Heroes',
+          'Devotional',
           style: GoogleFonts.kanit(
             color: primaryColor,
             fontSize: 22,

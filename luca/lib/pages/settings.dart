@@ -380,6 +380,14 @@ class _SettingsPageState extends State<SettingsPage> {
                           GoogleFonts.kanit(color: primaryColor, fontSize: 12),
                     ),
                   ),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      'By Spooky Studios',
+                      style:
+                          GoogleFonts.kanit(color: primaryColor, fontSize: 12),
+                    ),
+                  ),
                   const SizedBox(height: 15),
                 ],
               ),
