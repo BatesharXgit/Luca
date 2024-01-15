@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:iconly/iconly.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'privacy_policy.dart';
 
 class SettingsPage extends StatefulWidget {
