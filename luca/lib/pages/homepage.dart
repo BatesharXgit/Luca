@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,7 +15,6 @@ import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:luca/pages/util/notify/notify.dart';
 
 final FirebaseStorage storage = FirebaseStorage.instance;
 
@@ -36,18 +37,8 @@ class MyHomePageState extends State<MyHomePage>
   final TextEditingController _searchController = TextEditingController();
 
   final Reference wallpaperRef = storage.ref().child('wallpaper');
-  final Reference aiRef = storage.ref().child('ai');
-  final Reference abstractRef = storage.ref().child('abstract');
-  final Reference carsRef = storage.ref().child('cars');
-  final Reference illustrationRef = storage.ref().child('illustration');
-  final Reference fantasyRef = storage.ref().child('fantasy');
 
   List<Reference> wallpaperRefs = [];
-  List<Reference> aiRefs = [];
-  List<Reference> carsRefs = [];
-  List<Reference> abstractRefs = [];
-  List<Reference> illustrationRefs = [];
-  List<Reference> fantasyRefs = [];
 
   String? userPhotoUrl;
 
@@ -62,21 +53,29 @@ class MyHomePageState extends State<MyHomePage>
 
   int index = 0;
 
-  final List<String> data = [
-    "For You",
-    "AI",
-    "Illustration",
-    "Cars",
-    "Abstract",
-    "Fantasy",
+  // final List<String> data = [
+  //   "For You",
+  //   "AI",
+  //   "Illustration",
+  //   "Cars",
+  //   "Abstract",
+  //   "Fantasy",
+  // ];
+
+  List<String> kNames = [
+    'Animals',
+    'Games',
+    'Editor\'s Pick',
+    'Nature',
+    'Anime',
+    'Amoled',
   ];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 6, vsync: this);
-    // loadImages();
-    _loadhomePageImages();
+
     fetchUserProfileData();
   }
 
@@ -93,23 +92,6 @@ class MyHomePageState extends State<MyHomePage>
   Future<void> loadImages() async {
     final ListResult wallpaperResult = await wallpaperRef.listAll();
     wallpaperRefs = wallpaperResult.items.toList();
-  }
-
-  Future<void> _loadhomePageImages() async {
-    final ListResult aiResult = await aiRef.listAll();
-    aiRefs = aiResult.items.toList();
-
-    final ListResult illustrationResult = await illustrationRef.listAll();
-    illustrationRefs = illustrationResult.items.toList();
-
-    final ListResult carResult = await carsRef.listAll();
-    carsRefs = carResult.items.toList();
-
-    final ListResult abstractResult = await abstractRef.listAll();
-    abstractRefs = abstractResult.items.toList();
-
-    final ListResult fantasyResult = await fantasyRef.listAll();
-    fantasyRefs = fantasyResult.items.toList();
   }
 
   @override
@@ -151,31 +133,113 @@ class MyHomePageState extends State<MyHomePage>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 16),
+                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Prism',
+                                'Luca',
                                 style: TextStyle(
-                                  fontFamily: "Anurati",
-                                  fontSize: 28,
+                                  fontSize: 48,
                                   color: primaryColor,
+                                  fontFamily: 'Sansilk',
+                                  fontWeight: FontWeight.w200,
                                 ),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  IconButton(
-                                    onPressed: () => Get.to(
-                                        () => const NotificationsPage(),
-                                        transition:
-                                            Transition.rightToLeftWithFade),
-                                    icon: Icon(
-                                      IconlyBold.notification,
-                                      color: primaryColor,
-                                      size: 28,
+                                  Visibility(
+                                    visible: !isSearchVisible,
+                                    child: IconButton(
+                                      icon: Icon(
+                                        IconlyBold.search,
+                                        color: primaryColor,
+                                        size: 28,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          isSearchVisible = true;
+                                        });
+                                      },
                                     ),
+                                  ),
+                                  AnimatedContainer(
+                                    transformAlignment: Alignment.centerLeft,
+                                    duration: const Duration(milliseconds: 400),
+                                    width: isSearchVisible ? 140.0 : 0.0,
+                                    height: 42,
+                                    alignment: isSearchVisible
+                                        ? Alignment.center
+                                        : Alignment.centerRight,
+                                    child: isSearchVisible
+                                        ? SizedBox(
+                                            height: 44,
+                                            child: TextField(
+                                              controller: _searchController,
+                                              style: TextStyle(
+                                                  color: backgroundColor),
+                                              decoration: InputDecoration(
+                                                hintText: 'Search...',
+                                                hintStyle: TextStyle(
+                                                    fontSize: 14,
+                                                    color: backgroundColor),
+                                                filled: true,
+                                                fillColor: primaryColor,
+                                                contentPadding:
+                                                    const EdgeInsets.all(14.0),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                  borderSide: const BorderSide(
+                                                      color:
+                                                          Colors.transparent),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20.0),
+                                                  borderSide: BorderSide(
+                                                      color: backgroundColor),
+                                                ),
+                                                suffixIcon: IconButton(
+                                                  icon: const Icon(
+                                                    Icons.close,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      isSearchVisible = false;
+                                                      _searchController.clear();
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                              onSubmitted: (query) {
+                                                setState(() {
+                                                  isSearchVisible = false;
+                                                });
+
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SearchWallpaper(
+                                                      title: "Search Wallpaper",
+                                                      query: query,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          )
+                                        : null,
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
                                   ),
                                   GestureDetector(
                                     onTap: () => Get.to(
@@ -202,13 +266,15 @@ class MyHomePageState extends State<MyHomePage>
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 20, bottom: 10),
+                          padding: const EdgeInsets.only(
+                            left: 20,
+                          ),
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Discover Collections',
                               style: GoogleFonts.kanit(
-                                fontSize: 20,
+                                fontSize: 24,
                                 color: primaryColor,
                               ),
                             ),
@@ -228,7 +294,6 @@ class MyHomePageState extends State<MyHomePage>
                               enlargeCenterPage: true,
                               viewportFraction: 0.8,
                               enlargeFactor: 0.15,
-                              padEnds: false,
                             ),
                             items: kImages.asMap().entries.map((entry) {
                               int index = entry.key;
@@ -264,16 +329,88 @@ class MyHomePageState extends State<MyHomePage>
                                                 Transition.rightToLeftWithFade);
                                       }
                                     },
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        image: DecorationImage(
-                                          image: AssetImage(imageUrl),
-                                          fit: BoxFit.cover,
-                                          filterQuality: FilterQuality.high,
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            image: DecorationImage(
+                                              image: AssetImage(imageUrl),
+                                              fit: BoxFit.cover,
+                                              filterQuality: FilterQuality.high,
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                        Positioned(
+                                          bottom: -1,
+                                          left: 0,
+                                          right: 0,
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.072,
+                                            decoration: BoxDecoration(
+                                              color: Colors.transparent,
+                                              borderRadius: BorderRadius.only(
+                                                bottomLeft: Radius.circular(20),
+                                                bottomRight:
+                                                    Radius.circular(20),
+                                              ),
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.only(
+                                                bottomLeft: Radius.circular(20),
+                                                bottomRight:
+                                                    Radius.circular(20),
+                                              ),
+                                              child: BackdropFilter(
+                                                filter: ImageFilter.blur(
+                                                    sigmaX: 10, sigmaY: 10),
+                                                child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.black
+                                                          .withOpacity(0.4),
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        bottomLeft:
+                                                            Radius.circular(20),
+                                                        bottomRight:
+                                                            Radius.circular(20),
+                                                      ),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.black
+                                                              .withOpacity(0.1),
+                                                          spreadRadius: 5,
+                                                          blurRadius: 7,
+                                                          offset: Offset(0, 3),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Align(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(
+                                                        kNames[index],
+                                                        style:
+                                                            GoogleFonts.kanit(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 26),
+                                                      ),
+                                                    )),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   );
                                 },
@@ -290,97 +427,35 @@ class MyHomePageState extends State<MyHomePage>
                 forceMaterialTransparency: true,
                 pinned: true,
                 expandedHeight: 50.0,
-                // backgroundColor: Theme.of(context).colorScheme.tertiary,
-
                 flexibleSpace: FlexibleSpaceBar(
-                  background: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                    child: Row(
-                      children: [
-                        Visibility(
-                          visible: !isSearchVisible,
-                          child: IconButton(
-                            icon: Icon(
-                              IconlyBold.search,
-                              color: primaryColor,
-                              size: 28,
+                  background: Stack(
+                    children: [
+                      Positioned(
+                        left: -1,
+                        right: -1,
+                        top: -1,
+                        bottom: -1,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          child: ClipRRect(
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                                child: Text(
+                                  'Recently Added',
+                                  style: GoogleFonts.kanit(
+                                    fontSize: 22,
+                                    color: primaryColor,
+                                  ),
+                                ),
+                              ),
                             ),
-                            onPressed: () {
-                              setState(() {
-                                isSearchVisible = true;
-                              });
-                            },
                           ),
                         ),
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 400),
-                          width: isSearchVisible ? 150.0 : 0.0,
-                          alignment: isSearchVisible
-                              ? Alignment.center
-                              : Alignment.centerRight,
-                          child: isSearchVisible
-                              ? SizedBox(
-                                  height: 44,
-                                  child: TextField(
-                                    controller: _searchController,
-                                    style: TextStyle(color: backgroundColor),
-                                    decoration: InputDecoration(
-                                      hintText: 'Search...',
-                                      hintStyle:
-                                          TextStyle(color: backgroundColor),
-                                      filled: true,
-                                      fillColor: primaryColor,
-                                      contentPadding:
-                                          const EdgeInsets.all(10.0),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                        borderSide: const BorderSide(
-                                            color: Colors.transparent),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                        borderSide:
-                                            BorderSide(color: backgroundColor),
-                                      ),
-                                      suffixIcon: IconButton(
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: Colors.grey,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            isSearchVisible = false;
-                                            _searchController.clear();
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    onSubmitted: (query) {
-                                      setState(() {
-                                        isSearchVisible = false;
-                                      });
-
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => SearchWallpaper(
-                                            title: "Search Wallpaper",
-                                            query: query,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                              : null,
-                        ),
-                        Expanded(
-                          child: _buildTabBar(),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -389,45 +464,6 @@ class MyHomePageState extends State<MyHomePage>
           body: _buildTabViews(),
         ),
       ),
-    );
-  }
-
-  Widget _buildTabBar() {
-    Color primaryColour = Theme.of(context).colorScheme.primary;
-    return TabBar(
-      dividerColor: Colors.transparent,
-      tabAlignment: TabAlignment.start,
-      physics: const BouncingScrollPhysics(),
-      indicatorPadding: const EdgeInsets.fromLTRB(0, 0, 0, 2),
-      controller: _tabController,
-      indicatorColor: Theme.of(context).colorScheme.tertiary,
-      indicator: BoxDecoration(
-        color: Theme.of(context).colorScheme.tertiary,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      labelColor: const Color.fromARGB(255, 175, 202, 0),
-      unselectedLabelColor: primaryColour,
-      isScrollable: true,
-      labelPadding: const EdgeInsets.symmetric(horizontal: 5),
-      tabs: data.map((tab) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.046,
-          width: MediaQuery.of(context).size.width * 0.25,
-          decoration: BoxDecoration(
-            border: Border.all(
-                width: 1.0, color: Theme.of(context).colorScheme.primary),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Tab(
-            child: Text(
-              tab,
-              style: GoogleFonts.kanit(
-                fontSize: 14,
-              ),
-            ),
-          ),
-        );
-      }).toList(),
     );
   }
 
@@ -504,17 +540,7 @@ class MyHomePageState extends State<MyHomePage>
   Widget _buildTabViews() {
     return SizedBox(
       height: MediaQuery.of(context).size.height,
-      child: TabBarView(
-        controller: _tabController,
-        children: [
-          _buildImageGridFromRef(wallpaperRef),
-          _buildImageGridFromRef(aiRef),
-          _buildImageGridFromRef(illustrationRef),
-          _buildImageGridFromRef(carsRef),
-          _buildImageGridFromRef(abstractRef),
-          _buildImageGridFromRef(fantasyRef),
-        ],
-      ),
+      child: _buildImageGridFromRef(wallpaperRef),
     );
   }
 }

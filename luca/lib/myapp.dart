@@ -87,6 +87,7 @@ class LucaHomeState extends State<LucaHome>
           physics: const NeverScrollableScrollPhysics(),
           children: const [
             MyHomePage(),
+            // ImageScreen(),
             Category(),
             LiveWallBeta(),
             FavoriteImagesPage(),
@@ -97,50 +98,51 @@ class LucaHomeState extends State<LucaHome>
           indicatorPadding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
           controller: tabController,
           indicator: UnderlineTabIndicator(
-            borderSide:
-                BorderSide(color: _getIndicatorColor(currentPage), width: 4),
-            insets: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-          ),
+              borderRadius: BorderRadius.circular(20),
+              borderSide:
+                  BorderSide(color: _getIndicatorColor(currentPage), width: 6),
+              insets: const EdgeInsets.fromLTRB(16, 0, 16, 8)),
           tabs: [
             SizedBox(
-              height: 55,
+              height: 58,
               width: 40,
               child: Center(
-                child: Icon(
-                  IconlyBold.home,
-                  color: currentPage == 0 ? homeColor : unselectedColor,
-                ),
-              ),
+                  child: Icon(
+                IconlyBold.home,
+                color: currentPage == 0 ? homeColor : unselectedColor,
+                size: currentPage == 0 ? 32 : 28,
+                // color: Colors.black,
+              )),
             ),
             SizedBox(
-              height: 55,
+              height: 58,
               width: 40,
               child: Center(
-                child: Icon(
-                  IconlyBold.category,
-                  color: currentPage == 1 ? searchColor : unselectedColor,
-                ),
-              ),
+                  child: Icon(
+                IconlyBold.category,
+                color: currentPage == 1 ? searchColor : unselectedColor,
+                size: currentPage == 1 ? 32 : 28,
+              )),
             ),
             SizedBox(
-              height: 55,
+              height: 58,
               width: 40,
               child: Center(
-                child: Icon(
-                  IconlyBold.video,
-                  color: currentPage == 2 ? videoColor : unselectedColor,
-                ),
-              ),
+                  child: Icon(
+                IconlyBold.video,
+                color: currentPage == 2 ? videoColor : unselectedColor,
+                size: currentPage == 2 ? 32 : 28,
+              )),
             ),
             SizedBox(
-              height: 55,
+              height: 58,
               width: 40,
               child: Center(
-                child: Icon(
-                  IconlyBold.heart,
-                  color: currentPage == 3 ? heartColor : unselectedColor,
-                ),
-              ),
+                  child: Icon(
+                IconlyBold.heart,
+                color: currentPage == 3 ? heartColor : unselectedColor,
+                size: currentPage == 3 ? 32 : 28,
+              )),
             ),
           ],
         ),

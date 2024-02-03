@@ -1,6 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:iconly/iconly.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'privacy_policy.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class SettingsPage extends StatefulWidget {
   // final ScrollController controller;
@@ -142,6 +144,40 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget title = Text(
+      'Luca',
+      style: TextStyle(
+        fontFamily: 'Sansilk',
+        fontWeight: FontWeight.w400,
+        fontSize: 84,
+        color: Colors.white,
+        height: 0.9,
+        // letterSpacing: -5,
+      ),
+    );
+    title = title.animate(adapter: ValueAdapter(0.5)).shimmer(
+      colors: [
+        const Color(0xFFFFFF00),
+        const Color(0xFF00FF00),
+        const Color(0xFF00FFFF),
+        const Color(0xFF0033FF),
+        const Color(0xFFFF00FF),
+        const Color(0xFFFF0000),
+        const Color(0xFFFFFF00),
+      ],
+    );
+
+    title = title
+        .animate(onPlay: (controller) => controller.repeat(reverse: true))
+        .saturate(
+            delay: NumDurationExtensions(1).seconds,
+            duration: NumDurationExtensions(2).seconds)
+        .then()
+        .tint(color: const Color(0xFF80DDFF))
+        .then()
+        .blurXY(end: 24)
+        .fadeOut();
+
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
     Color secondaryColor = Theme.of(context).colorScheme.secondary;
@@ -177,14 +213,15 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 children: [
                   const SizedBox(height: 20),
-                  Text(
-                    'Prism',
-                    style: TextStyle(
-                      fontFamily: 'Anurati',
-                      color: primaryColor,
-                      fontSize: 40,
-                    ),
-                  ),
+                  // Text(
+                  //   'Luca',
+                  //   style: TextStyle(
+                  //     fontFamily: 'Sansilk',
+                  //     color: primaryColor,
+                  //     fontSize: 74,
+                  //   ),
+                  // ),
+                  title,
                   Text(
                     'Harmonize Your Experience!',
                     style: TextStyle(color: secondaryColor),
@@ -208,7 +245,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             size: 28,
                           ),
                           title: const Text('About'),
-                          subtitle: Text('Find out more about Prism',
+                          subtitle: Text('Find out more about Luca',
                               style: TextStyle(color: secondaryColor)),
                           iconColor: primaryColor,
                           textColor: primaryColor,
@@ -274,7 +311,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ListTile(
                             leading: const Icon(IconlyBold.document),
                             title: const Text('Privacy Policy'),
-                            subtitle: const Text('Prism privacy policy',
+                            subtitle: const Text('Luca privacy policy',
                                 style: TextStyle(color: Colors.grey)),
                             iconColor: primaryColor,
                             textColor: primaryColor,
@@ -374,7 +411,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      'Prism v 1.0.0',
+                      'Luca v 1.0.0',
                       style:
                           GoogleFonts.kanit(color: primaryColor, fontSize: 12),
                     ),
@@ -382,7 +419,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      'By Spooky Studios',
+                      'By XD',
                       style:
                           GoogleFonts.kanit(color: primaryColor, fontSize: 12),
                     ),
@@ -423,7 +460,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  '🌟 Immerse yourself in the world of Prism – the ultimate wallpaper app. Discover an extensive selection of static and dynamic wallpapers across various categories, all presented through a beautifully designed and intuitive interface. Elevate your device\'s aesthetic with Prism\'s stunning visuals that cater to every mood and style. 🎨📱',
+                  '🌟 Immerse yourself in the world of Luca – the ultimate wallpaper app. Discover an extensive selection of static and dynamic wallpapers across various categories, all presented through a beautifully designed and intuitive interface. Elevate your device\'s aesthetic with Luca\'s stunning visuals that cater to every mood and style. 🎨📱',
                   style: TextStyle(
                     color: Colors.grey[400],
                     fontSize: 16,
@@ -462,7 +499,7 @@ void _showChangelogPopup(BuildContext context) {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '🚀 Prism Initial Release Changelog',
+                '🚀 Luca Initial Release Changelog',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -474,7 +511,7 @@ void _showChangelogPopup(BuildContext context) {
                 version: '1.0.0',
                 date: 'November, 2023',
                 changes: [
-                  '🎉 Welcome to the world of Prism - Your Ultimate Wallpaper Experience!',
+                  '🎉 Welcome to the world of Luca - Your Ultimate Wallpaper Experience!',
                   '🖼️ Explore a captivating collection of dynamic and static wallpapers.',
                   '🎨 Immerse yourself in the beautifully designed user interface for seamless browsing.',
                 ],

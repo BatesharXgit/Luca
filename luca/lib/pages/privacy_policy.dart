@@ -33,7 +33,7 @@ class PrivacyPage extends StatelessWidget {
             ),
             SizedBox(height: 16.0),
             Text(
-              'Spooky Studios built the Prism Wallpaper app as a Free app. This SERVICE is provided by Spooky Studios at no cost and is intended for use as is.',
+              'XD built the Prism Wallpaper app as a Free app. This SERVICE is provided by XD at no cost and is intended for use as is.',
               style: TextStyle(fontSize: 16.0),
             ),
             SizedBox(height: 16.0),

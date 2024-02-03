@@ -14,6 +14,7 @@ final Reference scifiRef = storage.ref().child('category/scifi');
 final Reference gamesRef = storage.ref().child('category/games');
 final Reference superheroesRef = storage.ref().child('category/superheroes');
 final Reference devotionalRef = storage.ref().child('category/devotional');
+final Reference editorsRef = storage.ref().child('category/editors');
 
 ScrollController scrollController = ScrollController();
 
@@ -855,7 +856,7 @@ class _SuperheroesWallpaper extends State<SuperheroesWallpaper> {
   }
 
   Future<void> loadamoledImages() async {
-    final ListResult result = await amoledRef.listAll();
+    final ListResult result = await superheroesRef.listAll();
     superheroesRefs = result.items.toList();
     if (mounted) {
       setState(() {});
@@ -955,7 +956,7 @@ class _DevotionalWallpaper extends State<DevotionalWallpaper> {
   }
 
   Future<void> loadamoledImages() async {
-    final ListResult result = await amoledRef.listAll();
+    final ListResult result = await devotionalRef.listAll();
     devotionalRefs = result.items.toList();
     if (mounted) {
       setState(() {});
@@ -1010,6 +1011,104 @@ class _DevotionalWallpaper extends State<DevotionalWallpaper> {
                         final amoRef = imageRefs[index];
                         return FutureBuilder<String>(
                           future: amoRef.getDownloadURL(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Components.buildShimmerEffect(context);
+                            } else if (snapshot.hasError) {
+                              return Components.buildErrorWidget();
+                            } else if (snapshot.hasData) {
+                              return Components.buildImageWidget(
+                                  snapshot.data!);
+                            } else {
+                              return Container();
+                            }
+                          },
+                        );
+                      },
+                    );
+                  } else {
+                    return const Center(child: Text('No images available'));
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class EditorPick extends StatefulWidget {
+  const EditorPick({super.key});
+
+  @override
+  State<EditorPick> createState() => _EditorPickState();
+}
+
+class _EditorPickState extends State<EditorPick> {
+  List<Reference> editorsRefs = [];
+  @override
+  void initState() {
+    super.initState();
+    loadgamesImages();
+  }
+
+  Future<void> loadgamesImages() async {
+    final ListResult result = await editorsRef.listAll();
+    editorsRefs = result.items.toList();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: Theme.of(context).iconTheme,
+        backgroundColor: backgroundColor,
+        title: Text(
+          'Editor\'s Pick',
+          style: GoogleFonts.kanit(
+            color: primaryColor,
+            fontSize: 22,
+          ),
+        ),
+      ),
+      backgroundColor: backgroundColor,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: FutureBuilder<ListResult>(
+                future: editorsRef.listAll(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Components.buildPlaceholder();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData &&
+                      snapshot.data!.items.isNotEmpty) {
+                    List<Reference> imageRefs = snapshot.data!.items;
+
+                    return GridView.builder(
+                      physics: const ClampingScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 1,
+                        childAspectRatio: 0.85,
+                      ),
+                      itemCount: editorsRefs.length,
+                      itemBuilder: (context, index) {
+                        final imageRef = imageRefs[index];
+                        return FutureBuilder<String>(
+                          future: imageRef.getDownloadURL(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
