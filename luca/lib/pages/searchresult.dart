@@ -58,7 +58,7 @@ class SearchWallpaperState extends State<SearchWallpaper> {
       _isLoading = true;
     });
 
-    String url = 'https://api.pexels.com/v1/search?query=$query&per_page=50';
+    String url = 'https://api.pexels.com/v1/search?query=$query&per_page=30';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': API_KEY,
@@ -84,9 +84,7 @@ class SearchWallpaperState extends State<SearchWallpaper> {
     super.initState();
     _createBannerAd();
     _createInterstitialAd();
-    // Set the initial value of _searchController with the passed query
     _searchController.text = widget.query;
-    // Perform the initial search
     _searchImages(widget.query);
   }
 

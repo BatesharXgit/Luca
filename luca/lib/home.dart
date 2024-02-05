@@ -68,7 +68,7 @@ class LucaHomeState extends State<LucaHome>
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = Theme.of(context).colorScheme.tertiary;
+    Color backgroundColor = Theme.of(context).colorScheme.background;
     return Scaffold(
       body: BottomBar(
         borderRadius: BorderRadius.circular(500),

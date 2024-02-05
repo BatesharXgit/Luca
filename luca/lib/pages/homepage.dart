@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/walls_category.dart';
@@ -15,6 +16,7 @@ import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:luca/services/admob_service.dart';
 
 final FirebaseStorage storage = FirebaseStorage.instance;
 
@@ -53,15 +55,6 @@ class MyHomePageState extends State<MyHomePage>
 
   int index = 0;
 
-  // final List<String> data = [
-  //   "For You",
-  //   "AI",
-  //   "Illustration",
-  //   "Cars",
-  //   "Abstract",
-  //   "Fantasy",
-  // ];
-
   List<String> kNames = [
     'Animals',
     'Games',
@@ -75,8 +68,42 @@ class MyHomePageState extends State<MyHomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: 6, vsync: this);
-
+    _createInterstitialAd();
     fetchUserProfileData();
+  }
+
+  InterstitialAd? _interstitialAd;
+
+  void _createInterstitialAd() {
+    InterstitialAd.load(
+      adUnitId: AdMobService.wallOpeninterstitialAdUnitId!,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) => _interstitialAd = ad,
+        onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null,
+      ),
+    );
+  }
+
+  void _showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          Future.delayed(Duration(minutes: 1), () {
+            _createInterstitialAd();
+          });
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          Future.delayed(Duration(minutes: 1), () {
+            _createInterstitialAd();
+          });
+        },
+      );
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    }
   }
 
   Future<void> fetchUserProfileData() async {
@@ -89,9 +116,27 @@ class MyHomePageState extends State<MyHomePage>
     }
   }
 
+  // Future<void> loadImages() async {
+  //   final ListResult wallpaperResult = await wallpaperRef.listAll();
+  //   wallpaperRefs = wallpaperResult.items.toList();
+  // }
+
   Future<void> loadImages() async {
     final ListResult wallpaperResult = await wallpaperRef.listAll();
     wallpaperRefs = wallpaperResult.items.toList();
+
+    // Fetch metadata for each Reference and store in a Map
+    Map<String, DateTime> imageCreationTimes = {};
+    await Future.wait(wallpaperRefs.map((Reference imageRef) async {
+      final metadata = await imageRef.getMetadata();
+      imageCreationTimes[imageRef.fullPath] = metadata.timeCreated!;
+    }));
+
+    // Sort the wallpaperRefs based on the creation time
+    wallpaperRefs.sort((a, b) {
+      return imageCreationTimes[b.fullPath]!
+          .compareTo(imageCreationTimes[a.fullPath]!);
+    });
   }
 
   @override
@@ -117,7 +162,7 @@ class MyHomePageState extends State<MyHomePage>
             return <Widget>[
               SliverAppBar(
                 forceMaterialTransparency: true,
-                expandedHeight: MediaQuery.of(context).size.height * 0.4,
+                expandedHeight: MediaQuery.of(context).size.height * 0.43,
                 floating: true,
                 pinned: false,
                 backgroundColor: Theme.of(context).colorScheme.background,
@@ -288,12 +333,12 @@ class MyHomePageState extends State<MyHomePage>
                           child: CarouselSlider(
                             options: CarouselOptions(
                               scrollPhysics: const BouncingScrollPhysics(),
-                              height: MediaQuery.of(context).size.height * 0.24,
+                              height: MediaQuery.of(context).size.height * 0.26,
                               autoPlay: true,
-                              autoPlayInterval: const Duration(seconds: 5),
+                              autoPlayInterval: const Duration(seconds: 10),
                               enlargeCenterPage: true,
                               viewportFraction: 0.8,
-                              enlargeFactor: 0.15,
+                              enlargeFactor: 0.2,
                             ),
                             items: kImages.asMap().entries.map((entry) {
                               int index = entry.key;
@@ -303,6 +348,7 @@ class MyHomePageState extends State<MyHomePage>
                                 builder: (BuildContext context) {
                                   return GestureDetector(
                                     onTap: () {
+                                      _showInterstitialAd();
                                       if (index == 0) {
                                         Get.to(const AnimalsWallpaper(),
                                             transition:
@@ -356,7 +402,7 @@ class MyHomePageState extends State<MyHomePage>
                                                     .size
                                                     .height *
                                                 0.072,
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               color: Colors.transparent,
                                               borderRadius: BorderRadius.only(
                                                 bottomLeft: Radius.circular(20),
@@ -365,7 +411,8 @@ class MyHomePageState extends State<MyHomePage>
                                               ),
                                             ),
                                             child: ClipRRect(
-                                              borderRadius: BorderRadius.only(
+                                              borderRadius:
+                                                  const BorderRadius.only(
                                                 bottomLeft: Radius.circular(20),
                                                 bottomRight:
                                                     Radius.circular(20),
@@ -378,7 +425,8 @@ class MyHomePageState extends State<MyHomePage>
                                                       color: Colors.black
                                                           .withOpacity(0.4),
                                                       borderRadius:
-                                                          BorderRadius.only(
+                                                          const BorderRadius
+                                                              .only(
                                                         bottomLeft:
                                                             Radius.circular(20),
                                                         bottomRight:
@@ -390,7 +438,8 @@ class MyHomePageState extends State<MyHomePage>
                                                               .withOpacity(0.1),
                                                           spreadRadius: 5,
                                                           blurRadius: 7,
-                                                          offset: Offset(0, 3),
+                                                          offset: const Offset(
+                                                              0, 3),
                                                         ),
                                                       ],
                                                     ),
@@ -440,9 +489,10 @@ class MyHomePageState extends State<MyHomePage>
                           height: 50,
                           child: ClipRRect(
                             child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                               child: Padding(
-                                padding: EdgeInsets.fromLTRB(20, 10, 0, 0),
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 10, 0, 0),
                                 child: Text(
                                   'Recently Added',
                                   style: GoogleFonts.kanit(
@@ -520,8 +570,11 @@ class MyHomePageState extends State<MyHomePage>
     return Builder(
       builder: (context) {
         return GestureDetector(
-          onTap: () => Get.to(ApplyWallpaperPage(imageUrl: imageUrl),
-              transition: Transition.downToUp),
+          onTap: () {
+            _showInterstitialAd();
+            Get.to(ApplyWallpaperPage(imageUrl: imageUrl),
+                transition: Transition.downToUp);
+          },
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ClipRRect(

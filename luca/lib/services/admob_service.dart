@@ -24,6 +24,16 @@ class AdMobService {
     return null;
   }
 
+  static String? get wallOpeninterstitialAdUnitId {
+    if (Platform.isAndroid) {
+      // return 'ca-app-pub-2502922311219626/2480361474';
+      return 'ca-app-pub-3940256099942544/1033173712';
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-2502922311219626/7644985525';
+    }
+    return null;
+  }
+
   // static String? get rewardedAdUnitId {
   //   if (Platform.isAndroid) {
   //     return 'ca-app-pub-2502922311219626/3131025444';
