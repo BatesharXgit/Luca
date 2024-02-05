@@ -21,116 +21,122 @@ class Category extends StatefulWidget {
 
 class CategoryState extends State<Category> {
   final List<String> _amoled = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F83.jpg?alt=media&token=52cb7707-0ab0-4961-b3ad-8c79ff5c3b70',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F79.jpg?alt=media&token=ffd1a801-53c8-4df9-8269-d4a0cd394a19',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F76.jpg?alt=media&token=0f0b1b82-879b-421e-9382-e6fb5f1074ee',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F71.jpg?alt=media&token=98ede1b5-f454-43c5-a8d3-75431eb133a9',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F66.jpg?alt=media&token=3025b56b-c208-4844-8d37-c18df18b0843',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F59.jpg?alt=media&token=6db4ae15-1ea3-47c3-aa6e-b5db13ac759d',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F90.jpg?alt=media&token=5bac6a75-a3f0-4ce4-8f69-0b127c650d46',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F93.jpg?alt=media&token=dd4741da-9f8c-4c03-80b6-b2df77e5de74',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F160.jpg?alt=media&token=306a248b-0f96-408d-b442-6cfb5e732720',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F166.jpg?alt=media&token=ff265cb6-bcf8-4f75-9873-76328dbaec3c',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F191.jpg?alt=media&token=a5b5b4d8-1ab4-48e4-966c-782e508857f0',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F171.jpg?alt=media&token=1e25ccfa-a8c8-40b8-b427-c8e772d4c9d5',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Famoled%2F192.jpg?alt=media&token=c051e0f8-34af-4137-9acc-db46ef44e409',
+  ];
+
+  final List<String> _abstract = [
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fabstract%2F163.jpg?alt=media&token=539569a2-682a-4d8b-8f7b-7c039af8d7d1',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fabstract%2F188.jpg?alt=media&token=556ebee4-2842-4f7a-945e-e53655851385',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fabstract%2F167.jpg?alt=media&token=f1f08fa0-b6bf-47bb-9e75-f9866bd1b856',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fabstract%2F172.jpg?alt=media&token=4ece2a66-85f5-4054-be9e-9a381ee58de4',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fabstract%2F164.jpg?alt=media&token=d86e62e7-ffa4-45e3-a41b-5bf89de4aca7',
+  ];
+
+  final List<String> _ai = [
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fai%2F183.png?alt=media&token=2d194148-837c-4176-b379-7c353991a48e',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fai%2F178.jpg?alt=media&token=0d5170a4-3872-4f4f-8250-d75dd8e4ef34',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fai%2F172.jpg?alt=media&token=81acf915-fd04-404d-bd38-7325dbcc51e5',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fai%2F187.jpg?alt=media&token=68ce63f6-78be-40dc-bd8d-6202f57b030e',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fai%2F197.jpg?alt=media&token=d88430f5-0102-4821-8258-e976dc575e8a',
+  ];
+
+  final List<String> _cars = [
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fcars%2F177.jpg?alt=media&token=d0b243eb-ade1-461c-a28f-1e955bae4f1d',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fcars%2F148.jpg?alt=media&token=03580e26-ac1e-4fc3-b34c-3f80e42f725e',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fcars%2F189.jpg?alt=media&token=0faebe5b-e513-40a9-a54b-5a339706e225',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fcars%2F185.jpg?alt=media&token=98277b36-f259-4c04-8b68-fadb7e9f7910',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fcars%2F182.jpg?alt=media&token=847d8303-3763-45fb-afac-bfae525a7ea0',
+  ];
+
+  final List<String> _illustration = [
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fillustration%2F137.jpg?alt=media&token=b7b15bef-4d64-4953-96b1-4468caf1c06e',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fillustration%2F141.jpg?alt=media&token=255c4cfd-46e6-435d-a4cf-fef97e78eced',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fillustration%2F154.jpg?alt=media&token=d88095e0-dae4-4c7d-8dd7-c88ad3c60959',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fillustration%2F173.jpg?alt=media&token=59692cad-738b-4099-94f2-0d8eb40c1809',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fillustration%2F174.jpg?alt=media&token=14ce5404-d5a0-48d2-b43f-8a6321ed1e12',
   ];
 
   final List<String> _space = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F89.jpg?alt=media&token=c875c03b-bdfa-4aef-b8b3-f4db12282132',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F87.jpg?alt=media&token=781d3e0f-e785-4ff7-818d-bc0f515968c8',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F91.jpg?alt=media&token=f81a01d6-7cd7-432e-b96b-8fce1ba7582e',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F63.jpg?alt=media&token=22269ca5-b699-48b1-80f6-3030f8f02abc',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F69.jpg?alt=media&token=65b35575-8529-4bb4-89ee-e788b89573cd',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F58.jpg?alt=media&token=a2888011-e06d-40f2-97dd-b53c10afcd2f',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F77.jpg?alt=media&token=fe42823e-f2b6-4733-b9d6-2d9caf7a0008',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F68.jpg?alt=media&token=1cff5422-cdf1-4e0c-998a-f67484fbaa5d'
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F150.jpg?alt=media&token=57254b59-3ad6-4e03-b5d2-2cc7930487b5',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F148.jpg?alt=media&token=cd7414fb-707d-477a-a284-fb86371aed87',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F165.jpg?alt=media&token=8f49b981-7574-405a-b695-27537ade97d9',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F167.jpg?alt=media&token=d0a88e13-46b4-4faa-876c-ac7079e28f38',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fspace%2F188.jpg?alt=media&token=c2f57579-938f-4e12-bbe9-3bc1cf93df99',
   ];
 
   final List<String> _superheroes = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F100.jpg?alt=media&token=da8e2b3c-829e-4b0e-bac4-caeab3b0aea0',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F99.jpg?alt=media&token=d87acef7-206e-43d2-8238-aac75dfc219b',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F88.jpg?alt=media&token=c654c368-b8f3-4ede-9b99-021ac0dfae6a',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F87.jpg?alt=media&token=b257ef51-4093-45a1-9860-febe9aabcc34',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F95.jpg?alt=media&token=e78bc678-a5bd-47ec-9a3d-c08808cd1966',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F97.jpg?alt=media&token=da42e144-fc3a-4cd8-b2f0-b2ad3f569dcc',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F78.jpg?alt=media&token=e143e309-288a-44d5-8f68-e8426b8c18d9',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F82.jpg?alt=media&token=d19bc043-3a4e-4440-bda3-b20ca433088e',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F181.jpg?alt=media&token=deb248de-6014-4241-9893-e5693c2be324',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F200.jpg?alt=media&token=72507850-6ee1-4911-a4a7-3bba53773b91',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F182.jpg?alt=media&token=a665b97b-3c56-4424-a069-4fc596da8118',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F186.jpg?alt=media&token=72c14a9c-e869-4714-9764-a80654f8ad3d',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fsuperheroes%2F198.jpg?alt=media&token=bd1f03d8-415f-4692-801a-b9c929068441',
   ];
 
   final List<String> _devotional = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F100.jpg?alt=media&token=9a6bcec6-328d-4325-af97-a626cf50680d',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F88.jpg?alt=media&token=2169ac31-862d-4583-884e-2aaf150361e5',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F94.jpg?alt=media&token=3025d4aa-8202-43cd-a04c-4705966848b8',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F84.jpg?alt=media&token=ec8ac98a-fcaf-4a86-9773-9dacf70c5c40',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F92.jpg?alt=media&token=4793593d-66b6-474f-9ea0-6998c2153e4b',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F83.jpg?alt=media&token=abf38948-1e61-407b-948b-8bab932a7c0e',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F75.jpg?alt=media&token=615374c4-230d-4fb4-8346-84152cf798ba',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F85.jpg?alt=media&token=2417a123-904f-4e41-85fb-5c948969fa1a'
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F173.jpg?alt=media&token=c02f01d0-bd4e-4017-bf5f-5644150441c9',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F175.jpg?alt=media&token=341c4ace-79ca-48f7-a24b-e22939bb3fc2',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F192.jpg?alt=media&token=9ec57f86-21ec-4b06-92c8-34d0d428e6b7',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F190.jpg?alt=media&token=a2bf830b-4b0d-4ebb-a4ce-25fff94353e8',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fdevotional%2F197.jpg?alt=media&token=650c3b7e-4867-4939-8829-a66f3e40f910',
   ];
 
   final List<String> _anime = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F71.jpg?alt=media&token=2fffdff5-b525-49e3-accd-6b2c0a43919d',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F72.jpg?alt=media&token=e2b1105a-46c8-4f7c-aad0-1359f5f3fd97',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F73.jpg?alt=media&token=7a340fba-f07e-456b-ba39-2db4d87acc94',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F74.jpg?alt=media&token=4159cb05-0e30-42f6-9807-239fb20be369',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F75.jpg?alt=media&token=242ebb49-eb3b-4106-be03-df472e764494',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F76.jpg?alt=media&token=76c255cc-d440-4490-a6d8-74c8083deda8',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F77.jpg?alt=media&token=b65ae120-12d0-4cdd-a614-8d979052814c',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F78.jpg?alt=media&token=7e5d9d93-d290-419e-b458-4682f23b848d'
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F171.png?alt=media&token=249aeb62-5404-461b-a558-db9969e1a390',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F172.jpg?alt=media&token=477f5b67-8af5-4db8-8054-b979b21fbeec',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F173.jpg?alt=media&token=8b0ce0b8-4bf5-4ebb-b4e3-b97ceb250437',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F174.jpg?alt=media&token=12d722c6-5f4b-440b-add7-286e6b1b14cc',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanime%2F175.jpg?alt=media&token=106ec70d-53c3-40f0-b512-d4494188978c',
   ];
 
   final List<String> _minimalist = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F52.png?alt=media&token=9935c772-8975-480b-8605-e578bee29459',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F59.jpg?alt=media&token=f9d82472-7e9e-4b49-ab8c-c3054b283e7e',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F81.jpg?alt=media&token=e3c08b97-0be5-4ed8-b9c1-8357212b5526',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F96.jpg?alt=media&token=e021f3f1-6c0b-45fe-8e7b-3f650e15de16',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F87.jpg?alt=media&token=a0bcde27-6c86-412d-9726-41f18c40ba81',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F85.jpg?alt=media&token=f60349ef-5582-4d6f-a975-0a19e6c06c43',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F83.jpg?alt=media&token=7d13a965-64e8-421a-9c90-858744c21d1c',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F93.jpg?alt=media&token=24dd6946-4785-4ac1-92cc-d10b089b3e9c'
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F151.jpg?alt=media&token=dafc7804-3bfe-4679-b764-46782983dc51',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F161.jpg?alt=media&token=47de1228-ec24-48af-92f6-2f0e78f81625',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F187.jpg?alt=media&token=8620fc99-8845-4548-bb57-a474ea3231a7',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F181.jpg?alt=media&token=9da207df-d28c-44c4-8b23-513ccb9e0c6e',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fminimalist%2F176.jpg?alt=media&token=ab85a721-1a61-4c6b-8fbc-65a6ed005e3e',
   ];
 
   final List<String> _nature = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F56.jpg?alt=media&token=90efadf0-29c9-4c59-9f49-8a135ac2f82d',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F57.jpg?alt=media&token=41282535-1cac-4b7a-9ba6-b9d1ed4f8df9',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F58.jpg?alt=media&token=e3f7fafb-32bd-43b8-b006-118f91d77048',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F62.jpg?alt=media&token=776c544d-453f-4f09-9783-e29597ad376b',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F63.jpg?alt=media&token=f1ccb12a-d7f3-4aae-9315-a6b93a55943d',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F93.jpg?alt=media&token=48d9f5e9-88b5-459b-aa78-c751d69cd541',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F68.jpg?alt=media&token=c9b7e182-0c08-4af1-9e9f-4e9527c2da3d',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F90.jpg?alt=media&token=28a131a6-314d-4ed0-9675-012dcd4b7649'
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F197.jpg?alt=media&token=18b20fe5-2742-4fa5-97e1-1890f26725c7',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F180.jpg?alt=media&token=7094f577-59d1-4afc-a000-52eb00252fac',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F175.jpg?alt=media&token=3d799b73-26e1-483d-845e-9ff407b9b134',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F166.png?alt=media&token=a03d37c9-f18d-4762-9a97-a50adb1588f4',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fnature%2F176.jpg?alt=media&token=de40322f-ad31-466a-a07b-c307a2090ad9',
   ];
 
   final List<String> _animals = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F67.jpg?alt=media&token=cffe8e0c-0b86-4fae-ae9d-61c5158e042c',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F68.jpg?alt=media&token=8054027c-4f6e-4320-a4b7-3f407a53eccb',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F69.jpg?alt=media&token=9bd70d8d-fced-4ca3-8f53-b1c80534c7da',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F70.png?alt=media&token=cd524a68-c8ae-4fe1-8560-da91a131ee7b',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F71.jpg?alt=media&token=8370b1fc-6afa-4fab-9689-7a696d860536',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F72.png?alt=media&token=100c73e6-5641-475d-a517-e1a3c3239b29',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F83.jpg?alt=media&token=b639cd42-92c5-45be-abe0-afd5c15a92f5',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F78.jpg?alt=media&token=907aad23-5d05-4ed7-be65-51bf056294c8'
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F183.jpg?alt=media&token=b3628c54-4724-4c7a-899b-b7de64a7ac20',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F186.jpg?alt=media&token=55937102-e076-4388-a159-869375974d05',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F190.png?alt=media&token=9e235cbe-c66a-4c91-b270-a9c1bfe29119',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F177.png?alt=media&token=37073299-d145-4a3f-89cc-0a15734ac4ae',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fanimals%2F196.jpg?alt=media&token=32555a4f-3ed7-44a1-a746-428a3d26011d',
   ];
 
   final List<String> _scifi = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F100.jpg?alt=media&token=9e287ebb-d175-46dd-baec-82de147d729f',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F81.jpg?alt=media&token=aef50f00-90d6-4ea9-96e3-cde9a6c966fa',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F82.jpg?alt=media&token=439d7dc3-1e1b-4d3d-989b-407fa40a1fe3',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F83.jpg?alt=media&token=d42f4d86-ce69-4f12-a799-8cd4b7306c18',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F85.jpg?alt=media&token=5dc04103-19d4-4ee1-922a-5c1d8996d04d',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F87.jpg?alt=media&token=a6fbcc31-4b06-418b-b8ac-31df9bc46ce8',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F88.jpg?alt=media&token=e2053fcd-f3ad-4a34-9626-4d58807f2833',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F89.jpg?alt=media&token=a820d22b-b1db-4f3d-a8b3-88634a63f873'
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F184.jpg?alt=media&token=902cbeee-d7b8-4deb-9fdf-df4695112db6',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F198.jpg?alt=media&token=657641ad-41c1-451c-ad20-067930340db5',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F179.jpg?alt=media&token=24e5aa69-9971-4d1b-b727-d02b756b99de',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F192.jpg?alt=media&token=3b0a4257-0688-477b-9c9b-c73014c104c1',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fscifi%2F191.jpg?alt=media&token=0fd58cd3-87d9-4fbe-9e44-a04f8bea1fa9',
   ];
 
   final List<String> _games = [
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F70.jpg?alt=media&token=b1b86a38-ecf3-4170-bc75-d8ec1dab3bf6',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F47.jpg?alt=media&token=c93db61e-c0b4-42e4-ba1f-d4799aa541b5',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F100.jpg?alt=media&token=b5709db6-31ba-460b-a7f2-6d0e103b425f',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F44.jpg?alt=media&token=dc3ee1bb-3a69-4ce9-b8c6-ce25aa76b89e',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F49.jpg?alt=media&token=770de000-5a97-4473-95fb-9dcb79d04e59',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F58.jpg?alt=media&token=78f5d43f-7ff5-4762-bdb2-744048aa0d11',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F73.jpg?alt=media&token=d56dce5d-91c7-49b0-b9ff-71bd2932b546',
-    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F91.jpg?alt=media&token=cd0b5b71-5a69-4915-b6bc-52397b20a927'
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F144.jpg?alt=media&token=a68a12e6-b0b6-409d-b175-b67c7e73ef53',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F174.jpg?alt=media&token=869826cb-184e-4b5d-8055-f422ab82938b',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F150.jpg?alt=media&token=81b9fce8-e854-4715-8f23-1b2b191b46ca',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F155.jpg?alt=media&token=fb17e567-39cd-465d-a453-e91196873bb9',
+    'https://firebasestorage.googleapis.com/v0/b/luca-ui.appspot.com/o/category%2Fgames%2F170.jpg?alt=media&token=fa24c295-84ec-4b0e-bfc3-985ad83b988b',
   ];
 
   late bool _isNatureLoaded = false;
+  late bool _isAbstractLoaded = false;
+  late bool _isCarsLoaded = false;
+  late bool _isIllustrationLoaded = false;
+  late bool _isAiLoaded = false;
   late bool _isSpaceLoaded = false;
   late bool _isSuperheroesLoaded = false;
   late bool _isDevotionalLoaded = false;
@@ -152,22 +158,26 @@ class CategoryState extends State<Category> {
       setState(() {
         _isSuperheroesLoaded = true;
         _isDevotionalLoaded = true;
+        _isAbstractLoaded = true;
       });
     });
     Future.delayed(const Duration(milliseconds: 1000), () {
       setState(() {
         _isSpaceLoaded = true;
         _isMinimalLoaded = true;
+        _isCarsLoaded = true;
       });
     });
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
+        _isIllustrationLoaded = true;
         _isAnimeLoaded = true;
         _isAnimalsLoaded = true;
       });
     });
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
+        _isAiLoaded = true;
         _isSciFiLoaded = true;
         _isGamesLoaded = true;
       });
@@ -176,13 +186,15 @@ class CategoryState extends State<Category> {
   }
 
   InterstitialAd? _interstitialAd;
+
   void _createInterstitialAd() {
     InterstitialAd.load(
-      adUnitId: AdMobService.interstitialAdUnitId!,
+      adUnitId: AdMobService.wallOpeninterstitialAdUnitId!,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (ad) => _interstitialAd = ad,
-          onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null),
+        onAdLoaded: (ad) => _interstitialAd = ad,
+        onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null,
+      ),
     );
   }
 
@@ -191,11 +203,15 @@ class CategoryState extends State<Category> {
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
           ad.dispose();
-          _createInterstitialAd();
+          Future.delayed(const Duration(minutes: 1), () {
+            _createInterstitialAd();
+          });
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
           ad.dispose();
-          _createInterstitialAd();
+          Future.delayed(const Duration(minutes: 1), () {
+            _createInterstitialAd();
+          });
         },
       );
       _interstitialAd!.show();
@@ -258,7 +274,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const AmoledWallpaper());
+                            Get.to(const WallpapersCategory(
+                              category: 'amoled',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -281,7 +299,7 @@ class CategoryState extends State<Category> {
                       height: 300,
                       child: ListView.builder(
                         physics: const ClampingScrollPhysics(),
-                        itemCount: 8,
+                        itemCount: 5,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return Padding(
@@ -319,6 +337,327 @@ class CategoryState extends State<Category> {
                     ),
                   ),
                   Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Abstract",
+                          style: GoogleFonts.kanit(
+                            fontSize: 18,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _showInterstitialAd();
+                            Get.to(const WallpapersCategory(
+                              category: 'abstract',
+                            ));
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "See All",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                    child: SizedBox(
+                      height: 300,
+                      child: (_isAbstractLoaded)
+                          ? ListView.builder(
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: 5,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ApplyWallpaperPage(
+                                                  imageUrl: _abstract[index]),
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 150,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                          fadeInDuration:
+                                              const Duration(milliseconds: 200),
+                                          fadeOutDuration:
+                                              const Duration(milliseconds: 200),
+                                          imageUrl: _abstract[index],
+                                          placeholder: (context, url) =>
+                                              Components.buildShimmerEffect(
+                                                  context),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : null,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Cars",
+                          style: GoogleFonts.kanit(
+                            fontSize: 18,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _showInterstitialAd();
+                            Get.to(const WallpapersCategory(
+                              category: 'cars',
+                            ));
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "See All",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                    child: SizedBox(
+                      height: 300,
+                      child: (_isCarsLoaded)
+                          ? ListView.builder(
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: 5,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ApplyWallpaperPage(
+                                                  imageUrl: _cars[index]),
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 280,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                          fadeInDuration:
+                                              const Duration(milliseconds: 200),
+                                          fadeOutDuration:
+                                              const Duration(milliseconds: 200),
+                                          imageUrl: _cars[index],
+                                          placeholder: (context, url) =>
+                                              Components.buildShimmerEffect(
+                                                  context),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : null,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Illustration",
+                          style: GoogleFonts.kanit(
+                            fontSize: 18,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _showInterstitialAd();
+                            Get.to(const WallpapersCategory(
+                              category: 'illustration',
+                            ));
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "See All",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                    child: SizedBox(
+                      height: 300,
+                      child: (_isIllustrationLoaded)
+                          ? ListView.builder(
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: 5,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ApplyWallpaperPage(
+                                                  imageUrl:
+                                                      _illustration[index]),
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 150,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                          fadeInDuration:
+                                              const Duration(milliseconds: 200),
+                                          fadeOutDuration:
+                                              const Duration(milliseconds: 200),
+                                          imageUrl: _illustration[index],
+                                          placeholder: (context, url) =>
+                                              Components.buildShimmerEffect(
+                                                  context),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : null,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "AI",
+                          style: GoogleFonts.kanit(
+                            fontSize: 18,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _showInterstitialAd();
+                            Get.to(const WallpapersCategory(
+                              category: 'ai',
+                            ));
+                          },
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "See All",
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                    child: SizedBox(
+                      height: 300,
+                      child: (_isAiLoaded)
+                          ? ListView.builder(
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: 5,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ApplyWallpaperPage(
+                                                  imageUrl: _ai[index]),
+                                        ),
+                                      );
+                                    },
+                                    child: SizedBox(
+                                      width: 280,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: CachedNetworkImage(
+                                          fadeInDuration:
+                                              const Duration(milliseconds: 200),
+                                          fadeOutDuration:
+                                              const Duration(milliseconds: 200),
+                                          imageUrl: _ai[index],
+                                          placeholder: (context, url) =>
+                                              Components.buildShimmerEffect(
+                                                  context),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : null,
+                    ),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -332,7 +671,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const NatureWallpaper());
+                            Get.to(const WallpapersCategory(
+                              category: 'nature',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -356,7 +697,7 @@ class CategoryState extends State<Category> {
                       child: (_isNatureLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: 8,
+                              itemCount: 5,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Padding(
@@ -408,7 +749,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const SuperheroesWallpaper());
+                            Get.to(const WallpapersCategory(
+                              category: 'superheroes',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -432,7 +775,7 @@ class CategoryState extends State<Category> {
                       child: (_isSuperheroesLoaded)
                           ? ListView.builder(
                               physics: const ClampingScrollPhysics(),
-                              itemCount: 8,
+                              itemCount: 5,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Padding(
@@ -487,7 +830,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const DevotionalWallpaper());
+                            Get.to(const WallpapersCategory(
+                              category: 'devotional',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -511,7 +856,7 @@ class CategoryState extends State<Category> {
                       child: (_isDevotionalLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: 8,
+                              itemCount: 5,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Padding(
@@ -563,7 +908,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const SpaceWallpaper());
+                            Get.to(const WallpapersCategory(
+                              category: 'space',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -587,7 +934,7 @@ class CategoryState extends State<Category> {
                       child: (_isSpaceLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: 8,
+                              itemCount: 5,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Padding(
@@ -639,7 +986,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const MinimalistWallpaper());
+                            Get.to(const WallpapersCategory(
+                              category: 'minimalist',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -663,7 +1012,7 @@ class CategoryState extends State<Category> {
                       child: (_isMinimalLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: 8,
+                              itemCount: 5,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Padding(
@@ -716,7 +1065,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const AnimeWallpapers());
+                            Get.to(const WallpapersCategory(
+                              category: 'anime',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -740,7 +1091,7 @@ class CategoryState extends State<Category> {
                       child: (_isAnimeLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: 8,
+                              itemCount: 5,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Padding(
@@ -793,7 +1144,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const AnimalsWallpaper());
+                            Get.to(const WallpapersCategory(
+                              category: 'animals',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -817,7 +1170,7 @@ class CategoryState extends State<Category> {
                       child: (_isAnimalsLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: 8,
+                              itemCount: 5,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Padding(
@@ -869,7 +1222,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const ScifiWallpaper());
+                            Get.to(const WallpapersCategory(
+                              category: 'scifi',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -893,7 +1248,7 @@ class CategoryState extends State<Category> {
                       child: (_isSciFiLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: 8,
+                              itemCount: 5,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Padding(
@@ -945,7 +1300,9 @@ class CategoryState extends State<Category> {
                         GestureDetector(
                           onTap: () {
                             _showInterstitialAd();
-                            Get.to(const GamesWallpaper());
+                            Get.to(const WallpapersCategory(
+                              category: 'games',
+                            ));
                           },
                           child: const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -969,7 +1326,7 @@ class CategoryState extends State<Category> {
                       child: (_isGamesLoaded)
                           ? ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: 8,
+                              itemCount: 5,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 return Padding(

@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -55,6 +54,15 @@ class MyHomePageState extends State<MyHomePage>
 
   int index = 0;
 
+  // final List<String> data = [
+  //   "For You",
+  //   "AI",
+  //   "Illustration",
+  //   "Cars",
+  //   "Abstract",
+  //   "Fantasy",
+  // ];
+
   List<String> kNames = [
     'Animals',
     'Games',
@@ -90,13 +98,13 @@ class MyHomePageState extends State<MyHomePage>
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
           ad.dispose();
-          Future.delayed(Duration(minutes: 1), () {
+          Future.delayed(const Duration(minutes: 1), () {
             _createInterstitialAd();
           });
         },
         onAdFailedToShowFullScreenContent: (ad, error) {
           ad.dispose();
-          Future.delayed(Duration(minutes: 1), () {
+          Future.delayed(const Duration(minutes: 1), () {
             _createInterstitialAd();
           });
         },
@@ -116,28 +124,28 @@ class MyHomePageState extends State<MyHomePage>
     }
   }
 
-  // Future<void> loadImages() async {
-  //   final ListResult wallpaperResult = await wallpaperRef.listAll();
-  //   wallpaperRefs = wallpaperResult.items.toList();
-  // }
-
   Future<void> loadImages() async {
     final ListResult wallpaperResult = await wallpaperRef.listAll();
     wallpaperRefs = wallpaperResult.items.toList();
-
-    // Fetch metadata for each Reference and store in a Map
-    Map<String, DateTime> imageCreationTimes = {};
-    await Future.wait(wallpaperRefs.map((Reference imageRef) async {
-      final metadata = await imageRef.getMetadata();
-      imageCreationTimes[imageRef.fullPath] = metadata.timeCreated!;
-    }));
-
-    // Sort the wallpaperRefs based on the creation time
-    wallpaperRefs.sort((a, b) {
-      return imageCreationTimes[b.fullPath]!
-          .compareTo(imageCreationTimes[a.fullPath]!);
-    });
   }
+
+  // Future<void> loadImages() async {
+  //   final ListResult wallpaperResult = await wallpaperRef.listAll();
+  //   wallpaperRefs = wallpaperResult.items.toList();
+
+  //   // Fetch metadata for each Reference and store in a Map
+  //   Map<String, DateTime> imageCreationTimes = {};
+  //   await Future.wait(wallpaperRefs.map((Reference imageRef) async {
+  //     final metadata = await imageRef.getMetadata();
+  //     imageCreationTimes[imageRef.fullPath] = metadata.timeCreated!;
+  //   }));
+
+  //   // Sort the wallpaperRefs based on the creation time
+  //   wallpaperRefs.sort((a, b) {
+  //     return imageCreationTimes[b.fullPath]!
+  //         .compareTo(imageCreationTimes[a.fullPath]!);
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -350,27 +358,45 @@ class MyHomePageState extends State<MyHomePage>
                                     onTap: () {
                                       _showInterstitialAd();
                                       if (index == 0) {
-                                        Get.to(const AnimalsWallpaper(),
+                                        Get.to(
+                                            const WallpapersCategory(
+                                              category: 'animals',
+                                            ),
                                             transition:
                                                 Transition.rightToLeftWithFade);
                                       } else if (index == 1) {
-                                        Get.to(const GamesWallpaper(),
+                                        Get.to(
+                                            const WallpapersCategory(
+                                              category: 'editors',
+                                            ),
                                             transition:
                                                 Transition.rightToLeftWithFade);
                                       } else if (index == 2) {
-                                        Get.to(const GamesWallpaper(),
+                                        Get.to(
+                                            const WallpapersCategory(
+                                              category: 'games',
+                                            ),
                                             transition:
                                                 Transition.rightToLeftWithFade);
                                       } else if (index == 3) {
-                                        Get.to(const NatureWallpaper(),
+                                        Get.to(
+                                            const WallpapersCategory(
+                                              category: 'nature',
+                                            ),
                                             transition:
                                                 Transition.rightToLeftWithFade);
                                       } else if (index == 4) {
-                                        Get.to(const AnimeWallpapers(),
+                                        Get.to(
+                                            const WallpapersCategory(
+                                              category: 'anime',
+                                            ),
                                             transition:
                                                 Transition.rightToLeftWithFade);
                                       } else if (index == 5) {
-                                        Get.to(const AmoledWallpaper(),
+                                        Get.to(
+                                            const WallpapersCategory(
+                                              category: 'amoled',
+                                            ),
                                             transition:
                                                 Transition.rightToLeftWithFade);
                                       }

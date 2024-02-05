@@ -32,8 +32,8 @@ class LocationListItem extends StatelessWidget {
       ),
       children: [
         CachedNetworkImage(
-          fadeInDuration: const Duration(milliseconds: 200),
-          fadeOutDuration: const Duration(milliseconds: 200),
+          fadeInDuration: const Duration(milliseconds: 50),
+          fadeOutDuration: const Duration(milliseconds: 50),
           imageUrl: imageUrl,
           key: _backgroundImageKey,
           fit: BoxFit.cover,
