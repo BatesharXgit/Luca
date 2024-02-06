@@ -5,9 +5,9 @@
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
-        android:label="Prism"
+        android:label="Luca"
         android:name="${applicationName}"
-        android:icon="@mipmap/prism">
+        android:icon="@mipmap/luca">
         <activity
             android:name=".MainActivity"
             android:exported="true"

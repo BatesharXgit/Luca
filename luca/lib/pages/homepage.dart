@@ -17,8 +17,6 @@ import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:luca/services/admob_service.dart';
 
-final FirebaseStorage storage = FirebaseStorage.instance;
-
 class MyHomePage extends StatefulWidget {
   // final ScrollController controller;
   const MyHomePage({
@@ -33,40 +31,29 @@ class MyHomePage extends StatefulWidget {
 class MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
-  late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchController = TextEditingController();
 
   final Reference wallpaperRef = storage.ref().child('wallpaper');
-
   List<Reference> wallpaperRefs = [];
 
   String? userPhotoUrl;
 
   List<String> kImages = [
-    'assets/slider/1.jpg',
-    'assets/slider/2.jpg',
-    'assets/slider/3.jpg',
-    'assets/slider/4.jpg',
-    'assets/slider/5.jpg',
-    'assets/slider/6.jpg'
+    'assets/slider/editor.jpg',
+    'assets/slider/animals.jpg',
+    'assets/slider/games.jpg',
+    'assets/slider/nature.jpg',
+    'assets/slider/anime.jpg',
+    'assets/slider/amoled.jpg'
   ];
 
   int index = 0;
 
-  // final List<String> data = [
-  //   "For You",
-  //   "AI",
-  //   "Illustration",
-  //   "Cars",
-  //   "Abstract",
-  //   "Fantasy",
-  // ];
-
   List<String> kNames = [
+    'Editor\'s Pick',
     'Animals',
     'Games',
-    'Editor\'s Pick',
     'Nature',
     'Anime',
     'Amoled',
@@ -75,7 +62,6 @@ class MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 6, vsync: this);
     _createInterstitialAd();
     fetchUserProfileData();
   }
@@ -129,28 +115,9 @@ class MyHomePageState extends State<MyHomePage>
     wallpaperRefs = wallpaperResult.items.toList();
   }
 
-  // Future<void> loadImages() async {
-  //   final ListResult wallpaperResult = await wallpaperRef.listAll();
-  //   wallpaperRefs = wallpaperResult.items.toList();
-
-  //   // Fetch metadata for each Reference and store in a Map
-  //   Map<String, DateTime> imageCreationTimes = {};
-  //   await Future.wait(wallpaperRefs.map((Reference imageRef) async {
-  //     final metadata = await imageRef.getMetadata();
-  //     imageCreationTimes[imageRef.fullPath] = metadata.timeCreated!;
-  //   }));
-
-  //   // Sort the wallpaperRefs based on the creation time
-  //   wallpaperRefs.sort((a, b) {
-  //     return imageCreationTimes[b.fullPath]!
-  //         .compareTo(imageCreationTimes[a.fullPath]!);
-  //   });
-  // }
-
   @override
   void dispose() {
     scrollController.dispose();
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -336,163 +303,7 @@ class MyHomePageState extends State<MyHomePage>
                         const SizedBox(
                           height: 10,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: CarouselSlider(
-                            options: CarouselOptions(
-                              scrollPhysics: const BouncingScrollPhysics(),
-                              height: MediaQuery.of(context).size.height * 0.26,
-                              autoPlay: true,
-                              autoPlayInterval: const Duration(seconds: 10),
-                              enlargeCenterPage: true,
-                              viewportFraction: 0.8,
-                              enlargeFactor: 0.2,
-                            ),
-                            items: kImages.asMap().entries.map((entry) {
-                              int index = entry.key;
-                              String imageUrl = entry.value;
-
-                              return Builder(
-                                builder: (BuildContext context) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      _showInterstitialAd();
-                                      if (index == 0) {
-                                        Get.to(
-                                            const WallpapersCategory(
-                                              category: 'animals',
-                                            ),
-                                            transition:
-                                                Transition.rightToLeftWithFade);
-                                      } else if (index == 1) {
-                                        Get.to(
-                                            const WallpapersCategory(
-                                              category: 'editors',
-                                            ),
-                                            transition:
-                                                Transition.rightToLeftWithFade);
-                                      } else if (index == 2) {
-                                        Get.to(
-                                            const WallpapersCategory(
-                                              category: 'games',
-                                            ),
-                                            transition:
-                                                Transition.rightToLeftWithFade);
-                                      } else if (index == 3) {
-                                        Get.to(
-                                            const WallpapersCategory(
-                                              category: 'nature',
-                                            ),
-                                            transition:
-                                                Transition.rightToLeftWithFade);
-                                      } else if (index == 4) {
-                                        Get.to(
-                                            const WallpapersCategory(
-                                              category: 'anime',
-                                            ),
-                                            transition:
-                                                Transition.rightToLeftWithFade);
-                                      } else if (index == 5) {
-                                        Get.to(
-                                            const WallpapersCategory(
-                                              category: 'amoled',
-                                            ),
-                                            transition:
-                                                Transition.rightToLeftWithFade);
-                                      }
-                                    },
-                                    child: Stack(
-                                      children: [
-                                        Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            image: DecorationImage(
-                                              image: AssetImage(imageUrl),
-                                              fit: BoxFit.cover,
-                                              filterQuality: FilterQuality.high,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          bottom: -1,
-                                          left: 0,
-                                          right: 0,
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.072,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.transparent,
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(20),
-                                                bottomRight:
-                                                    Radius.circular(20),
-                                              ),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                bottomLeft: Radius.circular(20),
-                                                bottomRight:
-                                                    Radius.circular(20),
-                                              ),
-                                              child: BackdropFilter(
-                                                filter: ImageFilter.blur(
-                                                    sigmaX: 10, sigmaY: 10),
-                                                child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.black
-                                                          .withOpacity(0.4),
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .only(
-                                                        bottomLeft:
-                                                            Radius.circular(20),
-                                                        bottomRight:
-                                                            Radius.circular(20),
-                                                      ),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.black
-                                                              .withOpacity(0.1),
-                                                          spreadRadius: 5,
-                                                          blurRadius: 7,
-                                                          offset: const Offset(
-                                                              0, 3),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: Align(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(
-                                                        kNames[index],
-                                                        style:
-                                                            GoogleFonts.kanit(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 26),
-                                                      ),
-                                                    )),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              );
-                            }).toList(),
-                          ),
-                        ),
+                        _buildCarouselSlider(),
                       ],
                     ),
                   ),
@@ -539,6 +350,139 @@ class MyHomePageState extends State<MyHomePage>
           },
           body: _buildTabViews(),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCarouselSlider() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: CarouselSlider(
+        options: CarouselOptions(
+          scrollPhysics: const BouncingScrollPhysics(),
+          height: MediaQuery.of(context).size.height * 0.26,
+          autoPlay: true,
+          autoPlayInterval: const Duration(seconds: 10),
+          enlargeCenterPage: true,
+          viewportFraction: 0.8,
+          enlargeFactor: 0.2,
+        ),
+        items: kImages.asMap().entries.map((entry) {
+          int index = entry.key;
+          String imageUrl = entry.value;
+
+          return Builder(
+            builder: (BuildContext context) {
+              return GestureDetector(
+                onTap: () {
+                  _showInterstitialAd();
+
+                  if (index == 0) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'editors',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 1) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'animals',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 2) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'games',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 3) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'nature',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 4) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'anime',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 5) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'amoled',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  }
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(imageUrl),
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: -1,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.072,
+                        decoration: const BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.4),
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(20),
+                                    bottomRight: Radius.circular(20),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 5,
+                                      blurRadius: 7,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    kNames[index],
+                                    style: GoogleFonts.kanit(
+                                        color: Colors.white, fontSize: 26),
+                                  ),
+                                )),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }).toList(),
       ),
     );
   }
