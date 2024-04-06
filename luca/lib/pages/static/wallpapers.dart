@@ -11,7 +11,9 @@ import 'package:luca/services/admob_service.dart';
 import 'walls_category.dart';
 
 class Category extends StatefulWidget {
+  final ScrollController controller;
   const Category({
+    required this.controller,
     Key? key,
   }) : super(key: key);
 
@@ -249,6 +251,7 @@ class CategoryState extends State<Category> {
       body: SafeArea(
         child: AnimationLimiter(
           child: SingleChildScrollView(
+            controller: widget.controller,
             physics: const ClampingScrollPhysics(),
             child: Column(
               children: AnimationConfiguration.toStaggeredList(

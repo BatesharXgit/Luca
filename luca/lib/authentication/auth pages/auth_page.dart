@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:luca/authentication/auth%20pages/login_page.dart';
 import 'package:luca/home.dart';
 
+import '../../upload.dart';
+
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
@@ -16,6 +18,7 @@ class AuthPage extends StatelessWidget {
               return const LucaHome(
                   // title: '',
                   );
+              // return WallpaperUploaderScreen();
             } else {
               return const LoginPage();
             }

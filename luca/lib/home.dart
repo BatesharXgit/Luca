@@ -6,6 +6,7 @@ import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/live_wall.dart';
 import 'package:luca/pages/static/wallpapers.dart';
+import 'package:luca/upload.dart';
 
 class LucaHome extends StatefulWidget {
   const LucaHome({Key? key}) : super(key: key);
@@ -85,10 +86,11 @@ class LucaHomeState extends State<LucaHome>
           controller: tabController,
           dragStartBehavior: DragStartBehavior.down,
           physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            MyHomePage(),
+          children: [
+            // MyHomePage(),
+            WallpaperScreen(controller: controller),
             // ImageScreen(),
-            Category(),
+            Category(controller: controller),
             LiveWallBeta(),
             FavoriteImagesPage(),
           ],

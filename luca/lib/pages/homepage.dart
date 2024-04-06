@@ -3,11 +3,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
@@ -16,6 +18,17 @@ import 'package:luca/pages/util/location_list.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:luca/services/admob_service.dart';
+
+// class HomePage extends StatelessWidget {
+//   HomePage({super.key});
+
+//   final _controller = Get.put(HomeController());
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return const Placeholder();
+//   }
+// }
 
 class MyHomePage extends StatefulWidget {
   // final ScrollController controller;
@@ -38,6 +51,7 @@ class MyHomePageState extends State<MyHomePage>
   List<Reference> wallpaperRefs = [];
 
   String? userPhotoUrl;
+  bool _isBoxView = false;
 
   List<String> kImages = [
     'assets/slider/editor.jpg',
@@ -113,6 +127,12 @@ class MyHomePageState extends State<MyHomePage>
   Future<void> loadImages() async {
     final ListResult wallpaperResult = await wallpaperRef.listAll();
     wallpaperRefs = wallpaperResult.items.toList();
+  }
+
+  void changeGridStyle() {
+    setState(() {
+      _isBoxView = !_isBoxView;
+    });
   }
 
   @override
@@ -329,13 +349,24 @@ class MyHomePageState extends State<MyHomePage>
                               filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                               child: Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                                child: Text(
-                                  'Recently Added',
-                                  style: GoogleFonts.kanit(
-                                    fontSize: 22,
-                                    color: primaryColor,
-                                  ),
+                                    const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Recently Added',
+                                      style: GoogleFonts.kanit(
+                                        fontSize: 22,
+                                        color: primaryColor,
+                                      ),
+                                    ),
+                                    IconButton(
+                                        onPressed: changeGridStyle,
+                                        icon: _isBoxView
+                                            ? Icon(IconlyBold.filter)
+                                            : Icon(IconlyBold.filter)),
+                                  ],
                                 ),
                               ),
                             ),
@@ -501,9 +532,9 @@ class MyHomePageState extends State<MyHomePage>
             physics: const ClampingScrollPhysics(),
             slivers: <Widget>[
               SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 0.85,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: _isBoxView ? 1 : 2,
+                  childAspectRatio: _isBoxView ? 0.85 : 0.7,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
