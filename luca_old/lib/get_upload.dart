@@ -17,8 +17,7 @@ class DownloadAndUpload extends StatelessWidget {
         'title': title,
         'thumbnailUrl': thumbnailUrl,
         'url': imageUrl,
-        'uploaderName':
-            'Yog' // You can replace 'Yog' with the actual uploader's name
+        'uploaderName': 'Yog'
       });
 
       print('Document created successfully for $title!');
@@ -62,7 +61,8 @@ class DownloadAndUpload extends StatelessWidget {
         String title = imageName.split('.').first;
 
         // Construct thumbnail URL
-        String thumbnailUrl = imageUrl.replaceFirst('.', '_400x800.');
+        String thumbnailUrl = imageUrl.replaceFirst(
+            RegExp(r'\.[^.]+$'), '_400x800.${imageUrl.split('.').last}');
 
         // Upload image to Firestore
         await uploadImageAndCreateDocument(imageUrl, thumbnailUrl, title);

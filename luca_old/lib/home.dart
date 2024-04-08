@@ -6,7 +6,7 @@ import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/live_wall.dart';
 import 'package:luca/pages/static/wallpapers.dart';
-import 'package:luca/upload.dart';
+import 'package:luca/test_home.dart';
 
 class LucaHome extends StatefulWidget {
   const LucaHome({Key? key}) : super(key: key);
