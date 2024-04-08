@@ -87,8 +87,8 @@ class LucaHomeState extends State<LucaHome>
           dragStartBehavior: DragStartBehavior.down,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            // MyHomePage(),
-            WallpaperScreen(controller: controller),
+            MyHomePage(),
+            // WallpaperScreen(controller: controller),
             // ImageScreen(),
             Category(controller: controller),
             LiveWallBeta(),

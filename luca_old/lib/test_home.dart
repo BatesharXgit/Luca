@@ -8,19 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
-
-class Wallpaper {
-  String title;
-  String url;
-  String thumbnailUrl;
-  String uploaderName;
-
-  Wallpaper(
-      {required this.title,
-      required this.url,
-      required this.thumbnailUrl,
-      required this.uploaderName});
-}
+import 'package:luca/data/wallpaper.dart';
 
 class WallpaperScreen extends StatefulWidget {
   final ScrollController controller;
@@ -46,11 +34,11 @@ class _WallpaperScreenState extends State<WallpaperScreen> {
     try {
       // Reference to the "test" collection
       CollectionReference testCollectionRef =
-          FirebaseFirestore.instance.collection('test');
+          FirebaseFirestore.instance.collection('Categories');
 
       // Reference to the "images" subcollection within the "test" collection
       CollectionReference imagesCollectionRef =
-          testCollectionRef.doc('images').collection('images');
+          testCollectionRef.doc('Abstract').collection('AbstractImages');
 
       // Get documents from the "images" subcollection
       QuerySnapshot snapshot = await imagesCollectionRef.get();
@@ -67,6 +55,51 @@ class _WallpaperScreenState extends State<WallpaperScreen> {
       });
     } catch (e) {
       print('Error fetching wallpapers: $e');
+    }
+  }
+
+  // void _fetchWallpapers() async {
+  //   QuerySnapshot snapshot = await _firestore.collection('test').get();
+  //   setState(() {
+  //     wallpapers = snapshot.docs.map((doc) {
+  //       return Wallpaper(
+  //         title: doc['title'],
+  //         url: doc['url'],
+  //         thumbnailUrl: doc['thumbnailUrl'],
+  //         uploaderName: doc['uploaderName'],
+  //       );
+  //     }).toList();
+  //   });
+  // }
+
+  void _fetchHomepageWallpapers() async {
+    try {
+      // Reference to the "HomepageWallpapers" collection
+      CollectionReference homepageCollectionRef =
+          FirebaseFirestore.instance.collection('HomepageWallpapers');
+
+      // Get documents from the "HomepageWallpapers" collection
+      QuerySnapshot snapshot = await homepageCollectionRef.get();
+
+      if (snapshot.docs.isNotEmpty) {
+        setState(() {
+          wallpapers = snapshot.docs.map((doc) {
+            // Construct Wallpaper object from document data
+            return Wallpaper(
+              title: doc['title'],
+              url: doc['url'],
+              thumbnailUrl: doc['thumbnailUrl'],
+              uploaderName: doc['uploaderName'],
+            );
+          }).toList();
+        });
+      } else {
+        // Handle case where no wallpapers are found
+        print('No wallpapers found.');
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error fetching homepage wallpapers: $e');
     }
   }
 

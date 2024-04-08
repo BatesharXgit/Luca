@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:luca/data/wallpaper.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
@@ -29,6 +31,8 @@ import 'package:luca/services/admob_service.dart';
 //     return const Placeholder();
 //   }
 // }
+
+List<Wallpaper> wallpapers = [];
 
 class MyHomePage extends StatefulWidget {
   // final ScrollController controller;
@@ -78,6 +82,35 @@ class MyHomePageState extends State<MyHomePage>
     super.initState();
     _createInterstitialAd();
     fetchUserProfileData();
+    _fetchWallpapers();
+  }
+
+  void _fetchWallpapers() async {
+    try {
+      // Reference to the "test" collection
+      CollectionReference testCollectionRef =
+          FirebaseFirestore.instance.collection('Categories');
+
+      // Reference to the "images" subcollection within the "test" collection
+      CollectionReference imagesCollectionRef =
+          testCollectionRef.doc('Abstract').collection('AbstractImages');
+
+      // Get documents from the "images" subcollection
+      QuerySnapshot snapshot = await imagesCollectionRef.get();
+
+      setState(() {
+        wallpapers = snapshot.docs.map((doc) {
+          return Wallpaper(
+            title: doc['title'],
+            url: doc['url'],
+            thumbnailUrl: doc['thumbnailUrl'],
+            uploaderName: doc['uploaderName'],
+          );
+        }).toList();
+      });
+    } catch (e) {
+      print('Error fetching wallpapers: $e');
+    }
   }
 
   InterstitialAd? _interstitialAd;
@@ -519,53 +552,82 @@ class MyHomePageState extends State<MyHomePage>
   }
 
   Widget _buildImageGridFromRef(Reference imageRef) {
-    return FutureBuilder<ListResult>(
-      future: imageRef.listAll(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Components.buildPlaceholder();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (snapshot.hasData && snapshot.data!.items.isNotEmpty) {
-          List<Reference> imageRefs = snapshot.data!.items;
-          return CustomScrollView(
-            physics: const ClampingScrollPhysics(),
-            slivers: <Widget>[
-              SliverGrid(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: _isBoxView ? 1 : 2,
-                  childAspectRatio: _isBoxView ? 0.85 : 0.7,
+    return CustomScrollView(
+      physics: const ClampingScrollPhysics(),
+      slivers: <Widget>[
+        SliverGrid(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: _isBoxView ? 1 : 2,
+            childAspectRatio: _isBoxView ? 0.85 : 0.7,
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: LocationListItem(
+                    imageUrl: wallpapers[index].thumbnailUrl,
+                    scrollController: scrollController,
+                  ),
                 ),
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    final imageRef = imageRefs[index];
-                    return FutureBuilder<String>(
-                      future: imageRef.getDownloadURL(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Components.buildShimmerEffect(context);
-                        } else if (snapshot.hasError) {
-                          return Components.buildErrorWidget();
-                        } else if (snapshot.hasData) {
-                          return buildImageWidget(snapshot.data!);
-                        } else {
-                          return Container();
-                        }
-                      },
-                    );
-                  },
-                  childCount: imageRefs.length,
-                ),
-              ),
-            ],
-          );
-        } else {
-          return const Center(child: Text('No images available'));
-        }
-      },
+              );
+            },
+            childCount: wallpapers.length,
+          ),
+        ),
+      ],
     );
   }
+
+  // Widget _buildImageGridFromRef(Reference imageRef) {
+  //   return FutureBuilder<ListResult>(
+  //     future: imageRef.listAll(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.waiting) {
+  //         return Components.buildPlaceholder();
+  //       } else if (snapshot.hasError) {
+  //         return Text('Error: ${snapshot.error}');
+  //       } else if (snapshot.hasData && snapshot.data!.items.isNotEmpty) {
+  //         List<Reference> imageRefs = snapshot.data!.items;
+  //         return CustomScrollView(
+  //           physics: const ClampingScrollPhysics(),
+  //           slivers: <Widget>[
+  //             SliverGrid(
+  //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+  //                 crossAxisCount: _isBoxView ? 1 : 2,
+  //                 childAspectRatio: _isBoxView ? 0.85 : 0.7,
+  //               ),
+  //               delegate: SliverChildBuilderDelegate(
+  //                 (BuildContext context, int index) {
+  //                   final imageRef = imageRefs[index];
+  //                   return FutureBuilder<String>(
+  //                     future: imageRef.getDownloadURL(),
+  //                     builder: (context, snapshot) {
+  //                       if (snapshot.connectionState ==
+  //                           ConnectionState.waiting) {
+  //                         return Components.buildShimmerEffect(context);
+  //                       } else if (snapshot.hasError) {
+  //                         return Components.buildErrorWidget();
+  //                       } else if (snapshot.hasData) {
+  //                         return buildImageWidget(snapshot.data!);
+  //                       } else {
+  //                         return Container();
+  //                       }
+  //                     },
+  //                   );
+  //                 },
+  //                 childCount: imageRefs.length,
+  //               ),
+  //             ),
+  //           ],
+  //         );
+  //       } else {
+  //         return const Center(child: Text('No images available'));
+  //       }
+  //     },
+  //   );
+  // }
 
   Widget buildImageWidget(String imageUrl) {
     return Builder(

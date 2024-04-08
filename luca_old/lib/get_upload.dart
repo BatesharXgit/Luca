@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:math';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -7,23 +6,23 @@ import 'package:flutter/material.dart';
 class DownloadAndUpload extends StatelessWidget {
   const DownloadAndUpload({Key? key}) : super(key: key);
 
-  Future<void> uploadImageAndCreateDocument(
-      String imageUrl, String thumbnailUrl, String title) async {
+  Future<void> uploadImageAndCreateDocument(String imageUrl,
+      String thumbnailUrl, String title, String selectedUploader) async {
     try {
       // Reference to the "test" collection
       CollectionReference testCollectionRef =
-          FirebaseFirestore.instance.collection('test');
+          FirebaseFirestore.instance.collection('Categories');
 
       // Reference to the "images" subcollection within the "test" collection
       CollectionReference imagesCollectionRef =
-          testCollectionRef.doc('images').collection('images');
+          testCollectionRef.doc('Animals').collection('AnimalsImages');
 
       // Add document to the "images" subcollection
       await imagesCollectionRef.add({
         'title': title,
         'thumbnailUrl': thumbnailUrl,
         'url': imageUrl,
-        'uploaderName': 'Yog'
+        'uploaderName': selectedUploader,
       });
 
       print('Document created successfully for $title!');
@@ -36,7 +35,7 @@ class DownloadAndUpload extends StatelessWidget {
     try {
       // Get reference to the "wallpapers" folder in Firebase Storage
       Reference storageRef =
-          FirebaseStorage.instance.ref().child('test/images');
+          FirebaseStorage.instance.ref().child('Categories/Animals');
 
       // List all items (files and subfolders) in the "wallpapers" folder
       ListResult result = await storageRef.listAll();
@@ -56,11 +55,23 @@ class DownloadAndUpload extends StatelessWidget {
   }
 
   Future<void> downloadAndUploadImages(List<String> imageNames) async {
+    var index = Random();
+    List<String> uploaderNames = [
+      "John",
+      "Yog",
+      "David",
+      "Sarah",
+      "Lucid",
+      "Luca",
+      "XD",
+      "Ares"
+    ];
     try {
       for (String imageName in imageNames) {
         // Download image from Firebase Storage
-        Reference storageRef =
-            FirebaseStorage.instance.ref().child('test/images/$imageName');
+        Reference storageRef = FirebaseStorage.instance
+            .ref()
+            .child('Categories/Animals/$imageName');
 
         // Upload image to Firestore
         final imageUrl = await storageRef.getDownloadURL();
@@ -70,8 +81,12 @@ class DownloadAndUpload extends StatelessWidget {
         String thumbnailUrl = imageUrl.replaceFirst(
             RegExp(r'\.[^.]+$'), '_400x800.${imageUrl.split('.').last}');
 
+        String selectedUploader =
+            uploaderNames[index.nextInt(uploaderNames.length)];
+
         // Upload image to Firestore
-        await uploadImageAndCreateDocument(imageUrl, thumbnailUrl, title);
+        await uploadImageAndCreateDocument(
+            imageUrl, thumbnailUrl, title, selectedUploader);
 
         print('Image $imageName downloaded and uploaded successfully!');
         print('Image URL: $imageUrl'); // Print the image URL
