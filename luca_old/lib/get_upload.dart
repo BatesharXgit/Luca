@@ -8,7 +8,7 @@ class DownloadAndUpload extends StatelessWidget {
   const DownloadAndUpload({Key? key}) : super(key: key);
 
   Future<void> uploadImageAndCreateDocument(
-      String imageUrl, String title, String thumbnailUrl) async {
+      String imageUrl, String thumbnailUrl, String title) async {
     try {
       // Create Firestore document
       CollectionReference wallpapersRef =
@@ -17,7 +17,8 @@ class DownloadAndUpload extends StatelessWidget {
         'title': title,
         'thumbnailUrl': thumbnailUrl,
         'url': imageUrl,
-        'uploaderName': 'Yog'
+        'uploaderName':
+            'Yog' // You can replace 'Yog' with the actual uploader's name
       });
 
       print('Document created successfully for $title!');
@@ -38,7 +39,11 @@ class DownloadAndUpload extends StatelessWidget {
       // Extract names of image files
       List<String> imageNames = result.items.map((item) => item.name).toList();
 
-      return imageNames;
+      // Filter out thumbnails
+      List<String> filteredImageNames =
+          imageNames.where((name) => !name.contains('_400x800')).toList();
+
+      return filteredImageNames;
     } catch (e) {
       print('Error retrieving image names from Firebase Storage: $e');
       return [];
@@ -54,24 +59,17 @@ class DownloadAndUpload extends StatelessWidget {
 
         // Upload image to Firestore
         final imageUrl = await storageRef.getDownloadURL();
-
-        // Extract title from imageName (remove the extension)
         String title = imageName.split('.').first;
 
-        // Extract thumbnail URL
-        String thumbnailName = imageName.contains('_')
-            ? imageName.split('_').first + '_400x800'
-            : imageName;
-        String thumbnailUrl = await FirebaseStorage.instance
-            .ref()
-            .child('test/images/$thumbnailName')
-            .getDownloadURL();
+        // Construct thumbnail URL
+        String thumbnailUrl = imageUrl.replaceFirst('.', '_400x800.');
 
         // Upload image to Firestore
-        await uploadImageAndCreateDocument(imageUrl, title, thumbnailUrl);
+        await uploadImageAndCreateDocument(imageUrl, thumbnailUrl, title);
 
         print('Image $imageName downloaded and uploaded successfully!');
         print('Image URL: $imageUrl'); // Print the image URL
+        print('Thumbnail URL: $thumbnailUrl'); // Print the thumbnail URL
       }
     } catch (e) {
       print('Error downloading and uploading images: $e');
