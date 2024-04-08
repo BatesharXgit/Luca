@@ -10,10 +10,16 @@ class DownloadAndUpload extends StatelessWidget {
   Future<void> uploadImageAndCreateDocument(
       String imageUrl, String thumbnailUrl, String title) async {
     try {
-      // Create Firestore document
-      CollectionReference wallpapersRef =
+      // Reference to the "test" collection
+      CollectionReference testCollectionRef =
           FirebaseFirestore.instance.collection('test');
-      await wallpapersRef.add({
+
+      // Reference to the "images" subcollection within the "test" collection
+      CollectionReference imagesCollectionRef =
+          testCollectionRef.doc('images').collection('images');
+
+      // Add document to the "images" subcollection
+      await imagesCollectionRef.add({
         'title': title,
         'thumbnailUrl': thumbnailUrl,
         'url': imageUrl,

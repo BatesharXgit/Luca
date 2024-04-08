@@ -43,17 +43,31 @@ class _WallpaperScreenState extends State<WallpaperScreen> {
   }
 
   void _fetchWallpapers() async {
-    QuerySnapshot snapshot = await _firestore.collection('test').get();
-    setState(() {
-      wallpapers = snapshot.docs.map((doc) {
-        return Wallpaper(
-          title: doc['title'],
-          url: doc['url'],
-          thumbnailUrl: doc['thumbnailUrl'],
-          uploaderName: doc['uploaderName'],
-        );
-      }).toList();
-    });
+    try {
+      // Reference to the "test" collection
+      CollectionReference testCollectionRef =
+          FirebaseFirestore.instance.collection('test');
+
+      // Reference to the "images" subcollection within the "test" collection
+      CollectionReference imagesCollectionRef =
+          testCollectionRef.doc('images').collection('images');
+
+      // Get documents from the "images" subcollection
+      QuerySnapshot snapshot = await imagesCollectionRef.get();
+
+      setState(() {
+        wallpapers = snapshot.docs.map((doc) {
+          return Wallpaper(
+            title: doc['title'],
+            url: doc['url'],
+            thumbnailUrl: doc['thumbnailUrl'],
+            uploaderName: doc['uploaderName'],
+          );
+        }).toList();
+      });
+    } catch (e) {
+      print('Error fetching wallpapers: $e');
+    }
   }
 
   @override
