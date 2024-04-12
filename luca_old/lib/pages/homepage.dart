@@ -35,9 +35,9 @@ import 'package:luca/services/admob_service.dart';
 List<Wallpaper> wallpapers = [];
 
 class MyHomePage extends StatefulWidget {
-  // final ScrollController controller;
+  final ScrollController controller;
   const MyHomePage({
-    // required this.controller,
+    required this.controller,
     Key? key,
   }) : super(key: key);
 
@@ -185,12 +185,12 @@ class MyHomePageState extends State<MyHomePage>
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: NestedScrollView(
-          controller: ScrollController(),
+          controller: widget.controller,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
                 forceMaterialTransparency: true,
-                expandedHeight: MediaQuery.of(context).size.height * 0.43,
+                expandedHeight: MediaQuery.of(context).size.height * 0.105,
                 floating: true,
                 pinned: false,
                 backgroundColor: Theme.of(context).colorScheme.background,
@@ -338,25 +338,6 @@ class MyHomePageState extends State<MyHomePage>
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 20,
-                          ),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Discover Collections',
-                              style: GoogleFonts.kanit(
-                                fontSize: 24,
-                                color: primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        _buildCarouselSlider(),
                       ],
                     ),
                   ),
@@ -440,7 +421,6 @@ class MyHomePageState extends State<MyHomePage>
               return GestureDetector(
                 onTap: () {
                   _showInterstitialAd();
-
                   if (index == 0) {
                     Get.to(
                         const WallpapersCategory(
@@ -562,13 +542,20 @@ class MyHomePageState extends State<MyHomePage>
           ),
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: LocationListItem(
-                    imageUrl: wallpapers[index].thumbnailUrl,
-                    scrollController: scrollController,
+              return GestureDetector(
+                onTap: () {
+                  // _showInterstitialAd();
+                  Get.to(ApplyWallpaperPage(imageUrl: wallpapers[index].url),
+                      transition: Transition.downToUp);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: LocationListItem(
+                      imageUrl: wallpapers[index].thumbnailUrl,
+                      scrollController: scrollController,
+                    ),
                   ),
                 ),
               );
@@ -628,30 +615,6 @@ class MyHomePageState extends State<MyHomePage>
   //     },
   //   );
   // }
-
-  Widget buildImageWidget(String imageUrl) {
-    return Builder(
-      builder: (context) {
-        return GestureDetector(
-          onTap: () {
-            _showInterstitialAd();
-            Get.to(ApplyWallpaperPage(imageUrl: imageUrl),
-                transition: Transition.downToUp);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: LocationListItem(
-                imageUrl: imageUrl,
-                scrollController: scrollController,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   Widget _buildTabViews() {
     return SizedBox(
