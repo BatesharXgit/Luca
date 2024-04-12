@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
-import 'package:luca/bottom_bar';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/live_wall.dart';
 import 'package:luca/pages/static/wallpapers.dart';
+import 'package:luca/pages/util/bottom_navigation_bar.dart';
 
 class LucaHome extends StatefulWidget {
   const LucaHome({Key? key}) : super(key: key);
@@ -73,7 +73,7 @@ class LucaHomeState extends State<LucaHome>
       appBar: null,
       body: Stack(
         children: [
-          BottomBar(
+          BottomBavBar(
             fit: StackFit.expand,
             icon: (width, height) => Center(
               child: IconButton(
@@ -81,7 +81,7 @@ class LucaHomeState extends State<LucaHome>
                 onPressed: null,
                 icon: Icon(
                   Icons.arrow_upward_rounded,
-                  color: Colors.grey,
+                  color: Colors.white,
                   size: width,
                 ),
               ),
@@ -94,7 +94,7 @@ class LucaHomeState extends State<LucaHome>
             // barColor: Colors.black.computeLuminance() > 0.5
             //     ? Colors.black
             //     : const Color.fromARGB(255, 14, 3, 31),
-            barColor: Color(0xFF131321),
+            barColor: Colors.transparent,
             start: 2,
             end: 0,
             offset: 10,
