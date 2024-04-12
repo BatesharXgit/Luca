@@ -63,7 +63,7 @@ dependencies:
   http: ^1.1.2
   crystal_navigation_bar: ^1.0.0
   iconly: ^1.0.1
-  flutter_floating_bottom_bar: ^1.2.0
+  # flutter_floating_bottom_bar: ^1.2.0
   firebase_app_check: ^0.2.1+8
   shimmer: ^3.0.0
   flutter_animate: ^4.5.0
