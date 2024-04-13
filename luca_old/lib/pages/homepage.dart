@@ -55,7 +55,6 @@ class MyHomePageState extends State<MyHomePage>
   List<Reference> wallpaperRefs = [];
 
   String? userPhotoUrl;
-  bool _isBoxView = false;
 
   List<String> kImages = [
     'assets/slider/editor.jpg',
@@ -67,15 +66,6 @@ class MyHomePageState extends State<MyHomePage>
   ];
 
   int index = 0;
-
-  List<String> kNames = [
-    'Editor\'s Pick',
-    'Animals',
-    'Games',
-    'Nature',
-    'Anime',
-    'Amoled',
-  ];
 
   @override
   void initState() {
@@ -93,7 +83,7 @@ class MyHomePageState extends State<MyHomePage>
 
       // Reference to the "images" subcollection within the "test" collection
       CollectionReference imagesCollectionRef =
-          testCollectionRef.doc('Abstract').collection('AbstractImages');
+          testCollectionRef.doc('Amoled').collection('AmoledImages');
 
       // Get documents from the "images" subcollection
       QuerySnapshot snapshot = await imagesCollectionRef.get();
@@ -162,12 +152,6 @@ class MyHomePageState extends State<MyHomePage>
     wallpaperRefs = wallpaperResult.items.toList();
   }
 
-  void changeGridStyle() {
-    setState(() {
-      _isBoxView = !_isBoxView;
-    });
-  }
-
   @override
   void dispose() {
     scrollController.dispose();
@@ -180,24 +164,26 @@ class MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
+    EdgeInsets padding = MediaQuery.of(context).padding;
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: NestedScrollView(
-          controller: widget.controller,
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                forceMaterialTransparency: true,
-                expandedHeight: MediaQuery.of(context).size.height * 0.105,
-                floating: true,
-                pinned: false,
-                backgroundColor: Theme.of(context).colorScheme.background,
-                flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: false,
-                  title: null,
-                  background: Container(
+      body: NestedScrollView(
+        controller: widget.controller,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              forceMaterialTransparency: true,
+              expandedHeight: MediaQuery.of(context).size.height * 0.105,
+              floating: true,
+              pinned: false,
+              backgroundColor: Theme.of(context).colorScheme.background,
+              flexibleSpace: FlexibleSpaceBar(
+                centerTitle: false,
+                title: Text('Hello theredjkfsnk'),
+                background: Padding(
+                  padding: EdgeInsets.only(top: padding.top),
+                  child: Container(
                     color: Theme.of(context)
                         .colorScheme
                         .background
@@ -343,58 +329,47 @@ class MyHomePageState extends State<MyHomePage>
                   ),
                 ),
               ),
-              SliverAppBar(
-                forceMaterialTransparency: true,
-                pinned: true,
-                expandedHeight: 50.0,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Stack(
-                    children: [
-                      Positioned(
-                        left: -1,
-                        right: -1,
-                        top: -1,
-                        bottom: -1,
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          child: ClipRRect(
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Recently Added',
-                                      style: GoogleFonts.kanit(
-                                        fontSize: 22,
-                                        color: primaryColor,
-                                      ),
-                                    ),
-                                    IconButton(
-                                        onPressed: changeGridStyle,
-                                        icon: _isBoxView
-                                            ? Icon(IconlyBold.filter)
-                                            : Icon(IconlyBold.filter)),
-                                  ],
+            ),
+            SliverAppBar(
+              forceMaterialTransparency: true,
+              pinned: true,
+              toolbarHeight: 50,
+              expandedHeight: 50.0,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Stack(
+                  children: [
+                    Positioned(
+                      left: -1,
+                      right: -1,
+                      top: -1,
+                      bottom: -1,
+                      child: ClipRRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              child: Text(
+                                'Recently Added',
+                                style: GoogleFonts.kanit(
+                                  fontSize: 22,
+                                  color: primaryColor,
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ];
-          },
-          body: _buildTabViews(),
-        ),
+            ),
+          ];
+        },
+        body: _buildTabViews(),
       ),
     );
   }
@@ -405,8 +380,8 @@ class MyHomePageState extends State<MyHomePage>
       slivers: <Widget>[
         SliverGrid(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: _isBoxView ? 1 : 2,
-            childAspectRatio: _isBoxView ? 0.85 : 0.7,
+            crossAxisCount: 2,
+            childAspectRatio: 0.7,
           ),
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
@@ -417,7 +392,8 @@ class MyHomePageState extends State<MyHomePage>
                       transition: Transition.downToUp);
                 },
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 4.0, horizontal: 4.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: LocationListItem(
@@ -489,27 +465,5 @@ class MyHomePageState extends State<MyHomePage>
       height: MediaQuery.of(context).size.height,
       child: _buildImageGridFromRef(wallpaperRef),
     );
-  }
-}
-
-class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  final Widget tab;
-
-  SliverAppBarDelegate(this.tab);
-
-  @override
-  double get minExtent => 40;
-  @override
-  double get maxExtent => 40;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
-  }
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return tab;
   }
 }

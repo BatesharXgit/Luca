@@ -15,7 +15,6 @@ class LocationListItem extends StatelessWidget {
 
   final String imageUrl;
   final ScrollController scrollController;
-
   final GlobalKey _backgroundImageKey = GlobalKey();
 
   @override
@@ -37,7 +36,7 @@ class LocationListItem extends StatelessWidget {
           imageUrl: imageUrl,
           key: _backgroundImageKey,
           fit: BoxFit.cover,
-          cacheManager: DefaultCacheManager(),
+          // cacheManager: DefaultCacheManager(),
           placeholder: (context, url) => Components.buildShimmerEffect(context),
         ),
       ],
