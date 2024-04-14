@@ -1,43 +1,23 @@
-import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:luca/data/wallpaper.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
-import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:luca/services/admob_service.dart';
 
-// class HomePage extends StatelessWidget {
-//   HomePage({super.key});
-
-//   final _controller = Get.put(HomeController());
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Placeholder();
-//   }
-// }
-
 List<Wallpaper> wallpapers = [];
 
 class MyHomePage extends StatefulWidget {
-  final ScrollController controller;
   const MyHomePage({
-    required this.controller,
     Key? key,
   }) : super(key: key);
 
@@ -50,20 +30,12 @@ class MyHomePageState extends State<MyHomePage>
   ScrollController scrollController = ScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchController = TextEditingController();
+  late TabController _tabController;
 
   final Reference wallpaperRef = storage.ref().child('wallpaper');
   List<Reference> wallpaperRefs = [];
 
   String? userPhotoUrl;
-
-  List<String> kImages = [
-    'assets/slider/editor.jpg',
-    'assets/slider/animals.jpg',
-    'assets/slider/games.jpg',
-    'assets/slider/nature.jpg',
-    'assets/slider/anime.jpg',
-    'assets/slider/amoled.jpg'
-  ];
 
   int index = 0;
 
@@ -73,6 +45,7 @@ class MyHomePageState extends State<MyHomePage>
     _createInterstitialAd();
     fetchUserProfileData();
     _fetchWallpapers();
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   void _fetchWallpapers() async {
@@ -147,11 +120,6 @@ class MyHomePageState extends State<MyHomePage>
     }
   }
 
-  Future<void> loadImages() async {
-    final ListResult wallpaperResult = await wallpaperRef.listAll();
-    wallpaperRefs = wallpaperResult.items.toList();
-  }
-
   @override
   void dispose() {
     scrollController.dispose();
@@ -164,26 +132,23 @@ class MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
-    EdgeInsets padding = MediaQuery.of(context).padding;
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
-      body: NestedScrollView(
-        controller: widget.controller,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              forceMaterialTransparency: true,
-              expandedHeight: MediaQuery.of(context).size.height * 0.105,
-              floating: true,
-              pinned: false,
-              backgroundColor: Theme.of(context).colorScheme.background,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: false,
-                title: Text('Hello theredjkfsnk'),
-                background: Padding(
-                  padding: EdgeInsets.only(top: padding.top),
-                  child: Container(
+      body: SafeArea(
+        child: NestedScrollView(
+          // controller: widget.controller,
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                forceMaterialTransparency: true,
+                expandedHeight: MediaQuery.of(context).size.height * 0.102,
+                floating: true,
+                pinned: true,
+                backgroundColor: Theme.of(context).colorScheme.background,
+                flexibleSpace: FlexibleSpaceBar(
+                  centerTitle: false,
+                  background: Container(
                     color: Theme.of(context)
                         .colorScheme
                         .background
@@ -205,122 +170,7 @@ class MyHomePageState extends State<MyHomePage>
                                   fontWeight: FontWeight.w200,
                                 ),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Visibility(
-                                    visible: !isSearchVisible,
-                                    child: IconButton(
-                                      icon: Icon(
-                                        IconlyBold.search,
-                                        color: primaryColor,
-                                        size: 28,
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          isSearchVisible = true;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                  AnimatedContainer(
-                                    transformAlignment: Alignment.centerLeft,
-                                    duration: const Duration(milliseconds: 400),
-                                    width: isSearchVisible ? 140.0 : 0.0,
-                                    height: 42,
-                                    alignment: isSearchVisible
-                                        ? Alignment.center
-                                        : Alignment.centerRight,
-                                    child: isSearchVisible
-                                        ? SizedBox(
-                                            height: 44,
-                                            child: TextField(
-                                              controller: _searchController,
-                                              style: TextStyle(
-                                                  color: backgroundColor),
-                                              decoration: InputDecoration(
-                                                hintText: 'Search...',
-                                                hintStyle: TextStyle(
-                                                    fontSize: 14,
-                                                    color: backgroundColor),
-                                                filled: true,
-                                                fillColor: primaryColor,
-                                                contentPadding:
-                                                    const EdgeInsets.all(14.0),
-                                                enabledBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20.0),
-                                                  borderSide: const BorderSide(
-                                                      color:
-                                                          Colors.transparent),
-                                                ),
-                                                focusedBorder:
-                                                    OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20.0),
-                                                  borderSide: BorderSide(
-                                                      color: backgroundColor),
-                                                ),
-                                                suffixIcon: IconButton(
-                                                  icon: const Icon(
-                                                    Icons.close,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      isSearchVisible = false;
-                                                      _searchController.clear();
-                                                    });
-                                                  },
-                                                ),
-                                              ),
-                                              onSubmitted: (query) {
-                                                setState(() {
-                                                  isSearchVisible = false;
-                                                });
-
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SearchWallpaper(
-                                                      title: "Search Wallpaper",
-                                                      query: query,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          )
-                                        : null,
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => Get.to(
-                                        () => const SettingsPage(),
-                                        transition:
-                                            Transition.rightToLeftWithFade),
-                                    child: (userPhotoUrl != null)
-                                        ? CircleAvatar(
-                                            radius: 18,
-                                            backgroundImage:
-                                                CachedNetworkImageProvider(
-                                              userPhotoUrl!,
-                                            ),
-                                          )
-                                        : Icon(
-                                            Icons.person,
-                                            color: primaryColor,
-                                            size: 28,
-                                          ),
-                                  ),
-                                ],
-                              ),
+                              _buildSearchWidget(),
                             ],
                           ),
                         ),
@@ -329,48 +179,131 @@ class MyHomePageState extends State<MyHomePage>
                   ),
                 ),
               ),
-            ),
-            SliverAppBar(
-              forceMaterialTransparency: true,
-              pinned: true,
-              toolbarHeight: 50,
-              expandedHeight: 50.0,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Stack(
-                  children: [
-                    Positioned(
-                      left: -1,
-                      right: -1,
-                      top: -1,
-                      bottom: -1,
-                      child: ClipRRect(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                              child: Text(
-                                'Recently Added',
-                                style: GoogleFonts.kanit(
-                                  fontSize: 22,
-                                  color: primaryColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+              SliverAppBar(
+                backgroundColor: Theme.of(context).colorScheme.background,
+
+                elevation: 0,
+                // forceMaterialTransparency: true,
+                pinned: false,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: TabBar(
+                    dividerColor: Colors.transparent,
+                    controller: _tabController,
+                    tabs: [
+                      Tab(text: 'Recent'),
+                      Tab(text: 'Random'),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ];
-        },
-        body: _buildTabViews(),
+            ];
+          },
+          body: _buildTabViews(),
+        ),
       ),
+    );
+  }
+
+  Widget _buildSearchWidget() {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Visibility(
+          visible: !isSearchVisible,
+          child: IconButton(
+            icon: Icon(
+              IconlyBold.search,
+              color: primaryColor,
+              size: 28,
+            ),
+            onPressed: () {
+              setState(() {
+                isSearchVisible = true;
+              });
+            },
+          ),
+        ),
+        AnimatedContainer(
+          transformAlignment: Alignment.centerLeft,
+          duration: const Duration(milliseconds: 400),
+          width: isSearchVisible ? 140.0 : 0.0,
+          height: 42,
+          alignment: isSearchVisible ? Alignment.center : Alignment.centerRight,
+          child: isSearchVisible
+              ? SizedBox(
+                  height: 44,
+                  child: TextField(
+                    controller: _searchController,
+                    style: TextStyle(color: backgroundColor),
+                    decoration: InputDecoration(
+                      hintText: 'Search...',
+                      hintStyle:
+                          TextStyle(fontSize: 14, color: backgroundColor),
+                      filled: true,
+                      fillColor: primaryColor,
+                      contentPadding: const EdgeInsets.all(14.0),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: const BorderSide(color: Colors.transparent),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                        borderSide: BorderSide(color: backgroundColor),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isSearchVisible = false;
+                            _searchController.clear();
+                          });
+                        },
+                      ),
+                    ),
+                    onSubmitted: (query) {
+                      setState(() {
+                        isSearchVisible = false;
+                      });
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SearchWallpaper(
+                            title: "Search Wallpaper",
+                            query: query,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              : null,
+        ),
+        const SizedBox(
+          width: 8,
+        ),
+        GestureDetector(
+          onTap: () => Get.to(() => const SettingsPage(),
+              transition: Transition.rightToLeftWithFade),
+          child: (userPhotoUrl != null)
+              ? CircleAvatar(
+                  radius: 18,
+                  backgroundImage: CachedNetworkImageProvider(
+                    userPhotoUrl!,
+                  ),
+                )
+              : Icon(
+                  Icons.person,
+                  color: primaryColor,
+                  size: 28,
+                ),
+        ),
+      ],
     );
   }
 
@@ -411,59 +344,16 @@ class MyHomePageState extends State<MyHomePage>
     );
   }
 
-  // Widget _buildImageGridFromRef(Reference imageRef) {
-  //   return FutureBuilder<ListResult>(
-  //     future: imageRef.listAll(),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.connectionState == ConnectionState.waiting) {
-  //         return Components.buildPlaceholder();
-  //       } else if (snapshot.hasError) {
-  //         return Text('Error: ${snapshot.error}');
-  //       } else if (snapshot.hasData && snapshot.data!.items.isNotEmpty) {
-  //         List<Reference> imageRefs = snapshot.data!.items;
-  //         return CustomScrollView(
-  //           physics: const ClampingScrollPhysics(),
-  //           slivers: <Widget>[
-  //             SliverGrid(
-  //               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-  //                 crossAxisCount: _isBoxView ? 1 : 2,
-  //                 childAspectRatio: _isBoxView ? 0.85 : 0.7,
-  //               ),
-  //               delegate: SliverChildBuilderDelegate(
-  //                 (BuildContext context, int index) {
-  //                   final imageRef = imageRefs[index];
-  //                   return FutureBuilder<String>(
-  //                     future: imageRef.getDownloadURL(),
-  //                     builder: (context, snapshot) {
-  //                       if (snapshot.connectionState ==
-  //                           ConnectionState.waiting) {
-  //                         return Components.buildShimmerEffect(context);
-  //                       } else if (snapshot.hasError) {
-  //                         return Components.buildErrorWidget();
-  //                       } else if (snapshot.hasData) {
-  //                         return buildImageWidget(snapshot.data!);
-  //                       } else {
-  //                         return Container();
-  //                       }
-  //                     },
-  //                   );
-  //                 },
-  //                 childCount: imageRefs.length,
-  //               ),
-  //             ),
-  //           ],
-  //         );
-  //       } else {
-  //         return const Center(child: Text('No images available'));
-  //       }
-  //     },
-  //   );
-  // }
-
   Widget _buildTabViews() {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height,
-      child: _buildImageGridFromRef(wallpaperRef),
+    return TabBarView(
+      controller: _tabController,
+      children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: _buildImageGridFromRef(wallpaperRef),
+        ),
+        Center(child: Text('Content of Tab 2')),
+      ],
     );
   }
 }

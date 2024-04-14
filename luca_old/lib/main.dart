@@ -18,7 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
-final GlobalKey<MyHomePageState> homePageKey = GlobalKey<MyHomePageState>();
+// final GlobalKey<MyHomePageState> homePageKey = GlobalKey<MyHomePageState>();
 final FirebaseStorage storage = FirebaseStorage.instance;
 
 Future<void> main() async {
@@ -36,7 +36,7 @@ Future<void> main() async {
   ]);
   final prefs = await SharedPreferences.getInstance();
 
-  await homePageKey.currentState?.loadImages();
+  // await homePageKey.currentState?.loadImages();
 
   runApp(
     ChangeNotifierProvider(
