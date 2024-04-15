@@ -56,7 +56,7 @@ class MyHomePageState extends State<MyHomePage>
 
       // Reference to the "images" subcollection within the "test" collection
       CollectionReference imagesCollectionRef =
-          testCollectionRef.doc('Amoled').collection('AmoledImages');
+          testCollectionRef.doc('Superhero').collection('SuperheroImages');
 
       // Get documents from the "images" subcollection
       QuerySnapshot snapshot = await imagesCollectionRef.get();
@@ -142,9 +142,9 @@ class MyHomePageState extends State<MyHomePage>
             return <Widget>[
               SliverAppBar(
                 forceMaterialTransparency: true,
-                expandedHeight: MediaQuery.of(context).size.height * 0.102,
-                floating: true,
-                pinned: true,
+                expandedHeight: MediaQuery.of(context).size.height * 0.16,
+                floating: false,
+                pinned: false,
                 backgroundColor: Theme.of(context).colorScheme.background,
                 flexibleSpace: FlexibleSpaceBar(
                   centerTitle: false,
@@ -168,6 +168,13 @@ class MyHomePageState extends State<MyHomePage>
                                   color: primaryColor,
                                   fontFamily: 'Sansilk',
                                   fontWeight: FontWeight.w200,
+                                  shadows: [
+                                    Shadow(
+                                      offset: Offset(0, 4),
+                                      blurRadius: 8,
+                                      color: primaryColor.withOpacity(0.4),
+                                    ),
+                                  ],
                                 ),
                               ),
                               _buildSearchWidget(),
@@ -181,10 +188,9 @@ class MyHomePageState extends State<MyHomePage>
               ),
               SliverAppBar(
                 backgroundColor: Theme.of(context).colorScheme.background,
-
                 elevation: 0,
                 // forceMaterialTransparency: true,
-                pinned: false,
+                pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
                   background: TabBar(
                     dividerColor: Colors.transparent,
@@ -213,11 +219,17 @@ class MyHomePageState extends State<MyHomePage>
         Visibility(
           visible: !isSearchVisible,
           child: IconButton(
-            icon: Icon(
-              IconlyBold.search,
-              color: primaryColor,
-              size: 28,
-            ),
+            icon: isSearchVisible
+                ? Icon(
+                    IconlyBold.search,
+                    color: primaryColor,
+                    size: 28,
+                  )
+                : Icon(
+                    IconlyLight.search,
+                    color: primaryColor,
+                    size: 26,
+                  ),
             onPressed: () {
               setState(() {
                 isSearchVisible = true;
@@ -236,26 +248,25 @@ class MyHomePageState extends State<MyHomePage>
                   height: 44,
                   child: TextField(
                     controller: _searchController,
-                    style: TextStyle(color: backgroundColor),
+                    style: TextStyle(color: primaryColor),
                     decoration: InputDecoration(
                       hintText: 'Search...',
-                      hintStyle:
-                          TextStyle(fontSize: 14, color: backgroundColor),
+                      hintStyle: TextStyle(fontSize: 14, color: primaryColor),
                       filled: true,
-                      fillColor: primaryColor,
+                      fillColor: Colors.transparent,
                       contentPadding: const EdgeInsets.all(14.0),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                        borderSide: BorderSide(color: primaryColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
-                        borderSide: BorderSide(color: backgroundColor),
+                        borderSide: BorderSide(color: primaryColor),
                       ),
                       suffixIcon: IconButton(
                         icon: const Icon(
                           Icons.close,
-                          color: Colors.grey,
+                          color: Colors.red,
                         ),
                         onPressed: () {
                           setState(() {
@@ -326,9 +337,9 @@ class MyHomePageState extends State<MyHomePage>
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 4.0, horizontal: 4.0),
+                      vertical: 8.0, horizontal: 8.0),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(30),
                     child: LocationListItem(
                       imageUrl: wallpapers[index].thumbnailUrl,
                       scrollController: scrollController,

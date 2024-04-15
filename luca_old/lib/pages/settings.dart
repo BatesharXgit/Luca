@@ -174,8 +174,7 @@ class _SettingsPageState extends State<SettingsPage> {
         .then()
         .tint(color: const Color(0xFF80DDFF))
         .then()
-        .blurXY(end: 24)
-        .fadeOut();
+        .blurXY(end: 24);
 
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
@@ -212,17 +211,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 children: [
                   const SizedBox(height: 20),
-                  // Text(
-                  //   'Luca',
-                  //   style: TextStyle(
-                  //     fontFamily: 'Sansilk',
-                  //     color: primaryColor,
-                  //     fontSize: 74,
-                  //   ),
-                  // ),
+              
                   title,
                   Text(
-                    'Harmonize Your Experience!',
+                    'Customize Your Experience!',
                     style: TextStyle(color: secondaryColor),
                   ),
                   const SizedBox(height: 20),

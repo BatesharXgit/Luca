@@ -9,13 +9,11 @@ class DownloadAndUpload extends StatelessWidget {
   Future<void> uploadImageAndCreateDocument(String imageUrl,
       String thumbnailUrl, String title, String selectedUploader) async {
     try {
-      // Reference to the "test" collection
       CollectionReference testCollectionRef =
           FirebaseFirestore.instance.collection('Categories');
 
-      // Reference to the "images" subcollection within the "test" collection
       CollectionReference imagesCollectionRef =
-          testCollectionRef.doc('Animals').collection('AnimalsImages');
+          testCollectionRef.doc('Superhero').collection('SuperheroImages');
 
       // Add document to the "images" subcollection
       await imagesCollectionRef.add({
@@ -35,7 +33,7 @@ class DownloadAndUpload extends StatelessWidget {
     try {
       // Get reference to the "wallpapers" folder in Firebase Storage
       Reference storageRef =
-          FirebaseStorage.instance.ref().child('Categories/Animals');
+          FirebaseStorage.instance.ref().child('Categories/Superhero');
 
       // List all items (files and subfolders) in the "wallpapers" folder
       ListResult result = await storageRef.listAll();
@@ -71,7 +69,7 @@ class DownloadAndUpload extends StatelessWidget {
         // Download image from Firebase Storage
         Reference storageRef = FirebaseStorage.instance
             .ref()
-            .child('Categories/Animals/$imageName');
+            .child('Categories/Superhero/$imageName');
 
         // Upload image to Firestore
         final imageUrl = await storageRef.getDownloadURL();
