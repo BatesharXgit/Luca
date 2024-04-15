@@ -17,7 +17,9 @@ import 'package:luca/services/admob_service.dart';
 List<Wallpaper> wallpapers = [];
 
 class MyHomePage extends StatefulWidget {
+  final ScrollController controller;
   const MyHomePage({
+    required this.controller,
     Key? key,
   }) : super(key: key);
 
@@ -187,18 +189,22 @@ class MyHomePageState extends State<MyHomePage>
                 ),
               ),
               SliverAppBar(
-                backgroundColor: Theme.of(context).colorScheme.background,
+                forceMaterialTransparency: true,
                 elevation: 0,
                 // forceMaterialTransparency: true,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
-                  background: TabBar(
-                    dividerColor: Colors.transparent,
-                    controller: _tabController,
-                    tabs: [
-                      Tab(text: 'Recent'),
-                      Tab(text: 'Random'),
-                    ],
+                  background: Container(
+                    color: Theme.of(context).colorScheme.background,
+                    width: double.infinity,
+                    child: TabBar(
+                      dividerColor: Colors.transparent,
+                      controller: _tabController,
+                      tabs: [
+                        Tab(text: 'Recent'),
+                        Tab(text: 'Random'),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -211,7 +217,6 @@ class MyHomePageState extends State<MyHomePage>
   }
 
   Widget _buildSearchWidget() {
-    Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -319,39 +324,42 @@ class MyHomePageState extends State<MyHomePage>
   }
 
   Widget _buildImageGridFromRef(Reference imageRef) {
-    return CustomScrollView(
-      physics: const ClampingScrollPhysics(),
-      slivers: <Widget>[
-        SliverGrid(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.7,
-          ),
-          delegate: SliverChildBuilderDelegate(
-            (BuildContext context, int index) {
-              return GestureDetector(
-                onTap: () {
-                  // _showInterstitialAd();
-                  Get.to(ApplyWallpaperPage(imageUrl: wallpapers[index].url),
-                      transition: Transition.downToUp);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30),
-                    child: LocationListItem(
-                      imageUrl: wallpapers[index].thumbnailUrl,
-                      scrollController: scrollController,
+    return Padding(
+      padding: const EdgeInsets.only(left: 14, right: 14),
+      child: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: <Widget>[
+          SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.65,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    // _showInterstitialAd();
+                    Get.to(ApplyWallpaperPage(imageUrl: wallpapers[index].url),
+                        transition: Transition.downToUp);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 6.0, horizontal: 6.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(26),
+                      child: LocationListItem(
+                        imageUrl: wallpapers[index].thumbnailUrl,
+                        scrollController: scrollController,
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-            childCount: wallpapers.length,
+                );
+              },
+              childCount: wallpapers.length,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

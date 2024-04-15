@@ -5,7 +5,7 @@ import 'package:flutter/rendering.dart';
 
 typedef BackToTopIconBuilder = Widget Function(double width, double height);
 
-class BottomBavBar extends StatefulWidget {
+class BottomBar extends StatefulWidget {
   final Widget Function(BuildContext context, ScrollController controller) body;
   final Widget child;
   final BackToTopIconBuilder? icon;
@@ -32,7 +32,7 @@ class BottomBavBar extends StatefulWidget {
   final StackFit fit;
   final Clip clip;
 
-  const BottomBavBar({
+  const BottomBar({
     required this.body,
     required this.child,
     this.icon,
@@ -64,10 +64,10 @@ class BottomBavBar extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _BottomBavBarState createState() => _BottomBavBarState();
+  _BottomBarState createState() => _BottomBarState();
 }
 
-class _BottomBavBarState extends State<BottomBavBar>
+class _BottomBarState extends State<BottomBar>
     with SingleTickerProviderStateMixin {
   ScrollController scrollBottomBarController = ScrollController();
   late AnimationController _controller;
@@ -199,62 +199,52 @@ class _BottomBavBarState extends State<BottomBavBar>
                         ),
                     padding: EdgeInsets.zero,
                     margin: EdgeInsets.zero,
-                    child: ClipRRect(
-                      borderRadius: widget.borderRadius,
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                        child: ClipOval(
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                scrollBottomBarController
-                                    .animateTo(
-                                  (!widget.scrollOpposite)
-                                      ? scrollBottomBarController
-                                          .position.minScrollExtent
-                                      : scrollBottomBarController
-                                          .position.maxScrollExtent,
-                                  duration: widget.duration,
-                                  curve: widget.curve,
-                                )
-                                    .then((value) {
-                                  if (mounted) {
-                                    setState(() {
-                                      isOnTop = true;
-                                      isScrollingDown = false;
-                                    });
-                                  }
-                                  showBottomBar();
+                    child: ClipOval(
+                      child: Material(
+                        color: widget.barColor,
+                        child: InkWell(
+                          onTap: () {
+                            scrollBottomBarController
+                                .animateTo(
+                              (!widget.scrollOpposite)
+                                  ? scrollBottomBarController
+                                      .position.minScrollExtent
+                                  : scrollBottomBarController
+                                      .position.maxScrollExtent,
+                              duration: widget.duration,
+                              curve: widget.curve,
+                            )
+                                .then((value) {
+                              if (mounted) {
+                                setState(() {
+                                  isOnTop = true;
+                                  isScrollingDown = false;
                                 });
-                              },
-                              child: () {
-                                if (widget.icon != null) {
-                                  return widget.icon!(
-                                      isOnTop == true
-                                          ? 0
-                                          : widget.iconWidth / 2,
-                                      isOnTop == true
-                                          ? 0
-                                          : widget.iconHeight / 2);
-                                } else {
-                                  return Center(
-                                    child: IconButton(
-                                      padding: EdgeInsets.zero,
-                                      onPressed: null,
-                                      icon: Icon(
-                                        Icons.arrow_upward_rounded,
-                                        color: Color(0xff131321),
-                                        size: isOnTop == true
-                                            ? 0
-                                            : widget.iconWidth / 2,
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }(),
-                            ),
-                          ),
+                              }
+                              showBottomBar();
+                            });
+                          },
+                          child: () {
+                            if (widget.icon != null) {
+                              return widget.icon!(
+                                  isOnTop == true ? 0 : widget.iconWidth / 2,
+                                  isOnTop == true ? 0 : widget.iconHeight / 2);
+                            } else {
+                              return Center(
+                                child: IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: null,
+                                  icon: Icon(
+                                    Icons.arrow_upward_rounded,
+                                    color: Color(0xff131321),
+                                    size: isOnTop == true
+                                        ? 0
+                                        : widget.iconWidth / 2,
+                                  ),
+                                ),
+                              );
+                            }
+                          }(),
                         ),
                       ),
                     ),
