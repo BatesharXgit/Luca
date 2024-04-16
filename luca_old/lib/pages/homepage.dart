@@ -14,8 +14,6 @@ import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:luca/services/admob_service.dart';
 
-List<Wallpaper> wallpapers = [];
-
 class MyHomePage extends StatefulWidget {
   final ScrollController controller;
   const MyHomePage({
@@ -36,6 +34,7 @@ class MyHomePageState extends State<MyHomePage>
 
   final Reference wallpaperRef = storage.ref().child('wallpaper');
   List<Reference> wallpaperRefs = [];
+  List<Wallpaper> wallpapers = [];
 
   String? userPhotoUrl;
 
@@ -139,7 +138,7 @@ class MyHomePageState extends State<MyHomePage>
       backgroundColor: backgroundColor,
       body: SafeArea(
         child: NestedScrollView(
-          // controller: widget.controller,
+          controller: widget.controller,
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
@@ -339,7 +338,11 @@ class MyHomePageState extends State<MyHomePage>
                 return GestureDetector(
                   onTap: () {
                     // _showInterstitialAd();
-                    Get.to(ApplyWallpaperPage(imageUrl: wallpapers[index].url),
+                    Get.to(
+                        ApplyWallpaperPage(
+                          currentIndex: index,
+                          wallpapers: wallpapers,
+                        ),
                         transition: Transition.downToUp);
                   },
                   child: Padding(

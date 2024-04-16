@@ -14,7 +14,7 @@ class Components {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ApplyWallpaperPage(imageUrl: imageUrl),
+                builder: (context) => ApplyWallpaperPage(wallpapers: [],),
               ),
             );
           },

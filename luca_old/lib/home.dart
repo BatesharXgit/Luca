@@ -40,26 +40,7 @@ class LucaHomeState extends State<LucaHome>
     });
   }
 
-  Color homeColor = const Color.fromARGB(255, 175, 202, 0);
-
-  Color searchColor = const Color.fromARGB(255, 59, 255, 226);
-  Color videoColor = Colors.blue;
-  Color heartColor = Colors.red;
   Color unselectedColor = Colors.grey;
-  Color _getIndicatorColor(int page) {
-    switch (page) {
-      case 0:
-        return homeColor;
-      case 1:
-        return searchColor;
-      case 2:
-        return videoColor;
-      case 3:
-        return heartColor;
-      default:
-        return unselectedColor;
-    }
-  }
 
   // @override
   // void dispose() {
@@ -114,9 +95,12 @@ class LucaHomeState extends State<LucaHome>
                 MyHomePage(controller: controller),
                 // WallpaperScreen(controller: controller),
                 // ImageScreen(),
-                Category(),
-                LiveWallBeta(),
-                FavoriteImagesPage(),
+                // const Category(),
+
+                // const LiveWallBeta(),
+                const FavoriteImagesPage(),
+                const FavoriteImagesPage(),
+                const FavoriteImagesPage(),
               ],
             ),
             child: TabBar(
@@ -125,8 +109,8 @@ class LucaHomeState extends State<LucaHome>
               controller: tabController,
               indicator: UnderlineTabIndicator(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide(
-                      color: _getIndicatorColor(currentPage), width: 6),
+                  borderSide:
+                      const BorderSide(color: Color(0xff04ff0d), width: 6),
                   insets: const EdgeInsets.fromLTRB(16, 0, 16, 8)),
               tabs: [
                 SizedBox(
@@ -135,7 +119,9 @@ class LucaHomeState extends State<LucaHome>
                   child: Center(
                       child: Icon(
                     IconlyBold.home,
-                    color: currentPage == 0 ? homeColor : unselectedColor,
+                    color: currentPage == 0
+                        ? const Color(0xff04ff0d)
+                        : unselectedColor,
                     size: currentPage == 0 ? 32 : 28,
                     // color: Colors.black,
                   )),
@@ -146,7 +132,9 @@ class LucaHomeState extends State<LucaHome>
                   child: Center(
                       child: Icon(
                     IconlyBold.category,
-                    color: currentPage == 1 ? searchColor : unselectedColor,
+                    color: currentPage == 1
+                        ? const Color(0xff04ff0d)
+                        : unselectedColor,
                     size: currentPage == 1 ? 32 : 28,
                   )),
                 ),
@@ -156,7 +144,9 @@ class LucaHomeState extends State<LucaHome>
                   child: Center(
                       child: Icon(
                     IconlyBold.video,
-                    color: currentPage == 2 ? videoColor : unselectedColor,
+                    color: currentPage == 2
+                        ? const Color(0xff04ff0d)
+                        : unselectedColor,
                     size: currentPage == 2 ? 32 : 28,
                   )),
                 ),
@@ -166,22 +156,15 @@ class LucaHomeState extends State<LucaHome>
                   child: Center(
                       child: Icon(
                     IconlyBold.heart,
-                    color: currentPage == 3 ? heartColor : unselectedColor,
+                    color: currentPage == 3
+                        ? const Color(0xff04ff0d)
+                        : unselectedColor,
                     size: currentPage == 3 ? 32 : 28,
                   )),
                 ),
               ],
             ),
           ),
-          // Positioned(
-          //     bottom: 100,
-          //     right: 10,
-          //     left: 10,
-          //     child: Container(
-          //       width: 200,
-          //       height: 50,
-          //       color: Colors.red,
-          //     ))
         ],
       ),
     );

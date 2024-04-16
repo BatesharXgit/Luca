@@ -13,6 +13,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:luca/data/home_data.dart';
+import 'package:luca/data/wallpaper.dart';
+import 'package:luca/pages/homepage.dart';
 import 'package:luca/services/admob_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/rendering.dart';
@@ -21,9 +24,11 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 
 class ApplyWallpaperPage extends StatefulWidget {
-  final String imageUrl;
+  final int? currentIndex;
+  final List<Wallpaper> wallpapers;
 
-  const ApplyWallpaperPage({Key? key, required this.imageUrl})
+  const ApplyWallpaperPage(
+      {Key? key, required this.wallpapers, this.currentIndex})
       : super(key: key);
 
   @override
@@ -32,6 +37,8 @@ class ApplyWallpaperPage extends StatefulWidget {
 }
 
 class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
+  int _currentIndex = 0;
+  late List<Wallpaper> _wallpapers;
   late ConfettiController _controllerCenter;
 
   final ScrollController _scrollController = ScrollController();
@@ -46,6 +53,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     _loadFavoriteImages();
     _createBannerAd();
     _createInterstitialAd();
+    _currentIndex = widget.currentIndex!;
+    _wallpapers = widget.wallpapers!;
     // _loadRewardedAd();
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 10));
@@ -178,7 +187,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       );
 
       bool success = await AsyncWallpaper.setWallpaper(
-        url: widget.imageUrl,
+        url: _wallpapers[index].url,
         wallpaperLocation: AsyncWallpaper.HOME_SCREEN,
         goToHome: false,
       );
@@ -224,7 +233,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       );
 
       bool success = await AsyncWallpaper.setWallpaper(
-        url: widget.imageUrl,
+        url: _wallpapers[index].url,
         wallpaperLocation: AsyncWallpaper.LOCK_SCREEN,
         goToHome: false,
       );
@@ -273,7 +282,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       );
 
       bool success = await AsyncWallpaper.setWallpaper(
-        url: widget.imageUrl,
+        url: _wallpapers[index].url,
         wallpaperLocation: AsyncWallpaper.BOTH_SCREENS,
         goToHome: false,
       );
@@ -513,36 +522,46 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
             children: [
               GestureDetector(
                 onTap: toggleWidgetsVisibility,
+                onVerticalDragEnd: (DragEndDetails details) {
+                  if (details.primaryVelocity! > 0) {
+                    setState(() {
+                      _currentIndex--;
+                    });
+                  } else if (details.primaryVelocity! < 0) {
+                    setState(() {
+                      _currentIndex++;
+                    });
+                  }
+                },
                 child: Hero(
-                  tag: widget.imageUrl,
+                  tag: _wallpapers[index].url,
                   child: RepaintBoundary(
                     key: _globalKey,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: CachedNetworkImage(
-                        imageUrl: widget.imageUrl,
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.high,
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) {
-                          if (downloadProgress.progress == 1.0) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            );
-                          } else {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: Theme.of(context).colorScheme.primary,
-                                value: downloadProgress.progress,
-                              ),
-                            );
-                          }
-                        },
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                      ),
+                    child: CachedNetworkImage(
+                      height: double.infinity,
+                      width: double.infinity,
+                      imageUrl: _wallpapers[_currentIndex].url,
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) {
+                        if (downloadProgress.progress == 1.0) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          );
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.primary,
+                              value: downloadProgress.progress,
+                            ),
+                          );
+                        }
+                      },
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                   ),
                 ),
@@ -596,17 +615,18 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                             onPressed: () {
                               _showInterstitialAd();
                               setState(() {
-                                if (favoriteImages.contains(widget.imageUrl)) {
-                                  favoriteImages.remove(widget.imageUrl);
+                                if (favoriteImages
+                                    .contains(_wallpapers[index].url)) {
+                                  favoriteImages.remove(_wallpapers[index].url);
                                 } else {
-                                  favoriteImages.add(widget.imageUrl);
+                                  favoriteImages.add(_wallpapers[index].url);
                                 }
                               });
                               _prefs.setStringList(
                                   'favoriteImages', favoriteImages);
                             },
                             icon: Icon(
-                              favoriteImages.contains(widget.imageUrl)
+                              favoriteImages.contains(_wallpapers[index].url)
                                   ? IconlyBold.heart
                                   : IconlyLight.heart,
                               color: Theme.of(context).iconTheme.color,
@@ -675,14 +695,14 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
           ),
         ),
       ),
-      bottomNavigationBar: _banner != null
-          ? SizedBox(
-              height: 52,
-              child: AdWidget(ad: _banner!),
-            )
-          : const SizedBox(
-              height: 0,
-            ),
+      // bottomNavigationBar: _banner != null
+      //     ? SizedBox(
+      //         height: 52,
+      //         child: AdWidget(ad: _banner!),
+      //       )
+      //     : const SizedBox(
+      //         height: 0,
+      //       ),
     );
   }
 }

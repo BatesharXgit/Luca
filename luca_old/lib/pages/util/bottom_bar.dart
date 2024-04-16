@@ -266,28 +266,14 @@ class _BottomBarState extends State<BottomBar>
                       color: Colors.transparent,
                       borderRadius: widget.borderRadius,
                     ),
-                child: ClipRRect(
-                  borderRadius: widget.borderRadius,
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                    child: Container(
-                      width: widget.width,
-                      decoration: widget.barDecoration ??
-                          BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: widget.borderRadius,
-                          ),
-                      child: Container(
-                        width: widget.width,
-                        decoration: widget.barDecoration ??
-                            BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: widget.borderRadius,
-                            ),
-                        child: widget.child,
+                child: Container(
+                  width: widget.width,
+                  decoration: widget.barDecoration ??
+                      BoxDecoration(
+                        color: widget.barColor,
+                        borderRadius: widget.borderRadius,
                       ),
-                    ),
-                  ),
+                  child: widget.child,
                 ),
               ),
             ),

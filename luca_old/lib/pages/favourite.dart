@@ -66,7 +66,8 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ApplyWallpaperPage(
-                              imageUrl: favoriteImages[index]),
+                            wallpapers: [],
+                          ),
                         ),
                       );
                     },
