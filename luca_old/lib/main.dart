@@ -56,8 +56,8 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: lightTheme,
       darkTheme: darkTheme,
-      home: const AuthPage(),
-      // home: DownloadAndUpload(),
+      // home: const AuthPage(),
+      home: DownloadAndUpload(),
       navigatorKey: navigatorKey,
       routes: {
         'notification_screen': (context) => const NotificationsPage(),

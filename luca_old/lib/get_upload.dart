@@ -87,24 +87,72 @@ class DownloadAndUpload extends StatelessWidget {
             imageUrl, thumbnailUrl, title, selectedUploader);
 
         print('Image $imageName downloaded and uploaded successfully!');
-        print('Image URL: $imageUrl'); // Print the image URL
-        print('Thumbnail URL: $thumbnailUrl'); // Print the thumbnail URL
+        print('Image URL: $imageUrl'); 
+        print('Thumbnail URL: $thumbnailUrl'); 
       }
     } catch (e) {
       print('Error downloading and uploading images: $e');
     }
   }
 
+  void _fetchAndUploadWallpapers() async {
+    try {
+      // Reference to the "Categories" collection
+      CollectionReference categoriesCollectionRef =
+          FirebaseFirestore.instance.collection('Categories');
+
+      // Reference to the "IllustrationImages" subcollection within the "Illustration" category
+      CollectionReference imagesCollectionRef = categoriesCollectionRef
+          .doc('Illustration')
+          .collection('IllustrationImages');
+
+      // Get documents from the "IllustrationImages" subcollection
+      QuerySnapshot snapshot = await imagesCollectionRef.get();
+
+      // Upload documents to the "homepageimages" collection
+      CollectionReference homepageImagesCollectionRef =
+          FirebaseFirestore.instance.collection('homepageimages');
+
+      snapshot.docs.forEach((doc) async {
+        try {
+          await homepageImagesCollectionRef.add({
+            'title': doc['title'],
+            'url': doc['url'],
+            'thumbnailUrl': doc['thumbnailUrl'],
+            'uploaderName': doc['uploaderName'],
+          });
+        } catch (e) {
+          print('Error uploading document: $e');
+        }
+      });
+    } catch (e) {
+      print('Error fetching wallpapers: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {
-            List<String> imageNames = await getImageNamesFromStorage();
-            await downloadAndUploadImages(imageNames);
-          },
-          child: Text("Download and Upload"),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  List<String> imageNames = await getImageNamesFromStorage();
+                  await downloadAndUploadImages(imageNames);
+                },
+                child: Text("Download and Upload"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _fetchAndUploadWallpapers();
+                },
+                child: Text("Add to HomePage"),
+              ),
+            ],
+          ),
         ),
       ),
     );

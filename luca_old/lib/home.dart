@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
+import 'package:luca/get_upload.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/live_wall.dart';
@@ -98,7 +99,7 @@ class LucaHomeState extends State<LucaHome>
                 // const Category(),
 
                 // const LiveWallBeta(),
-                const FavoriteImagesPage(),
+                const DownloadAndUpload(),
                 const FavoriteImagesPage(),
                 const FavoriteImagesPage(),
               ],

@@ -193,7 +193,7 @@ class MyHomePageState extends State<MyHomePage>
                                   fontWeight: FontWeight.w200,
                                   shadows: [
                                     Shadow(
-                                      offset: Offset(0, 4),
+                                      offset: const Offset(0, 4),
                                       blurRadius: 8,
                                       color: primaryColor.withOpacity(0.4),
                                     ),
@@ -204,7 +204,7 @@ class MyHomePageState extends State<MyHomePage>
                             ],
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         _buildCarouselSlider(),
@@ -225,7 +225,7 @@ class MyHomePageState extends State<MyHomePage>
                     child: TabBar(
                       dividerColor: Colors.transparent,
                       controller: _tabController,
-                      tabs: [
+                      tabs: const [
                         Tab(text: 'Recent'),
                         Tab(text: 'Random'),
                       ],
@@ -488,7 +488,7 @@ class MyHomePageState extends State<MyHomePage>
         physics: const ClampingScrollPhysics(),
         slivers: <Widget>[
           SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.65,
             ),
@@ -533,7 +533,7 @@ class MyHomePageState extends State<MyHomePage>
           height: MediaQuery.of(context).size.height,
           child: _buildImageGridFromRef(wallpaperRef),
         ),
-        Center(child: Text('Content of Tab 2')),
+        const Center(child: Text('Content of Tab 2')),
       ],
     );
   }

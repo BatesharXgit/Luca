@@ -178,75 +178,68 @@ class _BottomBarState extends State<BottomBar>
         ),
         if (widget.showIcon)
           Padding(
-            padding: const EdgeInsets.only(right: 10.0, bottom: 10),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                padding: EdgeInsets.all(widget.offset),
-                child: AnimatedOpacity(
-                  duration: widget.duration,
-                  curve: widget.curve,
-                  opacity: isOnTop == true ? 0 : 1,
-                  child: AnimatedContainer(
-                    duration: widget.duration,
-                    curve: widget.curve,
-                    width: isOnTop == true ? 0 : widget.iconWidth,
-                    height: isOnTop == true ? 0 : widget.iconHeight,
-                    decoration: widget.iconDecoration ??
-                        BoxDecoration(
-                          color: widget.barColor,
-                          shape: BoxShape.circle,
-                        ),
-                    padding: EdgeInsets.zero,
-                    margin: EdgeInsets.zero,
-                    child: ClipOval(
-                      child: Material(
-                        color: widget.barColor,
-                        child: InkWell(
-                          onTap: () {
-                            scrollBottomBarController
-                                .animateTo(
-                              (!widget.scrollOpposite)
-                                  ? scrollBottomBarController
-                                      .position.minScrollExtent
-                                  : scrollBottomBarController
-                                      .position.maxScrollExtent,
-                              duration: widget.duration,
-                              curve: widget.curve,
-                            )
-                                .then((value) {
-                              if (mounted) {
-                                setState(() {
-                                  isOnTop = true;
-                                  isScrollingDown = false;
-                                });
-                              }
-                              showBottomBar();
+            padding: EdgeInsets.all(widget.offset),
+            child: AnimatedOpacity(
+              duration: widget.duration,
+              curve: widget.curve,
+              opacity: isOnTop == true ? 0 : 1,
+              child: AnimatedContainer(
+                duration: widget.duration,
+                curve: widget.curve,
+                width: isOnTop == true ? 0 : widget.iconWidth,
+                height: isOnTop == true ? 0 : widget.iconHeight,
+                decoration: widget.iconDecoration ??
+                    BoxDecoration(
+                      color: widget.barColor,
+                      shape: BoxShape.circle,
+                    ),
+                padding: EdgeInsets.zero,
+                margin: EdgeInsets.zero,
+                child: ClipOval(
+                  child: Material(
+                    color: widget.barColor,
+                    child: InkWell(
+                      onTap: () {
+                        scrollBottomBarController
+                            .animateTo(
+                          (!widget.scrollOpposite)
+                              ? scrollBottomBarController
+                                  .position.minScrollExtent
+                              : scrollBottomBarController
+                                  .position.maxScrollExtent,
+                          duration: widget.duration,
+                          curve: widget.curve,
+                        )
+                            .then((value) {
+                          if (mounted) {
+                            setState(() {
+                              isOnTop = true;
+                              isScrollingDown = false;
                             });
-                          },
-                          child: () {
-                            if (widget.icon != null) {
-                              return widget.icon!(
-                                  isOnTop == true ? 0 : widget.iconWidth / 2,
-                                  isOnTop == true ? 0 : widget.iconHeight / 2);
-                            } else {
-                              return Center(
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: null,
-                                  icon: Icon(
-                                    Icons.arrow_upward_rounded,
-                                    color: Color(0xff131321),
-                                    size: isOnTop == true
-                                        ? 0
-                                        : widget.iconWidth / 2,
-                                  ),
-                                ),
-                              );
-                            }
-                          }(),
-                        ),
-                      ),
+                          }
+                          showBottomBar();
+                        });
+                      },
+                      child: () {
+                        if (widget.icon != null) {
+                          return widget.icon!(
+                              isOnTop == true ? 0 : widget.iconWidth / 2,
+                              isOnTop == true ? 0 : widget.iconHeight / 2);
+                        } else {
+                          return Center(
+                            child: IconButton(
+                              padding: EdgeInsets.zero,
+                              onPressed: null,
+                              icon: Icon(
+                                Icons.arrow_upward_rounded,
+                                color: Color(0xff131321),
+                                size:
+                                    isOnTop == true ? 0 : widget.iconWidth / 2,
+                              ),
+                            ),
+                          );
+                        }
+                      }(),
                     ),
                   ),
                 ),
