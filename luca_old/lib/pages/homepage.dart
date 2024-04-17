@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
 import 'package:luca/data/wallpaper.dart';
@@ -39,6 +43,23 @@ class MyHomePageState extends State<MyHomePage>
   String? userPhotoUrl;
 
   int index = 0;
+  List<String> kImages = [
+    'assets/slider/editor.jpg',
+    'assets/slider/animals.jpg',
+    'assets/slider/games.jpg',
+    'assets/slider/nature.jpg',
+    'assets/slider/anime.jpg',
+    'assets/slider/amoled.jpg'
+  ];
+
+  List<String> kNames = [
+    'Editor\'s Pick',
+    'Animals',
+    'Games',
+    'Nature',
+    'Anime',
+    'Amoled',
+  ];
 
   @override
   void initState() {
@@ -56,8 +77,9 @@ class MyHomePageState extends State<MyHomePage>
           FirebaseFirestore.instance.collection('Categories');
 
       // Reference to the "images" subcollection within the "test" collection
-      CollectionReference imagesCollectionRef =
-          testCollectionRef.doc('Superhero').collection('SuperheroImages');
+      CollectionReference imagesCollectionRef = testCollectionRef
+          .doc('Illustration')
+          .collection('IllustrationImages');
 
       // Get documents from the "images" subcollection
       QuerySnapshot snapshot = await imagesCollectionRef.get();
@@ -143,7 +165,7 @@ class MyHomePageState extends State<MyHomePage>
             return <Widget>[
               SliverAppBar(
                 forceMaterialTransparency: true,
-                expandedHeight: MediaQuery.of(context).size.height * 0.16,
+                expandedHeight: MediaQuery.of(context).size.height * 0.40,
                 floating: false,
                 pinned: false,
                 backgroundColor: Theme.of(context).colorScheme.background,
@@ -182,6 +204,10 @@ class MyHomePageState extends State<MyHomePage>
                             ],
                           ),
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        _buildCarouselSlider(),
                       ],
                     ),
                   ),
@@ -211,6 +237,139 @@ class MyHomePageState extends State<MyHomePage>
           },
           body: _buildTabViews(),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCarouselSlider() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: CarouselSlider(
+        options: CarouselOptions(
+          scrollPhysics: const BouncingScrollPhysics(),
+          height: MediaQuery.of(context).size.height * 0.26,
+          autoPlay: true,
+          autoPlayInterval: const Duration(seconds: 10),
+          enlargeCenterPage: true,
+          viewportFraction: 0.8,
+          enlargeFactor: 0.2,
+        ),
+        items: kImages.asMap().entries.map((entry) {
+          int index = entry.key;
+          String imageUrl = entry.value;
+
+          return Builder(
+            builder: (BuildContext context) {
+              return GestureDetector(
+                onTap: () {
+                  _showInterstitialAd();
+
+                  if (index == 0) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'editors',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 1) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'animals',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 2) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'games',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 3) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'nature',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 4) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'anime',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  } else if (index == 5) {
+                    Get.to(
+                        const WallpapersCategory(
+                          category: 'amoled',
+                        ),
+                        transition: Transition.rightToLeftWithFade);
+                  }
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        image: DecorationImage(
+                          image: AssetImage(imageUrl),
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.high,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: -1,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height * 0.072,
+                        decoration: const BoxDecoration(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(20),
+                            bottomRight: Radius.circular(20),
+                          ),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.4),
+                                  borderRadius: const BorderRadius.only(
+                                    bottomLeft: Radius.circular(20),
+                                    bottomRight: Radius.circular(20),
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      spreadRadius: 5,
+                                      blurRadius: 7,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    kNames[index],
+                                    style: GoogleFonts.kanit(
+                                        color: Colors.white, fontSize: 26),
+                                  ),
+                                )),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        }).toList(),
       ),
     );
   }
