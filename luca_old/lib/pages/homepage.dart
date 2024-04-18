@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -36,9 +37,10 @@ class MyHomePageState extends State<MyHomePage>
   final TextEditingController _searchController = TextEditingController();
   late TabController _tabController;
 
-  final Reference wallpaperRef = storage.ref().child('wallpaper');
+  // final Reference wallpaperRef = storage.ref().child('wallpaper');
   List<Reference> wallpaperRefs = [];
   List<Wallpaper> wallpapers = [];
+  List<Wallpaper> randomWallpapers = [];
 
   String? userPhotoUrl;
 
@@ -67,6 +69,7 @@ class MyHomePageState extends State<MyHomePage>
     _createInterstitialAd();
     fetchUserProfileData();
     _fetchWallpapers();
+    _fetchRandomWallpapers();
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -77,9 +80,8 @@ class MyHomePageState extends State<MyHomePage>
           FirebaseFirestore.instance.collection('Categories');
 
       // Reference to the "images" subcollection within the "test" collection
-      CollectionReference imagesCollectionRef = testCollectionRef
-          .doc('Illustration')
-          .collection('IllustrationImages');
+      CollectionReference imagesCollectionRef =
+          testCollectionRef.doc('Cars').collection('CarsImages');
 
       // Get documents from the "images" subcollection
       QuerySnapshot snapshot = await imagesCollectionRef.get();
@@ -96,6 +98,40 @@ class MyHomePageState extends State<MyHomePage>
       });
     } catch (e) {
       print('Error fetching wallpapers: $e');
+    }
+  }
+
+  void _fetchRandomWallpapers() async {
+    try {
+      CollectionReference categoriesCollectionRef =
+          FirebaseFirestore.instance.collection('Categories');
+
+      QuerySnapshot categoriesSnapshot = await categoriesCollectionRef.get();
+      List<String> categoryIds =
+          categoriesSnapshot.docs.map((doc) => doc.id).toList();
+      String randomCategoryId =
+          categoryIds[Random().nextInt(categoryIds.length)];
+      CollectionReference imagesCollectionRef = categoriesCollectionRef
+          .doc(randomCategoryId)
+          .collection('IllustrationImages');
+
+      QuerySnapshot snapshot = await imagesCollectionRef
+          .orderBy('createdAt', descending: true)
+          .limit(10)
+          .get();
+
+      setState(() {
+        wallpapers = snapshot.docs.map((doc) {
+          return Wallpaper(
+            title: doc['title'],
+            url: doc['url'],
+            thumbnailUrl: doc['thumbnailUrl'],
+            uploaderName: doc['uploaderName'],
+          );
+        }).toList();
+      });
+    } catch (e) {
+      print('Error fetching random wallpapers: $e');
     }
   }
 
@@ -481,7 +517,7 @@ class MyHomePageState extends State<MyHomePage>
     );
   }
 
-  Widget _buildImageGridFromRef(Reference imageRef) {
+  Widget _buildImageGridFromRef() {
     return Padding(
       padding: const EdgeInsets.only(left: 14, right: 14),
       child: CustomScrollView(
@@ -525,15 +561,62 @@ class MyHomePageState extends State<MyHomePage>
     );
   }
 
+  Widget _buildImageGridFromRef1() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 14, right: 14),
+      child: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: <Widget>[
+          SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.65,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    // _showInterstitialAd();
+                    Get.to(
+                        ApplyWallpaperPage(
+                          currentIndex: index,
+                          wallpapers: randomWallpapers,
+                        ),
+                        transition: Transition.downToUp);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 6.0, horizontal: 6.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(26),
+                      child: LocationListItem(
+                        imageUrl: randomWallpapers[index].thumbnailUrl,
+                        scrollController: scrollController,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              childCount: randomWallpapers.length,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTabViews() {
     return TabBarView(
       controller: _tabController,
       children: [
         SizedBox(
           height: MediaQuery.of(context).size.height,
-          child: _buildImageGridFromRef(wallpaperRef),
+          child: _buildImageGridFromRef(),
         ),
-        const Center(child: Text('Content of Tab 2')),
+        SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: _buildImageGridFromRef1(),
+        ),
       ],
     );
   }

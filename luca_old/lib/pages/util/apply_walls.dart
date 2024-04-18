@@ -552,10 +552,17 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                             ),
                           );
                         } else {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: Theme.of(context).colorScheme.primary,
-                              value: downloadProgress.progress,
+                          return Container(
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: CachedNetworkImageProvider(
+                                        _wallpapers[_currentIndex]
+                                            .thumbnailUrl))),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Theme.of(context).colorScheme.primary,
+                                value: downloadProgress.progress,
+                              ),
                             ),
                           );
                         }

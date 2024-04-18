@@ -99,7 +99,7 @@ class LucaHomeState extends State<LucaHome>
                 // const Category(),
 
                 // const LiveWallBeta(),
-                const DownloadAndUpload(),
+                const FavoriteImagesPage(),
                 const FavoriteImagesPage(),
                 const FavoriteImagesPage(),
               ],
