@@ -16,18 +16,14 @@ class AuthPage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return LucaHome(
-                  );
+              return LucaHome();
               // return const MyHomePage();
               // return WallpaperUploaderScreen();
             } else {
-              // return const LoginPage();
-              return LucaHome();
+              return const LoginPage();
+              // return LucaHome();
             }
           }),
     );
   }
 }
-
-
-

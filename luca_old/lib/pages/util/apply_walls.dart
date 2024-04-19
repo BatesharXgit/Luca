@@ -2,7 +2,9 @@ import 'dart:io';
 import 'dart:math';
 import 'package:async_wallpaper/async_wallpaper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:confetti/confetti.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,21 +45,49 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
 
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _globalKey = GlobalKey();
-
-  late SharedPreferences _prefs;
-  List<String> favoriteImages = [];
+  bool _isImageLiked = false;
 
   @override
   void initState() {
     super.initState();
-    _loadFavoriteImages();
     _createBannerAd();
     _createInterstitialAd();
-    _currentIndex = widget.currentIndex!;
-    _wallpapers = widget.wallpapers!;
-    // _loadRewardedAd();
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      String userId = user.uid;
+      _currentIndex = widget.currentIndex ?? 0;
+      _wallpapers = widget.wallpapers;
+      if (_wallpapers != null && _currentIndex < _wallpapers.length) {
+        checkIfImageIsLiked(userId, _wallpapers[_currentIndex].url);
+      }
+    }
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 10));
+  }
+
+  void checkIfImageIsLiked(String userId, String imageUrl) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('LikedImages')
+        .where('url', isEqualTo: imageUrl)
+        .get()
+        .then((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        // Image is liked by the user
+        setState(() {
+          _isImageLiked = true;
+        });
+      } else {
+        // Image is not liked by the user
+        setState(() {
+          _isImageLiked = false;
+        });
+      }
+    }).catchError((error) {
+      print('Error checking if image is already liked: $error');
+    });
   }
 
   BannerAd? _banner;
@@ -96,24 +126,6 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       _interstitialAd!.show();
       _interstitialAd = null;
     }
-  }
-
-  Future<void> _loadFavoriteImages() async {
-    _prefs = await SharedPreferences.getInstance();
-    setState(() {
-      favoriteImages = _prefs.getStringList('favoriteImages') ?? [];
-    });
-  }
-
-  void toggleFavorite(String imageUrl) {
-    setState(() {
-      if (favoriteImages.contains(imageUrl)) {
-        favoriteImages.remove(imageUrl);
-      } else {
-        favoriteImages.add(imageUrl);
-      }
-    });
-    _prefs.setStringList('favoriteImages', favoriteImages);
   }
 
   @override
@@ -512,6 +524,56 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     );
   }
 
+  void toggleLikeImage(String userId, String imageUrl, String thumbnailUrl,
+      String uploader, String title) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('LikedImages')
+        .where('url', isEqualTo: imageUrl)
+        .get()
+        .then((querySnapshot) {
+      if (querySnapshot.docs.isNotEmpty) {
+        // Image already liked, so remove it
+        querySnapshot.docs.first.reference.delete().then((_) {
+          print('Image removed from liked images!');
+        }).catchError((error) {
+          print('Failed to remove image from liked images: $error');
+        });
+      } else {
+        // Image not liked, so add it
+        FirebaseFirestore.instance
+            .collection('Users')
+            .doc(userId)
+            .collection('LikedImages')
+            .add({
+          'title': title,
+          'thumbnailUrl': thumbnailUrl,
+          'url': imageUrl,
+          'uploaderName': uploader,
+        }).then((value) {
+          print('Image liked and stored successfully!');
+        }).catchError((error) {
+          print('Failed to like image: $error');
+        });
+      }
+    }).catchError((error) {
+      print('Error checking if image is already liked: $error');
+    });
+  }
+
+//   void checkUserId() {
+//     FirebaseAuth auth = FirebaseAuth.instance;
+//     User? user = auth.currentUser;
+
+//   if (user != null) {
+//     String userId = user.uid;
+//     print('User is authenticated. User ID: $userId');
+//   } else {
+//     print('User is not authenticated.');
+//   }
+// }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -524,10 +586,18 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                 onTap: toggleWidgetsVisibility,
                 onVerticalDragEnd: (DragEndDetails details) {
                   if (details.primaryVelocity! > 0) {
+                    FirebaseAuth auth = FirebaseAuth.instance;
+                    User? user = auth.currentUser;
+                    checkIfImageIsLiked(
+                        user!.uid, _wallpapers[_currentIndex].url);
                     setState(() {
                       _currentIndex--;
                     });
                   } else if (details.primaryVelocity! < 0) {
+                    FirebaseAuth auth = FirebaseAuth.instance;
+                    User? user = auth.currentUser;
+                    checkIfImageIsLiked(
+                        user!.uid, _wallpapers[_currentIndex].url);
                     setState(() {
                       _currentIndex++;
                     });
@@ -615,32 +685,57 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                         duration: const Duration(milliseconds: 500),
                         opacity: isWidgetsVisible ? 1.0 : 0.0,
                         child: Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.background,
-                              shape: BoxShape.circle),
-                          child: IconButton(
-                            onPressed: () {
-                              _showInterstitialAd();
-                              setState(() {
-                                if (favoriteImages
-                                    .contains(_wallpapers[index].url)) {
-                                  favoriteImages.remove(_wallpapers[index].url);
+                            decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.background,
+                                shape: BoxShape.circle),
+                            child: IconButton(
+                              onPressed: () {
+                                FirebaseAuth auth = FirebaseAuth.instance;
+                                User? user = auth.currentUser;
+                                if (user != null) {
+                                  String userId = user.uid;
+                                  String imageUrl =
+                                      _wallpapers[_currentIndex].url;
+                                  String thumbnailUrl =
+                                      _wallpapers[_currentIndex].thumbnailUrl;
+                                  String uploader =
+                                      _wallpapers[_currentIndex].uploaderName;
+                                  String title =
+                                      _wallpapers[_currentIndex].title;
+
+                                  // Check if the image is already liked by the user
+                                  FirebaseFirestore.instance
+                                      .collection('Users')
+                                      .doc(userId)
+                                      .collection('LikedImages')
+                                      .where('url', isEqualTo: imageUrl)
+                                      .get()
+                                      .then((querySnapshot) {
+                                    if (querySnapshot.docs.isNotEmpty) {
+                                      // Image is liked, so remove it
+                                      toggleLikeImage(userId, imageUrl,
+                                          thumbnailUrl, uploader, title);
+                                    } else {
+                                      // Image is not liked, so add it
+                                      toggleLikeImage(userId, imageUrl,
+                                          thumbnailUrl, uploader, title);
+                                    }
+                                  }).catchError((error) {
+                                    print(
+                                        'Error checking if image is already liked: $error');
+                                  });
                                 } else {
-                                  favoriteImages.add(_wallpapers[index].url);
+                                  print("User is not authenticated.");
                                 }
-                              });
-                              _prefs.setStringList(
-                                  'favoriteImages', favoriteImages);
-                            },
-                            icon: Icon(
-                              favoriteImages.contains(_wallpapers[index].url)
-                                  ? IconlyBold.heart
-                                  : IconlyLight.heart,
-                              color: Theme.of(context).iconTheme.color,
-                              size: 34,
-                            ),
-                          ),
-                        ),
+                              },
+                              icon: Icon(
+                                // Conditionally display filled or outline icon based on whether the image is liked
+                                _isImageLiked
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color: _isImageLiked ? Colors.red : null,
+                              ),
+                            )),
                       ),
                       const SizedBox(
                         width: 8.0,

@@ -1,10 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:luca/pages/util/apply_walls.dart';
-import 'package:luca/pages/util/favourites_manager.dart';
-import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FavoriteImagesPage extends StatefulWidget {
   const FavoriteImagesPage({super.key});
@@ -14,9 +12,21 @@ class FavoriteImagesPage extends StatefulWidget {
 }
 
 class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
+  late Stream<QuerySnapshot> _likedImagesStream;
+
   @override
   void initState() {
     super.initState();
+    // Initialize the stream to fetch liked images
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+    if (user != null) {
+      _likedImagesStream = FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user.uid)
+          .collection('LikedImages')
+          .snapshots();
+    }
   }
 
   @override
@@ -29,7 +39,10 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
         actions: [
           IconButton(
             onPressed: () {
-              _showClearFavoritesConfirmationDialog(context);
+              FirebaseAuth auth = FirebaseAuth.instance;
+              User? user = auth.currentUser;
+              String userId = user!.uid;
+              _showClearFavoritesConfirmationDialog(context, userId);
             },
             icon: const Icon(Iconsax.trash),
           )
@@ -48,47 +61,38 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
         ),
       ),
       backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: Consumer<FavoriteImagesProvider>(
-          builder: (context, provider, child) {
-            final favoriteImages = provider.favoriteImages;
-            return GridView.builder(
-              physics: const BouncingScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3, childAspectRatio: 0.65),
-              itemCount: favoriteImages.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ApplyWallpaperPage(
-                            wallpapers: [],
-                          ),
-                        ),
-                      );
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: CachedNetworkImage(
-                        imageUrl: favoriteImages[index],
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _likedImagesStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No wallpapers found.'));
+          }
+          // Display the liked wallpapers
+          return ListView.builder(
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              var doc = snapshot.data!.docs[index];
+              return ListTile(
+                title: Text(doc['title']),
+                subtitle: Text(doc['uploaderName']),
+                leading: Image.network(doc['thumbnailUrl']),
+                // You can add more UI elements or functionality here
+              );
+            },
+          );
+        },
       ),
     );
   }
 
-  void _showClearFavoritesConfirmationDialog(BuildContext context) {
+  void _showClearFavoritesConfirmationDialog(
+      BuildContext context, String userId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -106,8 +110,7 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
             ),
             TextButton(
               onPressed: () {
-                Provider.of<FavoriteImagesProvider>(context, listen: false)
-                    .clearFavorites();
+                clearAllLikedImages(userId);
                 Navigator.of(context).pop();
               },
               child: const Text(
@@ -119,5 +122,21 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
         );
       },
     );
+  }
+
+  void clearAllLikedImages(String userId) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('LikedImages')
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        doc.reference.delete();
+      });
+      print('All liked images deleted successfully!');
+    }).catchError((error) {
+      print('Failed to delete all liked images: $error');
+    });
   }
 }
