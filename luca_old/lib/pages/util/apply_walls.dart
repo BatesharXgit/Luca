@@ -52,6 +52,9 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     super.initState();
     _createBannerAd();
     _createInterstitialAd();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle(systemNavigationBarColor: Colors.transparent));
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
     if (user != null) {
@@ -584,25 +587,25 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
             children: [
               GestureDetector(
                 onTap: toggleWidgetsVisibility,
-                onVerticalDragEnd: (DragEndDetails details) {
-                  if (details.primaryVelocity! > 0) {
-                    FirebaseAuth auth = FirebaseAuth.instance;
-                    User? user = auth.currentUser;
-                    checkIfImageIsLiked(
-                        user!.uid, _wallpapers[_currentIndex].url);
-                    setState(() {
-                      _currentIndex--;
-                    });
-                  } else if (details.primaryVelocity! < 0) {
-                    FirebaseAuth auth = FirebaseAuth.instance;
-                    User? user = auth.currentUser;
-                    checkIfImageIsLiked(
-                        user!.uid, _wallpapers[_currentIndex].url);
-                    setState(() {
-                      _currentIndex++;
-                    });
-                  }
-                },
+                // onVerticalDragEnd: (DragEndDetails details) {
+                //   if (details.primaryVelocity! > 0) {
+                //     FirebaseAuth auth = FirebaseAuth.instance;
+                //     User? user = auth.currentUser;
+                //     checkIfImageIsLiked(
+                //         user!.uid, _wallpapers[_currentIndex].url);
+                //     setState(() {
+                //       _currentIndex--;
+                //     });
+                //   } else if (details.primaryVelocity! < 0) {
+                //     FirebaseAuth auth = FirebaseAuth.instance;
+                //     User? user = auth.currentUser;
+                //     checkIfImageIsLiked(
+                //         user!.uid, _wallpapers[_currentIndex].url);
+                //     setState(() {
+                //       _currentIndex++;
+                //     });
+                //   }
+                // },
                 child: Hero(
                   tag: _wallpapers[index].url,
                   child: RepaintBoundary(

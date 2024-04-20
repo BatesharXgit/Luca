@@ -14,7 +14,9 @@ class Components {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ApplyWallpaperPage(wallpapers: [],),
+                builder: (context) => ApplyWallpaperPage(
+                  wallpapers: [],
+                ),
               ),
             );
           },
@@ -80,7 +82,7 @@ class Components {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Container(
-              color: Colors.black,
+              color: primaryColor,
             ),
           )),
     );

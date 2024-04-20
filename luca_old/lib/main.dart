@@ -34,6 +34,7 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+
   final prefs = await SharedPreferences.getInstance();
 
   // await homePageKey.currentState?.loadImages();

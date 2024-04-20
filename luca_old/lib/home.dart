@@ -5,6 +5,8 @@ import 'package:luca/get_upload.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/live_wall.dart';
+import 'package:luca/pages/static/categories.dart';
+import 'package:luca/pages/static/stock_categories.dart';
 import 'package:luca/pages/static/wallpapers.dart';
 import 'package:luca/pages/util/bottom_bar.dart';
 
@@ -99,9 +101,9 @@ class LucaHomeState extends State<LucaHome>
                 // const Category(),
 
                 // const LiveWallBeta(),
-                const FavoriteImagesPage(),
-                const FavoriteImagesPage(),
-                const FavoriteImagesPage(),
+                Categories(controller: controller),
+                StockCategories(controller: controller),
+                FavoriteImagesPage(controller: controller),
               ],
             ),
             child: TabBar(

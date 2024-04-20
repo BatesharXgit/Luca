@@ -136,8 +136,6 @@ class MyHomePageState extends State<MyHomePage>
     }
   }
 
-  
-
   InterstitialAd? _interstitialAd;
 
   void _createInterstitialAd() {

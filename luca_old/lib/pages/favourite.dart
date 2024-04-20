@@ -1,23 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:luca/data/wallpaper.dart';
+import 'package:luca/pages/util/location_list.dart';
+
+import 'util/apply_walls.dart';
 
 class FavoriteImagesPage extends StatefulWidget {
-  const FavoriteImagesPage({super.key});
+  final ScrollController controller;
+  const FavoriteImagesPage({required this.controller, super.key});
 
   @override
   State<FavoriteImagesPage> createState() => _FavoriteImagesPageState();
 }
 
 class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
+  ScrollController scrollController = ScrollController();
   late Stream<QuerySnapshot> _likedImagesStream;
+  List<Wallpaper> wallpapers = [];
 
   @override
   void initState() {
     super.initState();
-    // Initialize the stream to fetch liked images
+    _fetchWallpapers();
+  }
+
+  void _fetchWallpapers() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
     if (user != null) {
@@ -27,6 +38,19 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
           .collection('LikedImages')
           .snapshots();
     }
+
+    _likedImagesStream.listen((QuerySnapshot snapshot) {
+      setState(() {
+        wallpapers = snapshot.docs.map((doc) {
+          return Wallpaper(
+            title: doc['title'],
+            url: doc['url'],
+            thumbnailUrl: doc['thumbnailUrl'],
+            uploaderName: doc['uploaderName'],
+          );
+        }).toList();
+      });
+    });
   }
 
   @override
@@ -61,32 +85,50 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
         ),
       ),
       backgroundColor: backgroundColor,
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _likedImagesStream,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No wallpapers found.'));
-          }
-          // Display the liked wallpapers
-          return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) {
-              var doc = snapshot.data!.docs[index];
-              return ListTile(
-                title: Text(doc['title']),
-                subtitle: Text(doc['uploaderName']),
-                leading: Image.network(doc['thumbnailUrl']),
-                // You can add more UI elements or functionality here
-              );
-            },
-          );
-        },
+      body: _buildImageGridFromRef(),
+    );
+  }
+
+  Widget _buildImageGridFromRef() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 14, right: 14),
+      child: CustomScrollView(
+        physics: const ClampingScrollPhysics(),
+        slivers: <Widget>[
+          SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.65,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    // _showInterstitialAd();
+                    Get.to(
+                        ApplyWallpaperPage(
+                          currentIndex: index,
+                          wallpapers: wallpapers,
+                        ),
+                        transition: Transition.downToUp);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 6.0, horizontal: 6.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(26),
+                      child: LocationListItem(
+                        imageUrl: wallpapers[index].thumbnailUrl,
+                        scrollController: scrollController,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              childCount: wallpapers.length,
+            ),
+          ),
+        ],
       ),
     );
   }
