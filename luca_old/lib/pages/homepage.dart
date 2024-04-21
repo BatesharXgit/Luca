@@ -36,12 +36,12 @@ class MyHomePageState extends State<MyHomePage>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController _searchController = TextEditingController();
   late TabController _tabController;
+  bool _isLoading = false;
 
   // final Reference wallpaperRef = storage.ref().child('wallpaper');
   List<Reference> wallpaperRefs = [];
   List<Wallpaper> wallpapers = [];
   List<Wallpaper> randomWallpapers = [];
-
   String? userPhotoUrl;
 
   int index = 0;
@@ -68,24 +68,34 @@ class MyHomePageState extends State<MyHomePage>
     super.initState();
     _createInterstitialAd();
     fetchUserProfileData();
-    _fetchWallpapers();
+    // _fetchWallpapers();
     _fetchRandomWallpapers();
+    widget.controller.addListener(_scrollListener);
+    _fetchInitialWallpapers();
     _tabController = TabController(length: 2, vsync: this);
   }
 
-  void _fetchWallpapers() async {
+  void _scrollListener() {
+    if (widget.controller.position.pixels ==
+        widget.controller.position.maxScrollExtent) {
+      if (!_isLoading) {
+        _loadMoreWallpapers();
+      }
+    }
+  }
+
+  DocumentSnapshot<Object?>? _lastDocument;
+
+  void _fetchInitialWallpapers() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
-      // Reference to the "test" collection
-      CollectionReference testCollectionRef =
-          FirebaseFirestore.instance.collection('RecentImagesHome');
-
-      // Reference to the "images" subcollection within the "test" collection
-      // CollectionReference imagesCollectionRef = testCollectionRef
-      //     .doc('Illustration')
-      //     .collection('IllustrationImages');
-
-      // Get documents from the "images" subcollection
-      QuerySnapshot snapshot = await testCollectionRef.get();
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('RecentImagesHome')
+          .limit(15)
+          .get();
 
       setState(() {
         wallpapers = snapshot.docs.map((doc) {
@@ -96,11 +106,69 @@ class MyHomePageState extends State<MyHomePage>
             uploaderName: doc['uploaderName'],
           );
         }).toList();
+        _lastDocument = snapshot.docs.last;
+        _isLoading = false;
       });
     } catch (e) {
       print('Error fetching wallpapers: $e');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
+
+  void _loadMoreWallpapers() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('RecentImagesHome')
+          .startAfterDocument(_lastDocument!)
+          .limit(15)
+          .get();
+
+      setState(() {
+        wallpapers.addAll(snapshot.docs.map((doc) {
+          return Wallpaper(
+            title: doc['title'],
+            url: doc['url'],
+            thumbnailUrl: doc['thumbnailUrl'],
+            uploaderName: doc['uploaderName'],
+          );
+        }));
+        _lastDocument = snapshot.docs.last;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching more wallpapers: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  // void _fetchWallpapers() async {
+  //   try {
+  //     CollectionReference wallsCollectionRef =
+  //         FirebaseFirestore.instance.collection('RecentImagesHome');
+  //     QuerySnapshot snapshot = await wallsCollectionRef.get();
+
+  //     setState(() {
+  //       wallpapers = snapshot.docs.map((doc) {
+  //         return Wallpaper(
+  //           title: doc['title'],
+  //           url: doc['url'],
+  //           thumbnailUrl: doc['thumbnailUrl'],
+  //           uploaderName: doc['uploaderName'],
+  //         );
+  //       }).toList();
+  //     });
+  //   } catch (e) {
+  //     print('Error fetching wallpapers: $e');
+  //   }
+  // }
 
   void _fetchRandomWallpapers() async {
     try {
@@ -533,19 +601,21 @@ class MyHomePageState extends State<MyHomePage>
               (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    // _showInterstitialAd();
                     Get.to(
-                        ApplyWallpaperPage(
-                          url: wallpapers[index].url,
-                          uploaderName: wallpapers[index].uploaderName,
-                          title: wallpapers[index].title,
-                          thumbnailUrl: wallpapers[index].thumbnailUrl,
-                        ),
-                        transition: Transition.downToUp);
+                      ApplyWallpaperPage(
+                        url: wallpapers[index].url,
+                        uploaderName: wallpapers[index].uploaderName,
+                        title: wallpapers[index].title,
+                        thumbnailUrl: wallpapers[index].thumbnailUrl,
+                      ),
+                      transition: Transition.downToUp,
+                    );
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                        vertical: 6.0, horizontal: 6.0),
+                      vertical: 6.0,
+                      horizontal: 6.0,
+                    ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(26),
                       child: LocationListItem(
@@ -559,6 +629,12 @@ class MyHomePageState extends State<MyHomePage>
               childCount: wallpapers.length,
             ),
           ),
+          if (_isLoading)
+            SliverToBoxAdapter(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
         ],
       ),
     );
