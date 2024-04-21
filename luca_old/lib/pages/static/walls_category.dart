@@ -156,7 +156,7 @@ class _WallpapersCategoryState extends State<WallpapersCategory> {
         return GestureDetector(
           onTap: () {
             _showInterstitialAd();
-            Get.to(ApplyWallpaperPage(wallpapers: [],), transition: Transition.downToUp);
+            // Get.to(ApplyWallpaperPage(wallpapers: [],), transition: Transition.downToUp);
           },
           child: Hero(
             tag: imageUrl,

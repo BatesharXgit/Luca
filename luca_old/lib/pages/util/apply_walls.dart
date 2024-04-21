@@ -15,23 +15,25 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:luca/data/home_data.dart';
-import 'package:luca/data/wallpaper.dart';
-import 'package:luca/pages/homepage.dart';
 import 'package:luca/services/admob_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 
 class ApplyWallpaperPage extends StatefulWidget {
-  final int? currentIndex;
-  final List<Wallpaper> wallpapers;
+  final String url;
+  final String title;
+  final String uploaderName;
+  final String thumbnailUrl;
 
-  const ApplyWallpaperPage(
-      {Key? key, required this.wallpapers, this.currentIndex})
-      : super(key: key);
+  const ApplyWallpaperPage({
+    Key? key,
+    required this.uploaderName,
+    required this.title,
+    required this.thumbnailUrl,
+    required this.url,
+  }) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -39,8 +41,6 @@ class ApplyWallpaperPage extends StatefulWidget {
 }
 
 class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
-  int _currentIndex = 0;
-  late List<Wallpaper> _wallpapers;
   late ConfettiController _controllerCenter;
 
   final ScrollController _scrollController = ScrollController();
@@ -59,11 +59,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     User? user = auth.currentUser;
     if (user != null) {
       String userId = user.uid;
-      _currentIndex = widget.currentIndex ?? 0;
-      _wallpapers = widget.wallpapers;
-      if (_wallpapers != null && _currentIndex < _wallpapers.length) {
-        checkIfImageIsLiked(userId, _wallpapers[_currentIndex].url);
-      }
+      checkIfImageIsLiked(userId, widget.url);
     }
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 10));
@@ -202,7 +198,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       );
 
       bool success = await AsyncWallpaper.setWallpaper(
-        url: _wallpapers[index].url,
+        url: widget.url,
         wallpaperLocation: AsyncWallpaper.HOME_SCREEN,
         goToHome: false,
       );
@@ -248,7 +244,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       );
 
       bool success = await AsyncWallpaper.setWallpaper(
-        url: _wallpapers[index].url,
+        url: widget.url,
         wallpaperLocation: AsyncWallpaper.LOCK_SCREEN,
         goToHome: false,
       );
@@ -297,7 +293,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       );
 
       bool success = await AsyncWallpaper.setWallpaper(
-        url: _wallpapers[index].url,
+        url: widget.url,
         wallpaperLocation: AsyncWallpaper.BOTH_SCREENS,
         goToHome: false,
       );
@@ -607,13 +603,13 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                 //   }
                 // },
                 child: Hero(
-                  tag: _wallpapers[index].url,
+                  tag: widget.url,
                   child: RepaintBoundary(
                     key: _globalKey,
                     child: CachedNetworkImage(
                       height: double.infinity,
                       width: double.infinity,
-                      imageUrl: _wallpapers[_currentIndex].url,
+                      imageUrl: widget.url,
                       fit: BoxFit.cover,
                       filterQuality: FilterQuality.high,
                       progressIndicatorBuilder:
@@ -629,8 +625,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                             decoration: BoxDecoration(
                                 image: DecorationImage(
                                     image: CachedNetworkImageProvider(
-                                        _wallpapers[_currentIndex]
-                                            .thumbnailUrl))),
+                                        widget.thumbnailUrl))),
                             child: Center(
                               child: CircularProgressIndicator(
                                 color: Theme.of(context).colorScheme.primary,
@@ -697,14 +692,10 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                 User? user = auth.currentUser;
                                 if (user != null) {
                                   String userId = user.uid;
-                                  String imageUrl =
-                                      _wallpapers[_currentIndex].url;
-                                  String thumbnailUrl =
-                                      _wallpapers[_currentIndex].thumbnailUrl;
-                                  String uploader =
-                                      _wallpapers[_currentIndex].uploaderName;
-                                  String title =
-                                      _wallpapers[_currentIndex].title;
+                                  String imageUrl = widget.url;
+                                  String thumbnailUrl = widget.thumbnailUrl;
+                                  String uploader = widget.uploaderName;
+                                  String title = widget.title;
 
                                   // Check if the image is already liked by the user
                                   FirebaseFirestore.instance

@@ -77,15 +77,15 @@ class MyHomePageState extends State<MyHomePage>
     try {
       // Reference to the "test" collection
       CollectionReference testCollectionRef =
-          FirebaseFirestore.instance.collection('Categories');
+          FirebaseFirestore.instance.collection('RecentImagesHome');
 
       // Reference to the "images" subcollection within the "test" collection
-      CollectionReference imagesCollectionRef = testCollectionRef
-          .doc('Illustration')
-          .collection('IllustrationImages');
+      // CollectionReference imagesCollectionRef = testCollectionRef
+      //     .doc('Illustration')
+      //     .collection('IllustrationImages');
 
       // Get documents from the "images" subcollection
-      QuerySnapshot snapshot = await imagesCollectionRef.get();
+      QuerySnapshot snapshot = await testCollectionRef.get();
 
       setState(() {
         wallpapers = snapshot.docs.map((doc) {
@@ -536,8 +536,10 @@ class MyHomePageState extends State<MyHomePage>
                     // _showInterstitialAd();
                     Get.to(
                         ApplyWallpaperPage(
-                          currentIndex: index,
-                          wallpapers: wallpapers,
+                          url: wallpapers[index].url,
+                          uploaderName: wallpapers[index].uploaderName,
+                          title: wallpapers[index].title,
+                          thumbnailUrl: wallpapers[index].thumbnailUrl,
                         ),
                         transition: Transition.downToUp);
                   },
@@ -580,8 +582,10 @@ class MyHomePageState extends State<MyHomePage>
                     // _showInterstitialAd();
                     Get.to(
                         ApplyWallpaperPage(
-                          currentIndex: index,
-                          wallpapers: randomWallpapers,
+                          url: wallpapers[index].url,
+                          uploaderName: wallpapers[index].uploaderName,
+                          title: wallpapers[index].title,
+                          thumbnailUrl: wallpapers[index].thumbnailUrl,
                         ),
                         transition: Transition.downToUp);
                   },

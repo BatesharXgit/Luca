@@ -87,8 +87,8 @@ class DownloadAndUpload extends StatelessWidget {
             imageUrl, thumbnailUrl, title, selectedUploader);
 
         print('Image $imageName downloaded and uploaded successfully!');
-        print('Image URL: $imageUrl'); 
-        print('Thumbnail URL: $thumbnailUrl'); 
+        print('Image URL: $imageUrl');
+        print('Thumbnail URL: $thumbnailUrl');
       }
     } catch (e) {
       print('Error downloading and uploading images: $e');
@@ -97,23 +97,55 @@ class DownloadAndUpload extends StatelessWidget {
 
   void _fetchAndUploadWallpapers() async {
     try {
-      // Reference to the "Categories" collection
-      CollectionReference categoriesCollectionRef =
-          FirebaseFirestore.instance.collection('Categories');
+      // List of category names
+      List<String> categoryNames = [
+        'Abstract',
+        'Amoled',
+        'Animals',
+        'Anime',
+        'Cars',
+        'Games',
+        'Illustration',
+        'Minimalist',
+        'Nature',
+        'SciFi',
+        'Space',
+        'Superhero',
+      ];
 
-      // Reference to the "IllustrationImages" subcollection within the "Illustration" category
-      CollectionReference imagesCollectionRef = categoriesCollectionRef
-          .doc('Illustration')
-          .collection('IllustrationImages');
+      // List to store all documents
+      List<Map<String, dynamic>> allDocuments = [];
 
-      // Get documents from the "IllustrationImages" subcollection
-      QuerySnapshot snapshot = await imagesCollectionRef.get();
+      // Fetch documents from each category
+      for (String categoryName in categoryNames) {
+        // Reference to the collection within the category
+        CollectionReference categoryCollectionRef = FirebaseFirestore.instance
+            .collection('Categories')
+            .doc(categoryName)
+            .collection('${categoryName}Images');
 
-      // Upload documents to the "homepageimages" collection
+        // Get documents from the collection
+        QuerySnapshot snapshot = await categoryCollectionRef.get();
+
+        // Add documents to the list
+        snapshot.docs.forEach((doc) {
+          allDocuments.add({
+            'title': doc['title'],
+            'url': doc['url'],
+            'thumbnailUrl': doc['thumbnailUrl'],
+            'uploaderName': doc['uploaderName'],
+          });
+        });
+      }
+
+      // Shuffle the documents to mix them
+      allDocuments.shuffle();
+
+      // Upload mixed documents to the "RecentImagesHome" collection
       CollectionReference homepageImagesCollectionRef =
-          FirebaseFirestore.instance.collection('homepageimages');
+          FirebaseFirestore.instance.collection('RecentImagesHome');
 
-      snapshot.docs.forEach((doc) async {
+      for (Map<String, dynamic> doc in allDocuments) {
         try {
           await homepageImagesCollectionRef.add({
             'title': doc['title'],
@@ -124,9 +156,9 @@ class DownloadAndUpload extends StatelessWidget {
         } catch (e) {
           print('Error uploading document: $e');
         }
-      });
+      }
     } catch (e) {
-      print('Error fetching wallpapers: $e');
+      print('Error fetching and uploading wallpapers: $e');
     }
   }
 

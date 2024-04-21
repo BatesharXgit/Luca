@@ -107,8 +107,10 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
                     // _showInterstitialAd();
                     Get.to(
                         ApplyWallpaperPage(
-                          currentIndex: index,
-                          wallpapers: wallpapers,
+                          url: wallpapers[index].url,
+                          uploaderName: wallpapers[index].uploaderName,
+                          title: wallpapers[index].title,
+                          thumbnailUrl: wallpapers[index].thumbnailUrl,
                         ),
                         transition: Transition.downToUp);
                   },
