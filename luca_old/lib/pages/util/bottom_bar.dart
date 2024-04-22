@@ -264,17 +264,21 @@ class _BottomBarState extends State<BottomBar>
             padding: EdgeInsets.all(widget.offset),
             child: SlideTransition(
               position: _offsetAnimation,
-              child: Container(
-                width: widget.width,
-                decoration: widget.barDecoration ??
-                    BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: widget.borderRadius,
-                    ),
-                child: ClipRRect(
-                  borderRadius: widget.borderRadius,
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: ClipRRect(
+                borderRadius: widget.borderRadius,
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                  child: Container(
+                    width: widget.width,
+                    decoration: widget.barDecoration ??
+                        BoxDecoration(
+                          // color: Colors.transparent,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .background
+                              .withOpacity(0.4),
+                          borderRadius: widget.borderRadius,
+                        ),
                     child: Container(
                       width: widget.width,
                       decoration: widget.barDecoration ??
@@ -282,15 +286,7 @@ class _BottomBarState extends State<BottomBar>
                             color: Colors.transparent,
                             borderRadius: widget.borderRadius,
                           ),
-                      child: Container(
-                        width: widget.width,
-                        decoration: widget.barDecoration ??
-                            BoxDecoration(
-                              color: Colors.transparent,
-                              borderRadius: widget.borderRadius,
-                            ),
-                        child: widget.child,
-                      ),
+                      child: widget.child,
                     ),
                   ),
                 ),

@@ -78,7 +78,7 @@ class LucaHomeState extends State<LucaHome>
             // barColor: Colors.black.computeLuminance() > 0.5
             //     ? Colors.black
             //     : const Color.fromARGB(255, 14, 3, 31),
-            barColor: Theme.of(context).colorScheme.background,
+            // barColor: Theme.of(context).colorScheme.background,
             start: 2,
             end: 0,
 
