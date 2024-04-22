@@ -68,20 +68,8 @@ class MyHomePageState extends State<MyHomePage>
     super.initState();
     _createInterstitialAd();
     fetchUserProfileData();
-    // _fetchWallpapers();
-    _fetchRandomWallpapers();
-    widget.controller.addListener(_scrollListener);
     _fetchInitialWallpapers();
     _tabController = TabController(length: 2, vsync: this);
-  }
-
-  void _scrollListener() {
-    if (widget.controller.position.pixels ==
-        widget.controller.position.maxScrollExtent) {
-      if (!_isLoading) {
-        _loadMoreWallpapers();
-      }
-    }
   }
 
   DocumentSnapshot<Object?>? _lastDocument;
@@ -94,7 +82,7 @@ class MyHomePageState extends State<MyHomePage>
     try {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('RecentImagesHome')
-          .limit(15)
+          .limit(20)
           .get();
 
       setState(() {
@@ -126,7 +114,7 @@ class MyHomePageState extends State<MyHomePage>
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('RecentImagesHome')
           .startAfterDocument(_lastDocument!)
-          .limit(15)
+          .limit(16)
           .get();
 
       setState(() {
@@ -634,6 +622,42 @@ class MyHomePageState extends State<MyHomePage>
               child: Center(
                 child: CircularProgressIndicator(),
               ),
+            ),
+          if (!_isLoading && _lastDocument != null)
+            SliverToBoxAdapter(
+              child: Center(
+                  child: Padding(
+                padding: const EdgeInsets.fromLTRB(10, 20, 64, 10),
+                child: InkWell(
+                  onTap: _loadMoreWallpapers,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        'See More',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.background,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )),
             ),
         ],
       ),

@@ -81,7 +81,7 @@ class LucaHomeState extends State<LucaHome>
             barColor: Theme.of(context).colorScheme.background,
             start: 2,
             end: 0,
-            offset: 10,
+
             barAlignment: Alignment.bottomCenter,
             iconHeight: 50,
             iconWidth: 50,

@@ -178,9 +178,9 @@ class _BottomBarState extends State<BottomBar>
         ),
         if (widget.showIcon)
           Align(
-            alignment: Alignment.bottomCenter,
+            alignment: Alignment.bottomRight,
             child: Padding(
-              padding: EdgeInsets.all(widget.offset),
+              padding: EdgeInsets.only(right: 20, bottom: 10),
               child: AnimatedOpacity(
                 duration: widget.duration,
                 curve: widget.curve,
