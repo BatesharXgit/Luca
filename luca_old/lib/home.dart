@@ -1,13 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:iconly/iconly.dart';
-import 'package:luca/get_upload.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
-import 'package:luca/pages/live_wall.dart';
 import 'package:luca/pages/static/categories.dart';
 import 'package:luca/pages/static/stock_categories.dart';
-import 'package:luca/pages/static/wallpapers.dart';
 import 'package:luca/pages/util/bottom_bar.dart';
 
 class LucaHome extends StatefulWidget {
@@ -65,7 +62,7 @@ class LucaHomeState extends State<LucaHome>
                 onPressed: null,
                 icon: Icon(
                   Icons.arrow_upward_rounded,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.background,
                   size: width,
                 ),
               ),
@@ -78,7 +75,7 @@ class LucaHomeState extends State<LucaHome>
             // barColor: Colors.black.computeLuminance() > 0.5
             //     ? Colors.black
             //     : const Color.fromARGB(255, 14, 3, 31),
-            // barColor: Theme.of(context).colorScheme.background,
+            barColor: Theme.of(context).colorScheme.background,
             start: 2,
             end: 0,
 
@@ -112,8 +109,10 @@ class LucaHomeState extends State<LucaHome>
               controller: tabController,
               indicator: UnderlineTabIndicator(
                   borderRadius: BorderRadius.circular(20),
-                  borderSide:
-                      const BorderSide(color: Color(0xff04ff0d), width: 6),
+                  borderSide: const BorderSide(
+                      // color: Theme.of(context).colorScheme.background,
+                      color: Color(0xff04ff0d),
+                      width: 6),
                   insets: const EdgeInsets.fromLTRB(16, 0, 16, 8)),
               tabs: [
                 SizedBox(
@@ -124,6 +123,7 @@ class LucaHomeState extends State<LucaHome>
                     IconlyBold.home,
                     color: currentPage == 0
                         ? const Color(0xff04ff0d)
+                        // ? Theme.of(context).colorScheme.background
                         : unselectedColor,
                     size: currentPage == 0 ? 32 : 28,
                     // color: Colors.black,
@@ -146,7 +146,7 @@ class LucaHomeState extends State<LucaHome>
                   width: 40,
                   child: Center(
                       child: Icon(
-                    IconlyBold.video,
+                    Icons.computer_outlined,
                     color: currentPage == 2
                         ? const Color(0xff04ff0d)
                         : unselectedColor,

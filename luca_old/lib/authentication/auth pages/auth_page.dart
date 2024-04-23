@@ -2,9 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:luca/authentication/auth%20pages/login_page.dart';
 import 'package:luca/home.dart';
-import 'package:luca/pages/homepage.dart';
-
-import '../../test_home.dart';
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -16,9 +13,8 @@ class AuthPage extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return LucaHome();
+              return const LucaHome();
               // return const MyHomePage();
-              // return WallpaperUploaderScreen();
             } else {
               return const LoginPage();
               // return LucaHome();

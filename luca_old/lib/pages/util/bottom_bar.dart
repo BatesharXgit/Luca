@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -197,60 +196,52 @@ class _BottomBarState extends State<BottomBar>
                       ),
                   padding: EdgeInsets.zero,
                   margin: EdgeInsets.zero,
-                  child: ClipRRect(
-                    borderRadius: widget.borderRadius,
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                      child: ClipOval(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              scrollBottomBarController
-                                  .animateTo(
-                                (!widget.scrollOpposite)
-                                    ? scrollBottomBarController
-                                        .position.minScrollExtent
-                                    : scrollBottomBarController
-                                        .position.maxScrollExtent,
-                                duration: widget.duration,
-                                curve: widget.curve,
-                              )
-                                  .then((value) {
-                                if (mounted) {
-                                  setState(() {
-                                    isOnTop = true;
-                                    isScrollingDown = false;
-                                  });
-                                }
-                                showBottomBar();
+                  child: ClipOval(
+                    child: Material(
+                      color: Theme.of(context).colorScheme.primary,
+                      child: InkWell(
+                        onTap: () {
+                          scrollBottomBarController
+                              .animateTo(
+                            (!widget.scrollOpposite)
+                                ? scrollBottomBarController
+                                    .position.minScrollExtent
+                                : scrollBottomBarController
+                                    .position.maxScrollExtent,
+                            duration: widget.duration,
+                            curve: widget.curve,
+                          )
+                              .then((value) {
+                            if (mounted) {
+                              setState(() {
+                                isOnTop = true;
+                                isScrollingDown = false;
                               });
-                            },
-                            child: () {
-                              if (widget.icon != null) {
-                                return widget.icon!(
-                                    isOnTop == true ? 0 : widget.iconWidth / 2,
-                                    isOnTop == true
-                                        ? 0
-                                        : widget.iconHeight / 2);
-                              } else {
-                                return Center(
-                                  child: IconButton(
-                                    padding: EdgeInsets.zero,
-                                    onPressed: null,
-                                    icon: Icon(
-                                      Icons.arrow_upward_rounded,
-                                      color: Colors.transparent,
-                                      size: isOnTop == true
-                                          ? 0
-                                          : widget.iconWidth / 2,
-                                    ),
-                                  ),
-                                );
-                              }
-                            }(),
-                          ),
-                        ),
+                            }
+                            showBottomBar();
+                          });
+                        },
+                        child: () {
+                          if (widget.icon != null) {
+                            return widget.icon!(
+                                isOnTop == true ? 0 : widget.iconWidth / 2,
+                                isOnTop == true ? 0 : widget.iconHeight / 2);
+                          } else {
+                            return Center(
+                              child: IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: null,
+                                icon: Icon(
+                                  Icons.arrow_upward_rounded,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: isOnTop == true
+                                      ? 0
+                                      : widget.iconWidth / 2,
+                                ),
+                              ),
+                            );
+                          }
+                        }(),
                       ),
                     ),
                   ),
@@ -264,31 +255,22 @@ class _BottomBarState extends State<BottomBar>
             padding: EdgeInsets.all(widget.offset),
             child: SlideTransition(
               position: _offsetAnimation,
-              child: ClipRRect(
-                borderRadius: widget.borderRadius,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                  child: Container(
-                    width: widget.width,
-                    decoration: widget.barDecoration ??
-                        BoxDecoration(
-                          // color: Colors.transparent,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .background
-                              .withOpacity(0.4),
-                          borderRadius: widget.borderRadius,
-                        ),
-                    child: Container(
-                      width: widget.width,
-                      decoration: widget.barDecoration ??
-                          BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: widget.borderRadius,
-                          ),
-                      child: widget.child,
+              child: Container(
+                width: widget.width,
+                decoration: widget.barDecoration ??
+                    BoxDecoration(
+                      // color: Colors.transparent,
+                      color: widget.barColor,
+                      borderRadius: widget.borderRadius,
                     ),
-                  ),
+                child: Container(
+                  width: widget.width,
+                  decoration: widget.barDecoration ??
+                      BoxDecoration(
+                        color: widget.barColor,
+                        borderRadius: widget.borderRadius,
+                      ),
+                  child: widget.child,
                 ),
               ),
             ),

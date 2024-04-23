@@ -6,6 +6,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -249,6 +250,7 @@ class MyHomePageState extends State<MyHomePage>
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
     return Scaffold(
+      // extendBodyBehindAppBar: true,
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
       body: SafeArea(
@@ -319,7 +321,7 @@ class MyHomePageState extends State<MyHomePage>
                       dividerColor: Colors.transparent,
                       controller: _tabController,
                       tabs: const [
-                        Tab(text: 'Recent'),
+                        Tab(text: 'Explore'),
                         Tab(text: 'Random'),
                       ],
                     ),
