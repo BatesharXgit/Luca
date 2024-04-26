@@ -82,7 +82,8 @@ class MyHomePageState extends State<MyHomePage>
 
     try {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('RecentImagesHome')
+          .collection("Explore")
+          .orderBy("timestamp", descending: true)
           .limit(20)
           .get();
 
@@ -93,6 +94,8 @@ class MyHomePageState extends State<MyHomePage>
             url: doc['url'],
             thumbnailUrl: doc['thumbnailUrl'],
             uploaderName: doc['uploaderName'],
+            timestamp: doc['timestamp'],
+            // timestamp:
           );
         }).toList();
         _lastDocument = snapshot.docs.last;

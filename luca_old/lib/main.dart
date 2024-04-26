@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:luca/authentication/auth%20pages/auth_page.dart';
+import 'package:luca/get_upload.dart';
 // import 'package:luca/download_upload.dart';
 import 'package:luca/pages/util/favourites_manager.dart';
 import 'package:luca/pages/util/notify/notification.dart';

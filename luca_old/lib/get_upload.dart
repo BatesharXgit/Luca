@@ -21,6 +21,7 @@ class DownloadAndUpload extends StatelessWidget {
         'thumbnailUrl': thumbnailUrl,
         'url': imageUrl,
         'uploaderName': selectedUploader,
+        'timestamp': DateTime.now(),
       });
 
       print('Document created successfully for $title!');
@@ -134,6 +135,7 @@ class DownloadAndUpload extends StatelessWidget {
             'url': doc['url'],
             'thumbnailUrl': doc['thumbnailUrl'],
             'uploaderName': doc['uploaderName'],
+            // 'timestamp': doc['timestamp'],
           });
         });
       }
@@ -143,7 +145,7 @@ class DownloadAndUpload extends StatelessWidget {
 
       // Upload mixed documents to the "RecentImagesHome" collection
       CollectionReference homepageImagesCollectionRef =
-          FirebaseFirestore.instance.collection('RecentImagesHome');
+          FirebaseFirestore.instance.collection('Explore');
 
       for (Map<String, dynamic> doc in allDocuments) {
         try {
@@ -152,6 +154,7 @@ class DownloadAndUpload extends StatelessWidget {
             'url': doc['url'],
             'thumbnailUrl': doc['thumbnailUrl'],
             'uploaderName': doc['uploaderName'],
+            'timestamp': DateTime.now(),
           });
         } catch (e) {
           print('Error uploading document: $e');
@@ -170,13 +173,13 @@ class DownloadAndUpload extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
-                onPressed: () async {
-                  List<String> imageNames = await getImageNamesFromStorage();
-                  await downloadAndUploadImages(imageNames);
-                },
-                child: Text("Download and Upload"),
-              ),
+              // ElevatedButton(
+              //   onPressed: () async {
+              //     List<String> imageNames = await getImageNamesFromStorage();
+              //     await downloadAndUploadImages(imageNames);
+              //   },
+              //   child: Text("Download and Upload"),
+              // ),
               ElevatedButton(
                 onPressed: () {
                   _fetchAndUploadWallpapers();
