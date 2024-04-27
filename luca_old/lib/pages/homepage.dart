@@ -15,6 +15,7 @@ import 'package:luca/data/wallpaper.dart';
 import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
+import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -115,12 +116,21 @@ class MyHomePageState extends State<MyHomePage>
     });
 
     try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('RecentImagesHome')
-          .startAfterDocument(_lastDocument!)
-          .orderBy("timestamp", descending: true)
-          .limit(16)
-          .get();
+      QuerySnapshot snapshot;
+      if (_lastDocument != null) {
+        snapshot = await FirebaseFirestore.instance
+            .collection('Explore')
+            .orderBy("timestamp", descending: true)
+            .startAfterDocument(_lastDocument!)
+            .limit(16)
+            .get();
+      } else {
+        snapshot = await FirebaseFirestore.instance
+            .collection('Explore')
+            .orderBy("timestamp", descending: true)
+            .limit(16)
+            .get();
+      }
 
       setState(() {
         wallpapers.addAll(snapshot.docs.map((doc) {
@@ -129,9 +139,12 @@ class MyHomePageState extends State<MyHomePage>
             url: doc['url'],
             thumbnailUrl: doc['thumbnailUrl'],
             uploaderName: doc['uploaderName'],
+            timestamp: doc['timestamp'],
           );
         }));
-        _lastDocument = snapshot.docs.last;
+        if (snapshot.docs.isNotEmpty) {
+          _lastDocument = snapshot.docs.last;
+        }
         _isLoading = false;
       });
     } catch (e) {
@@ -626,7 +639,7 @@ class MyHomePageState extends State<MyHomePage>
           if (_isLoading)
             SliverToBoxAdapter(
               child: Center(
-                child: CircularProgressIndicator(),
+                child: Components.buildCircularIndicator(),
               ),
             ),
           if (!_isLoading && _lastDocument != null)
