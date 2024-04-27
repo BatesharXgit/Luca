@@ -118,6 +118,7 @@ class MyHomePageState extends State<MyHomePage>
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('RecentImagesHome')
           .startAfterDocument(_lastDocument!)
+          .orderBy("timestamp", descending: true)
           .limit(16)
           .get();
 
