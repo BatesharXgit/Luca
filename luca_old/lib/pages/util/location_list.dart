@@ -19,10 +19,6 @@ class LocationListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildParallaxBackground(context);
-  }
-
-  Widget _buildParallaxBackground(BuildContext context) {
     return Flow(
       delegate: ParallaxFlowDelegate(
         scrollable: Scrollable.of(context),
@@ -35,7 +31,7 @@ class LocationListItem extends StatelessWidget {
           fadeOutDuration: const Duration(milliseconds: 50),
           imageUrl: imageUrl,
           key: _backgroundImageKey,
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
           // cacheManager: DefaultCacheManager(),
           placeholder: (context, url) => Components.buildShimmerEffect(context),
         ),

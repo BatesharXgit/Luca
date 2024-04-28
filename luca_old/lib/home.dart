@@ -90,7 +90,7 @@ class LucaHomeState extends State<LucaHome>
             body: (context, controller) => TabBarView(
               controller: tabController,
               dragStartBehavior: DragStartBehavior.down,
-              physics: const BouncingScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 MyHomePage(controller: controller),
                 // WallpaperScreen(controller: controller),
