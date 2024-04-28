@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconly/iconly.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/static/categories.dart';
@@ -22,7 +24,7 @@ class LucaHomeState extends State<LucaHome>
   @override
   void initState() {
     currentPage = 0;
-    tabController = TabController(length: 4, vsync: this);
+    tabController = TabController(length: 5, vsync: this);
     tabController.animation!.addListener(
       () {
         final value = tabController.animation!.value.round();
@@ -99,6 +101,7 @@ class LucaHomeState extends State<LucaHome>
 
                 // const LiveWallBeta(),
                 Categories(controller: controller),
+                Categories(controller: controller),
                 StockCategories(controller: controller),
                 FavoriteImagesPage(controller: controller),
               ],
@@ -113,7 +116,7 @@ class LucaHomeState extends State<LucaHome>
                       // color: Theme.of(context).colorScheme.background,
                       color: Color(0xff04ff0d),
                       width: 6),
-                  insets: const EdgeInsets.fromLTRB(16, 0, 16, 8)),
+                  insets: const EdgeInsets.fromLTRB(20, 0, 10, 8)),
               tabs: [
                 SizedBox(
                   height: 58,
@@ -134,7 +137,7 @@ class LucaHomeState extends State<LucaHome>
                   width: 40,
                   child: Center(
                       child: Icon(
-                    IconlyBold.category,
+                    Iconsax.category,
                     color: currentPage == 1
                         ? const Color(0xff04ff0d)
                         : unselectedColor,
@@ -146,7 +149,7 @@ class LucaHomeState extends State<LucaHome>
                   width: 40,
                   child: Center(
                       child: Icon(
-                    Icons.computer_outlined,
+                    Icons.smartphone,
                     color: currentPage == 2
                         ? const Color(0xff04ff0d)
                         : unselectedColor,
@@ -158,11 +161,23 @@ class LucaHomeState extends State<LucaHome>
                   width: 40,
                   child: Center(
                       child: Icon(
-                    IconlyBold.heart,
+                    Icons.computer_outlined,
                     color: currentPage == 3
                         ? const Color(0xff04ff0d)
                         : unselectedColor,
                     size: currentPage == 3 ? 32 : 28,
+                  )),
+                ),
+                SizedBox(
+                  height: 58,
+                  width: 40,
+                  child: Center(
+                      child: Icon(
+                    IconlyBold.heart,
+                    color: currentPage == 4
+                        ? const Color(0xff04ff0d)
+                        : unselectedColor,
+                    size: currentPage == 4 ? 32 : 28,
                   )),
                 ),
               ],

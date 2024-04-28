@@ -273,53 +273,51 @@ class MyHomePageState extends State<MyHomePage>
     EdgeInsets padding = MediaQuery.of(context).padding;
 
     return Scaffold(
-      // extendBodyBehindAppBar: true,
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
-      body: NestedScrollView(
-        controller: widget.controller,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              forceMaterialTransparency: true,
-              expandedHeight: MediaQuery.of(context).size.height * 0.40,
-              floating: false,
-              pinned: false,
-              backgroundColor: Theme.of(context).colorScheme.background,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: false,
-                background: Stack(
-                  children: [
-                    _buildCarouselSlider(),
-                    _buildAppBar(),
-                  ],
-                ),
-              ),
-            ),
-            SliverAppBar(
-              forceMaterialTransparency: true,
-              elevation: 0,
-              // forceMaterialTransparency: true,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  padding: EdgeInsets.only(top: padding.top),
-                  color: Theme.of(context).colorScheme.background,
-                  width: double.infinity,
-                  child: TabBar(
-                    dividerColor: Colors.transparent,
-                    controller: _tabController,
-                    tabs: const [
-                      Tab(text: 'Explore'),
-                      Tab(text: 'Random'),
-                    ],
+      body: Stack(
+        children: [
+          NestedScrollView(
+            controller: widget.controller,
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return <Widget>[
+                SliverAppBar(
+                  forceMaterialTransparency: true,
+                  expandedHeight: MediaQuery.of(context).size.height * 0.60,
+                  floating: false,
+                  pinned: false,
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: false,
+                    background: _buildCarouselSlider(),
                   ),
                 ),
-              ),
-            ),
-          ];
-        },
-        body: _buildTabViews(),
+                SliverAppBar(
+                  forceMaterialTransparency: true,
+                  elevation: 0,
+                  pinned: false,
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Container(
+                      padding: EdgeInsets.only(top: padding.top),
+                      color: Theme.of(context).colorScheme.background,
+                      width: double.infinity,
+                      child: TabBar(
+                        dividerColor: Colors.transparent,
+                        controller: _tabController,
+                        tabs: const [
+                          Tab(text: 'Explore'),
+                          Tab(text: 'Random'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ];
+            },
+            body: _buildTabViews(),
+          ),
+          _buildAppBar(),
+        ],
       ),
     );
   }
@@ -361,7 +359,7 @@ class MyHomePageState extends State<MyHomePage>
                       Get.to(const WallpapersCategory(category: 'amoled'),
                           transition: Transition.rightToLeftWithFade);
                       break;
-                    default:
+                    default:r
                   }
                 },
                 child: Stack(
@@ -373,6 +371,20 @@ class MyHomePageState extends State<MyHomePage>
                           image: AssetImage(kImages[index]),
                           fit: BoxFit.cover,
                           filterQuality: FilterQuality.high,
+                        ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.black.withOpacity(
+                                0.6), // Initial dark color (adjust opacity as needed)
+                            Colors
+                                .transparent, // Fully transparent color at the bottom
+                          ],
+                          stops: [
+                            0.0,
+                            0.1
+                          ], // Adjust the stop to control the gradient coverage
                         ),
                       ),
                     ),
@@ -409,12 +421,15 @@ class MyHomePageState extends State<MyHomePage>
             },
           ),
         ),
+        SizedBox(
+          height: 4,
+        ),
         SmoothPageIndicator(
           controller: _pageController,
           count: kImages.length,
           effect: ExpandingDotsEffect(
-            dotWidth: 10,
-            dotHeight: 10,
+            dotWidth: 8,
+            dotHeight: 8,
             activeDotColor: Theme.of(context).colorScheme.primary,
             dotColor: Colors.grey,
           ),
@@ -426,42 +441,57 @@ class MyHomePageState extends State<MyHomePage>
   Widget _buildAppBar() {
     Color primaryColor = Theme.of(context).colorScheme.primary;
     EdgeInsets padding = MediaQuery.of(context).padding;
-    return Container(
-      padding: EdgeInsets.only(top: padding.top),
-      color: Theme.of(context).colorScheme.background.withOpacity(0.5),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Luca',
-                  style: TextStyle(
-                    fontSize: 48,
-                    color: primaryColor,
-                    fontFamily: 'Sansilk',
-                    fontWeight: FontWeight.w200,
-                    shadows: [
-                      Shadow(
-                        offset: const Offset(0, 4),
-                        blurRadius: 8,
-                        color: primaryColor.withOpacity(0.4),
+    double scrollOffset =
+        widget.controller.hasClients ? widget.controller.offset : 0.0;
+
+    double appBarOpacity =
+        (scrollOffset / (MediaQuery.of(context).size.height * 0.60))
+            .clamp(0.0, 1.0);
+
+    // Color appBarBackgroundColor =
+    //     Theme.of(context).colorScheme.background.withOpacity(appBarOpacity);
+
+    double blurIntensity = appBarOpacity * 16.0;
+
+    return ClipRRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: blurIntensity, sigmaY: blurIntensity),
+        child: Container(
+          padding: EdgeInsets.only(top: padding.top),
+          color: Colors.transparent,
+          width: MediaQuery.of(context).size.width,
+          height: 120,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Luca',
+                      style: TextStyle(
+                        fontSize: 48,
+                        color: primaryColor,
+                        fontFamily: 'Sansilk',
+                        fontWeight: FontWeight.w200,
+                        shadows: [
+                          Shadow(
+                            offset: const Offset(0, 4),
+                            blurRadius: 8,
+                            color: primaryColor.withOpacity(0.4),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    _buildSearchWidget(),
+                  ],
                 ),
-                _buildSearchWidget(),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          // _buildCarouselSlider(),
-        ],
+        ),
       ),
     );
   }
