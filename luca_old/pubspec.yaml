@@ -72,7 +72,6 @@ dependencies:
   rename: ^3.0.1
   cloud_firestore: ^4.16.0
   image_picker: ^1.0.7
-  # inkblob_navigation_bar: ^0.1.2
 
 dev_dependencies:
   flutter_test:

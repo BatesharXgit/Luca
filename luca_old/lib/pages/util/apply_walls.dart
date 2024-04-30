@@ -53,8 +53,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     _createBannerAd();
     _createInterstitialAd();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(systemNavigationBarColor: Colors.transparent));
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.transparent));
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
     if (user != null) {
@@ -90,8 +90,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   }
 
   InterstitialAd? _interstitialAd;
-  void _createBannerAd() {
-  }
+  void _createBannerAd() {}
 
   void _createInterstitialAd() {
     InterstitialAd.load(
