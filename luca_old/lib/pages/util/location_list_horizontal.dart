@@ -1,12 +1,12 @@
 import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:luca/pages/util/components.dart';
-import 'package:luca/pages/util/parallax.dart';
+import 'package:luca/pages/util/parallax_horizontal.dart';
 
-class LocationListItem extends StatelessWidget {
-  LocationListItem({
+class LocationListItemHorizontal extends StatelessWidget {
+  LocationListItemHorizontal({
     Key? key,
     required this.imageUrl,
     required this.scrollController,
@@ -31,7 +31,7 @@ class LocationListItem extends StatelessWidget {
           fadeOutDuration: const Duration(milliseconds: 50),
           imageUrl: imageUrl,
           key: _backgroundImageKey,
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
           // cacheManager: DefaultCacheManager(),
           placeholder: (context, url) => Components.buildShimmerEffect(context),
         ),
