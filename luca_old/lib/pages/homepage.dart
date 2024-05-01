@@ -12,13 +12,11 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
 import 'package:luca/data/wallpaper.dart';
 import 'package:luca/pages/settings.dart';
-import 'package:luca/pages/static/walls_category.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:luca/pages/util/location_list_horizontal.dart';
 import 'package:luca/services/admob_service.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -47,6 +45,7 @@ class MyHomePageState extends State<MyHomePage>
   String? userPhotoUrl;
   String userName = 'there';
   int index = 0;
+  List<String> data = ['Recent', 'Illustration', 'AI', 'Cars', 'Nature'];
 
   @override
   void initState() {
@@ -206,7 +205,7 @@ class MyHomePageState extends State<MyHomePage>
             return <Widget>[
               SliverAppBar(
                 forceMaterialTransparency: true,
-                expandedHeight: MediaQuery.of(context).size.height * 0.4,
+                expandedHeight: MediaQuery.of(context).size.height * 0.45,
                 floating: false,
                 pinned: false,
                 backgroundColor: Theme.of(context).colorScheme.background,
@@ -217,22 +216,7 @@ class MyHomePageState extends State<MyHomePage>
               ),
               SliverPersistentHeader(
                 delegate: _SliverAppBarDelegate(
-                  child: Container(
-                    color: Theme.of(context).colorScheme.background,
-                    width: double.infinity,
-                    child: TabBar(
-                      indicatorColor: Colors.red,
-                      // labelColor: Colors.black,
-                      controller: _tabController,
-                      tabs: const [
-                        Tab(text: 'Recent'),
-                        Tab(text: 'Illustration'),
-                        Tab(text: 'AI'),
-                        Tab(text: 'Cars'),
-                        Tab(text: 'Nature'),
-                      ],
-                    ),
-                  ),
+                  child: _buildTabBar(),
                 ),
                 pinned: true,
               ),
@@ -244,11 +228,66 @@ class MyHomePageState extends State<MyHomePage>
     );
   }
 
-  Widget _buildAppBar() {
+  Widget _buildTabBar() {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
+    Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 0 + 10, 0, 0),
+      padding: EdgeInsets.only(
+        left: 20,
+      ),
+      child: Container(
+        color: backgroundColor,
+        child: TabBar(
+          dividerColor: Colors.transparent,
+          tabAlignment: TabAlignment.start,
+          physics: const BouncingScrollPhysics(),
+          indicatorPadding: const EdgeInsets.fromLTRB(0, 2, 0, 2),
+          controller: _tabController,
+          indicatorColor: primaryColor,
+          indicator: BoxDecoration(
+            color: primaryColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          labelColor: backgroundColor,
+          unselectedLabelColor: secondaryColor,
+          isScrollable: true,
+          labelPadding: const EdgeInsets.symmetric(
+            horizontal: 0,
+          ),
+          tabs: data.map((tab) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.046,
+              width: MediaQuery.of(context).size.width * 0.25,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.transparent,
+              ),
+              child: Tab(
+                child: Text(
+                  tab,
+                  style: GoogleFonts.kanit(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAppBar() {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
+    Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -261,14 +300,14 @@ class MyHomePageState extends State<MyHomePage>
                   'Luca',
                   style: TextStyle(
                     fontSize: 48,
-                    color: primaryColor,
+                    color: secondaryColor,
                     fontFamily: 'Sansilk',
                     fontWeight: FontWeight.w200,
                     shadows: [
                       Shadow(
                         offset: const Offset(0, 4),
                         blurRadius: 8,
-                        color: primaryColor.withOpacity(0.4),
+                        color: secondaryColor.withOpacity(0.4),
                       ),
                     ],
                   ),
@@ -277,7 +316,6 @@ class MyHomePageState extends State<MyHomePage>
               ],
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.only(left: 20, top: 20),
             child: Align(
@@ -285,8 +323,8 @@ class MyHomePageState extends State<MyHomePage>
               child: Text(
                 '''Editor's Choice''',
                 style: GoogleFonts.openSans(
-                  fontSize: 18,
-                  color: primaryColor,
+                  fontSize: 24,
+                  color: secondaryColor,
                   letterSpacing: 0.01,
                   fontWeight: FontWeight.w500,
                 ),
@@ -303,7 +341,7 @@ class MyHomePageState extends State<MyHomePage>
                   crossAxisCount: 1,
                   mainAxisSpacing: 0.0,
                   crossAxisSpacing: 0.0,
-                  childAspectRatio: 1.0,
+                  childAspectRatio: 16 / 12,
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
@@ -342,49 +380,46 @@ class MyHomePageState extends State<MyHomePage>
               ),
             ),
           ),
-
-          // Padding(
-          //   padding: const EdgeInsets.only(
-          //     left: 20,
-          //     top: 10,
-          //   ),
-          //   child: Align(
-          //     alignment: Alignment.centerLeft,
-          //     child: Text(
-          //       'Category',
-          //       style: GoogleFonts.openSans(
-          //         fontSize: 18,
-          //         color: primaryColor,
-          //         letterSpacing: 0.01,
-          //         fontWeight: FontWeight.w500,
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 20,
+              top: 10,
+            ),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Category',
+                style: GoogleFonts.openSans(
+                  fontSize: 18,
+                  color: secondaryColor,
+                  letterSpacing: 0.01,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildSearchWidget() {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
+    Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Visibility(
           visible: !isSearchVisible,
           child: IconButton(
-            icon: isSearchVisible
-                ? Icon(
-                    IconlyBold.search,
-                    color: primaryColor,
-                    size: 28,
-                  )
-                : Icon(
-                    IconlyLight.search,
-                    color: primaryColor,
-                    size: 26,
-                  ),
+            icon: Icon(
+              IconlyLight.search,
+              color: secondaryColor,
+              size: 26,
+            ),
             onPressed: () {
               setState(() {
                 isSearchVisible = true;
@@ -403,20 +438,20 @@ class MyHomePageState extends State<MyHomePage>
                   height: 44,
                   child: TextField(
                     controller: _searchController,
-                    style: TextStyle(color: primaryColor),
+                    style: TextStyle(color: secondaryColor),
                     decoration: InputDecoration(
                       hintText: 'Search...',
-                      hintStyle: TextStyle(fontSize: 14, color: primaryColor),
+                      hintStyle: TextStyle(fontSize: 14, color: secondaryColor),
                       filled: true,
                       fillColor: Colors.transparent,
                       contentPadding: const EdgeInsets.all(14.0),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
-                        borderSide: BorderSide(color: primaryColor),
+                        borderSide: BorderSide(color: secondaryColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0),
-                        borderSide: BorderSide(color: primaryColor),
+                        borderSide: BorderSide(color: secondaryColor),
                       ),
                       suffixIcon: IconButton(
                         icon: const Icon(
@@ -568,52 +603,6 @@ class MyHomePageState extends State<MyHomePage>
                 ),
               )),
             ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImageGridFromRef1() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 14, right: 14),
-      child: CustomScrollView(
-        physics: const ClampingScrollPhysics(),
-        slivers: <Widget>[
-          SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.65,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    // _showInterstitialAd();
-                    Get.to(
-                        ApplyWallpaperPage(
-                          url: wallpapers[index].url,
-                          uploaderName: wallpapers[index].uploaderName,
-                          title: wallpapers[index].title,
-                          thumbnailUrl: wallpapers[index].thumbnailUrl,
-                        ),
-                        transition: Transition.downToUp);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 6.0, horizontal: 6.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(26),
-                      child: LocationListItem(
-                        imageUrl: randomWallpapers[index].thumbnailUrl,
-                        scrollController: scrollController,
-                      ),
-                    ),
-                  ),
-                );
-              },
-              childCount: randomWallpapers.length,
-            ),
-          ),
         ],
       ),
     );

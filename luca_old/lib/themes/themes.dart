@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   colorScheme: const ColorScheme.dark(
-    background: Color(0xFF131321),
-    primary: Color(0xFFE6EDFF),
-    secondary: Colors.grey,
-    tertiary: Color(0xFF222431),
+    background: Color(0xFF06070d),
+    primary: Color(0xFFFF00e59b),
+    secondary: Color(0xFFf2f2f2),
+    tertiary: Color(0xFF161a1f),
   ),
   iconTheme: const IconThemeData(color: Color(0xFFE6EDFF)),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
