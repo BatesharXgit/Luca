@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -45,7 +46,7 @@ class MyHomePageState extends State<MyHomePage>
   String? userPhotoUrl;
   String userName = 'there';
   int index = 0;
-  List<String> data = ['Recent', 'Illustration', 'AI', 'Cars', 'Nature'];
+  List<String> data = ['All', 'Illustration', 'AI', 'Cars', 'Nature'];
 
   @override
   void initState() {
@@ -205,36 +206,45 @@ class MyHomePageState extends State<MyHomePage>
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
     Color secondaryColor = Theme.of(context).colorScheme.secondary;
+    EdgeInsets padding = MediaQuery.of(context).padding;
 
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
-      appBar: TabBar(
-        dividerColor: Colors.transparent,
-        tabAlignment: TabAlignment.start,
-        physics: const BouncingScrollPhysics(),
-        indicatorPadding: const EdgeInsets.fromLTRB(0, 42, 0, 2),
-        controller: _tabController,
-        indicatorColor: primaryColor,
-        indicator: BoxDecoration(
-          color: primaryColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        labelColor: primaryColor,
-        unselectedLabelColor: secondaryColor,
-        isScrollable: true,
-        tabs: data.map((tab) {
-          return Tab(
-            child: Text(
-              tab,
-              style: GoogleFonts.kanit(
-                fontSize: 14,
+      body: SafeArea(
+        child: Column(
+          children: [
+            TabBar(
+              padding: EdgeInsets.only(bottom: padding.bottom),
+              dividerColor: Colors.transparent,
+              tabAlignment: TabAlignment.start,
+              physics: const BouncingScrollPhysics(),
+              indicatorPadding: const EdgeInsets.fromLTRB(0, 40, 0, 2),
+              controller: _tabController,
+              indicatorColor: primaryColor,
+              indicator: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(20),
               ),
+              labelColor: primaryColor,
+              unselectedLabelColor: secondaryColor,
+              isScrollable: true,
+              tabs: data.map((tab) {
+                return Tab(
+                  child: Text(
+                    tab,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
-          );
-        }).toList(),
+            Expanded(child: _buildTabViews()),
+          ],
+        ),
       ),
-      body: _buildTabViews(),
     );
   }
 
@@ -345,15 +355,17 @@ class MyHomePageState extends State<MyHomePage>
 
   Widget _buildImageGridFromRef() {
     return Padding(
-      padding: const EdgeInsets.only(left: 14, right: 14),
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: CustomScrollView(
         controller: scrollController,
-        physics: const ClampingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         slivers: <Widget>[
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.65,
+              childAspectRatio: 0.6,
+              mainAxisSpacing: 6,
+              crossAxisSpacing: 6,
             ),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
@@ -369,27 +381,21 @@ class MyHomePageState extends State<MyHomePage>
                       transition: Transition.downToUp,
                     );
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 6.0,
-                      horizontal: 6.0,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(26),
-                      // child: LocationListItem(
-                      //   imageUrl: wallpapers[index].thumbnailUrl,
-                      //   scrollController: scrollController,
-                      // ),
-                      child: CachedNetworkImage(
-                        fadeInDuration: const Duration(milliseconds: 50),
-                        fadeOutDuration: const Duration(milliseconds: 50),
-                        imageUrl: wallpapers[index].thumbnailUrl,
-                        // key: _backgroundImageKey,
-                        fit: BoxFit.cover,
-                        // cacheManager: DefaultCacheManager(),
-                        placeholder: (context, url) =>
-                            Components.buildShimmerEffect(context),
-                      ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    // child: LocationListItem(
+                    //   imageUrl: wallpapers[index].thumbnailUrl,
+                    //   scrollController: scrollController,
+                    // ),
+                    child: CachedNetworkImage(
+                      fadeInDuration: const Duration(milliseconds: 50),
+                      fadeOutDuration: const Duration(milliseconds: 50),
+                      imageUrl: wallpapers[index].thumbnailUrl,
+                      // key: _backgroundImageKey,
+                      fit: BoxFit.cover,
+                      // cacheManager: DefaultCacheManager(),
+                      placeholder: (context, url) =>
+                          Components.buildShimmerEffect(context),
                     ),
                   ),
                 );
