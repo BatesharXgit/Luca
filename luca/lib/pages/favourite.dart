@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,13 +6,14 @@ import 'package:iconsax/iconsax.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:luca/data/wallpaper.dart';
+import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/location_list.dart';
 
 import 'util/apply_walls.dart';
 
 class FavoriteImagesPage extends StatefulWidget {
   // final ScrollController controller;
-  const FavoriteImagesPage({ super.key});
+  const FavoriteImagesPage({super.key});
 
   @override
   State<FavoriteImagesPage> createState() => _FavoriteImagesPageState();
@@ -71,9 +73,10 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
             icon: const Icon(Iconsax.trash),
           )
         ],
-        // elevation: 0,
+        elevation: 0,
+        forceMaterialTransparency: true,
         iconTheme: Theme.of(context).iconTheme,
-        // centerTitle: true,
+        centerTitle: true,
         backgroundColor: backgroundColor,
         title: Text(
           'Favourites',
@@ -93,12 +96,14 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
     return Padding(
       padding: const EdgeInsets.only(left: 14, right: 14),
       child: CustomScrollView(
-        physics: const ClampingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         slivers: <Widget>[
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.65,
+              childAspectRatio: 0.6,
+              mainAxisSpacing: 6,
+              crossAxisSpacing: 6,
             ),
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
@@ -114,15 +119,15 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
                         ),
                         transition: Transition.downToUp);
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 6.0, horizontal: 6.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(26),
-                      child: LocationListItem(
-                        imageUrl: wallpapers[index].thumbnailUrl,
-                        scrollController: scrollController,
-                      ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CachedNetworkImage(
+                      fadeInDuration: const Duration(milliseconds: 50),
+                      fadeOutDuration: const Duration(milliseconds: 50),
+                      imageUrl: wallpapers[index].thumbnailUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) =>
+                          Components.buildShimmerEffect(context),
                     ),
                   ),
                 );

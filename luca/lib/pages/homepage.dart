@@ -206,8 +206,7 @@ class MyHomePageState extends State<MyHomePage>
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
     Color secondaryColor = Theme.of(context).colorScheme.secondary;
-    EdgeInsets padding = MediaQuery.of(context).padding;
-
+    // EdgeInsets padding = MediaQuery.of(context).padding;
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
@@ -215,13 +214,13 @@ class MyHomePageState extends State<MyHomePage>
         child: Column(
           children: [
             TabBar(
-              padding: EdgeInsets.only(bottom: padding.bottom),
-              dividerColor: Colors.transparent,
+              padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
               tabAlignment: TabAlignment.start,
               physics: const BouncingScrollPhysics(),
               indicatorPadding: const EdgeInsets.fromLTRB(0, 40, 0, 2),
               controller: _tabController,
               indicatorColor: primaryColor,
+              labelPadding: EdgeInsets.only(left: 18),
               indicator: BoxDecoration(
                 color: primaryColor,
                 borderRadius: BorderRadius.circular(20),
@@ -233,9 +232,9 @@ class MyHomePageState extends State<MyHomePage>
                 return Tab(
                   child: Text(
                     tab,
-                    style: TextStyle(
+                    style: GoogleFonts.montserrat(
                       fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 );
@@ -245,111 +244,6 @@ class MyHomePageState extends State<MyHomePage>
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildSearchWidget() {
-    Color backgroundColor = Theme.of(context).colorScheme.background;
-    Color primaryColor = Theme.of(context).colorScheme.primary;
-    Color secondaryColor = Theme.of(context).colorScheme.secondary;
-    Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Visibility(
-          visible: !isSearchVisible,
-          child: IconButton(
-            icon: Icon(
-              IconlyLight.search,
-              color: secondaryColor,
-              size: 26,
-            ),
-            onPressed: () {
-              setState(() {
-                isSearchVisible = true;
-              });
-            },
-          ),
-        ),
-        AnimatedContainer(
-          transformAlignment: Alignment.centerLeft,
-          duration: const Duration(milliseconds: 400),
-          width: isSearchVisible ? 140.0 : 0.0,
-          height: 42,
-          alignment: isSearchVisible ? Alignment.center : Alignment.centerRight,
-          child: isSearchVisible
-              ? SizedBox(
-                  height: 44,
-                  child: TextField(
-                    controller: _searchController,
-                    style: TextStyle(color: secondaryColor),
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      hintStyle: TextStyle(fontSize: 14, color: secondaryColor),
-                      filled: true,
-                      fillColor: Colors.transparent,
-                      contentPadding: const EdgeInsets.all(14.0),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        borderSide: BorderSide(color: secondaryColor),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                        borderSide: BorderSide(color: secondaryColor),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.red,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            isSearchVisible = false;
-                            _searchController.clear();
-                          });
-                        },
-                      ),
-                    ),
-                    onSubmitted: (query) {
-                      setState(() {
-                        isSearchVisible = false;
-                      });
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SearchWallpaper(
-                            title: "Search Wallpaper",
-                            query: query,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                )
-              : null,
-        ),
-        const SizedBox(
-          width: 8,
-        ),
-        GestureDetector(
-          onTap: () => Get.to(() => const SettingsPage(),
-              transition: Transition.rightToLeftWithFade),
-          child: (userPhotoUrl != null)
-              ? CircleAvatar(
-                  radius: 20,
-                  backgroundImage: CachedNetworkImageProvider(
-                    userPhotoUrl!,
-                  ),
-                )
-              : Icon(
-                  Icons.person,
-                  color: primaryColor,
-                  size: 28,
-                ),
-        ),
-      ],
     );
   }
 
@@ -383,17 +277,14 @@ class MyHomePageState extends State<MyHomePage>
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    // child: LocationListItem(
-                    //   imageUrl: wallpapers[index].thumbnailUrl,
-                    //   scrollController: scrollController,
-                    // ),
+    
                     child: CachedNetworkImage(
                       fadeInDuration: const Duration(milliseconds: 50),
                       fadeOutDuration: const Duration(milliseconds: 50),
                       imageUrl: wallpapers[index].thumbnailUrl,
-                      // key: _backgroundImageKey,
+                  
                       fit: BoxFit.cover,
-                      // cacheManager: DefaultCacheManager(),
+             
                       placeholder: (context, url) =>
                           Components.buildShimmerEffect(context),
                     ),

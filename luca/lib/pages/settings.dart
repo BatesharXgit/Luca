@@ -211,7 +211,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 children: [
                   const SizedBox(height: 20),
-              
                   title,
                   Text(
                     'Customize Your Experience!',

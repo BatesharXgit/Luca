@@ -7,6 +7,8 @@ import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
+import 'package:luca/pages/searchresult.dart';
+import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/static/categories.dart';
 import 'package:luca/pages/static/stock_categories.dart';
 
@@ -20,10 +22,11 @@ class _LucaHomeState extends State<LucaHome> {
 
   List<Widget> _pages = [
     MyHomePage(),
-    Categories(),
-    Categories(),
+    SearchWallpaper(),
+    // Categories(),
     StockCategories(),
     FavoriteImagesPage(),
+    SettingsPage(),
   ];
 
   @override
@@ -55,19 +58,19 @@ class _LucaHomeState extends State<LucaHome> {
           backgroundColor: backgroundColor,
           items: [
             CustomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(IconlyBold.home),
             ),
             CustomNavigationBarItem(
-              icon: Icon(Icons.search),
+              icon: Icon(IconlyBold.search),
             ),
             CustomNavigationBarItem(
               icon: Icon(Icons.phone_android),
             ),
             CustomNavigationBarItem(
-              icon: Icon(Icons.favorite),
+              icon: Icon(IconlyBold.heart),
             ),
             CustomNavigationBarItem(
-              icon: Icon(Icons.account_circle),
+              icon: Icon(IconlyBold.profile),
             ),
           ],
           currentIndex: _currentIndex,

@@ -52,9 +52,9 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     super.initState();
     _createBannerAd();
     _createInterstitialAd();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.transparent));
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    //     systemNavigationBarColor: Colors.transparent));
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
     if (user != null) {
