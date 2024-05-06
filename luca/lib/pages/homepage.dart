@@ -46,7 +46,21 @@ class MyHomePageState extends State<MyHomePage>
   String? userPhotoUrl;
   String userName = 'there';
   int index = 0;
-  List<String> data = ['All', 'Illustration', 'AI', 'Cars', 'Nature'];
+  List<String> data = [
+    'All',
+    'Abstract',
+    'Amoled',
+    'Animals',
+    'Anime',
+    'Cars',
+    'Games',
+    'Illustration',
+    'Minimalist',
+    'Nature',
+    'SciFi',
+    'Space',
+    'Superhero',
+  ];
 
   @override
   void initState() {
@@ -55,7 +69,7 @@ class MyHomePageState extends State<MyHomePage>
     fetchUserProfileData();
     _fetchInitialWallpapers();
     scrollController.addListener(_scrollListener);
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: data.length, vsync: this);
   }
 
   void _scrollListener() {
@@ -216,11 +230,12 @@ class MyHomePageState extends State<MyHomePage>
             TabBar(
               padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
               tabAlignment: TabAlignment.start,
+              dividerColor: Colors.transparent,
               physics: const BouncingScrollPhysics(),
-              indicatorPadding: const EdgeInsets.fromLTRB(0, 40, 0, 2),
+              indicatorPadding: const EdgeInsets.fromLTRB(0, 42, 0, 2),
               controller: _tabController,
               indicatorColor: primaryColor,
-              labelPadding: EdgeInsets.only(left: 18),
+              labelPadding: EdgeInsets.only(right: 10, left: 10),
               indicator: BoxDecoration(
                 color: primaryColor,
                 borderRadius: BorderRadius.circular(20),
@@ -277,14 +292,11 @@ class MyHomePageState extends State<MyHomePage>
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-    
                     child: CachedNetworkImage(
                       fadeInDuration: const Duration(milliseconds: 50),
                       fadeOutDuration: const Duration(milliseconds: 50),
                       imageUrl: wallpapers[index].thumbnailUrl,
-                  
                       fit: BoxFit.cover,
-             
                       placeholder: (context, url) =>
                           Components.buildShimmerEffect(context),
                     ),
@@ -308,96 +320,101 @@ class MyHomePageState extends State<MyHomePage>
   Widget _buildTabViews() {
     return TabBarView(
       controller: _tabController,
-      children: [
-        SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: _buildImageGridFromRef(),
-        ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Center(
-            child: Text(
-              'Illustration',
-              style: TextStyle(
-                fontSize: 44,
-                color: Colors.white,
-                fontFamily: 'Sansilk',
-                fontWeight: FontWeight.w200,
-                shadows: [
-                  Shadow(
-                    offset: const Offset(0, 4),
-                    blurRadius: 8,
-                    color: Colors.white.withOpacity(0.4),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Center(
-            child: Text(
-              'AI',
-              style: TextStyle(
-                fontSize: 44,
-                color: Colors.white,
-                fontFamily: 'Sansilk',
-                fontWeight: FontWeight.w200,
-                shadows: [
-                  Shadow(
-                    offset: const Offset(0, 4),
-                    blurRadius: 8,
-                    color: Colors.white.withOpacity(0.4),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Center(
-            child: Text(
-              'Cars',
-              style: TextStyle(
-                fontSize: 44,
-                color: Colors.white,
-                fontFamily: 'Sansilk',
-                fontWeight: FontWeight.w200,
-                shadows: [
-                  Shadow(
-                    offset: const Offset(0, 4),
-                    blurRadius: 8,
-                    color: Colors.white.withOpacity(0.4),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: Center(
-            child: Text(
-              'Nature',
-              style: TextStyle(
-                fontSize: 44,
-                color: Colors.white,
-                fontFamily: 'Sansilk',
-                fontWeight: FontWeight.w200,
-                shadows: [
-                  Shadow(
-                    offset: const Offset(0, 4),
-                    blurRadius: 8,
-                    color: Colors.white.withOpacity(0.4),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
+      children: data.map((category) {
+        if (category == 'All') {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: _buildImageGridFromRef(),
+          );
+        } else {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: _buildImageGridFromCategory(category),
+          );
+        }
+      }).toList(),
     );
+  }
+
+  Widget _buildImageGridFromCategory(String category) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+      child: FutureBuilder<List<Wallpaper>>(
+        future: _fetchWallpapers(category),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(
+                child: Text('No wallpapers found for this category.'));
+          } else {
+            return CustomScrollView(
+              controller: scrollController,
+              physics: const BouncingScrollPhysics(),
+              slivers: <Widget>[
+                SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.6,
+                    mainAxisSpacing: 6,
+                    crossAxisSpacing: 6,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {},
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: CachedNetworkImage(
+                            fadeInDuration: const Duration(milliseconds: 50),
+                            fadeOutDuration: const Duration(milliseconds: 50),
+                            imageUrl: snapshot.data![index].thumbnailUrl,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) =>
+                                Components.buildShimmerEffect(context),
+                          ),
+                        ),
+                      );
+                    },
+                    childCount: snapshot.data!.length,
+                  ),
+                ),
+                if (_isLoading)
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: Components.buildCircularIndicator(),
+                    ),
+                  ),
+              ],
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Future<List<Wallpaper>> _fetchWallpapers(String category) async {
+    try {
+      CollectionReference categoryCollectionRef = FirebaseFirestore.instance
+          .collection('Categories')
+          .doc(category)
+          .collection('${category}Images');
+
+      QuerySnapshot snapshot = await categoryCollectionRef.get();
+
+      return snapshot.docs.map((doc) {
+        return Wallpaper(
+          title: doc['title'],
+          url: doc['url'],
+          thumbnailUrl: doc['thumbnailUrl'],
+          uploaderName: doc['uploaderName'],
+        );
+      }).toList();
+    } catch (e) {
+      print('Error fetching wallpapers for category $category: $e');
+      return [];
+    }
   }
 }
