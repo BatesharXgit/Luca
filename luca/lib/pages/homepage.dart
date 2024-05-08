@@ -351,7 +351,7 @@ class MyHomePageState extends State<MyHomePage>
                 child: Text('No wallpapers found for this category.'));
           } else {
             return CustomScrollView(
-              controller: scrollController,
+              controller: ScrollController(),
               physics: const BouncingScrollPhysics(),
               slivers: <Widget>[
                 SliverGrid(
