@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:luca/data/search_data.dart';
@@ -53,6 +54,7 @@ class SearchWallpaperState extends State<SearchWallpaper> {
   @override
   void dispose() {
     _searchController.dispose();
+    _debounceTimer!.cancel();
     super.dispose();
   }
 
@@ -61,7 +63,7 @@ class SearchWallpaperState extends State<SearchWallpaper> {
       _isLoading = true;
     });
 
-    String url = 'https://api.pexels.com/v1/search?query=$query&per_page=30';
+    String url = 'https://api.pexels.com/v1/search?query=$query&per_page=60';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': API_KEY,
@@ -143,7 +145,8 @@ class SearchWallpaperState extends State<SearchWallpaper> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.015,
               ),
-              buildSearchBox(context),
+              // buildSearchBox(context),
+              _buildSearchWidget(),
               Divider(
                 thickness: 2,
                 color: Colors.transparent,
@@ -169,17 +172,19 @@ class SearchWallpaperState extends State<SearchWallpaper> {
                                 ),
                                 SizedBox(height: 10),
                                 Wrap(
+                                  runSpacing: 8,
                                   spacing: 10,
                                   children: [
-                                    Chip(
-                                      label: Text('Popular 1'),
-                                    ),
-                                    Chip(
-                                      label: Text('Popular 2'),
-                                    ),
-                                    Chip(
-                                      label: Text('Popular 3'),
-                                    ),
+                                    for (var i = 0; i < colors.length; i++)
+                                      InkWell(
+                                        onTap: () {
+                                          String query = popularCategories[i];
+                                          _searchImages(query);
+                                        },
+                                        child: Chip(
+                                          label: Text(popularCategories[i]),
+                                        ),
+                                      ),
                                   ],
                                 ),
                                 SizedBox(height: 20),
@@ -197,7 +202,10 @@ class SearchWallpaperState extends State<SearchWallpaper> {
                                   children: [
                                     for (var i = 0; i < colors.length; i++)
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          String query = colors[i];
+                                          _searchImages(query);
+                                        },
                                         child: Container(
                                           width: 60,
                                           height: 60,
@@ -271,64 +279,114 @@ class SearchWallpaperState extends State<SearchWallpaper> {
     );
   }
 
-  Widget buildSearchBox(BuildContext context) {
+  Widget _buildSearchWidget() {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.85,
-        height: MediaQuery.of(context).size.height * 0.055,
-        decoration: BoxDecoration(
-          color: primaryColor,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
+      padding: EdgeInsets.fromLTRB(20, 4, 20, 4),
+      child: SizedBox(
+        height: 44,
+        child: TextField(
+          controller: _searchController,
+          onChanged: (query) => _debouncedSearch(query),
+          style: TextStyle(color: secondaryColor),
+          decoration: InputDecoration(
+            hintText: 'Search for...',
+            hintStyle: TextStyle(fontSize: 14, color: secondaryColor),
+            filled: true,
+            fillColor: Colors.transparent,
+            contentPadding: const EdgeInsets.all(14.0),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20.0),
+              borderSide: BorderSide(color: secondaryColor),
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: (query) => _debouncedSearch(query),
-                  style: GoogleFonts.kanit(
-                    fontSize: 18,
-                    color: tertiaryColor,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: 'What you are looking for...',
-                    hintStyle: GoogleFonts.kanit(
-                      color: tertiaryColor.withOpacity(0.8),
-                      fontSize: 16,
-                    ),
-                    border: InputBorder.none,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        Icons.search_outlined,
-                        color: tertiaryColor,
-                      ),
-                      onPressed: () => _showInterstitialAd(),
-                    ),
-                  ),
-                  cursorColor: primaryColor,
-                  cursorRadius: const Radius.circular(20),
-                  cursorWidth: 3,
-                ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20.0),
+              borderSide: BorderSide(color: secondaryColor),
+            ),
+            suffixIcon: IconButton(
+              icon: const Icon(
+                Icons.close,
+                color: Colors.red,
               ),
-            ],
+              onPressed: () {
+                setState(() {
+                  _searchController.clear();
+                });
+              },
+            ),
+            prefixIcon: Icon(
+              IconlyLight.search,
+              color: secondaryColor,
+              size: 26,
+            ),
           ),
         ),
       ),
     );
   }
+
+  // Widget buildSearchBox(BuildContext context) {
+  //   Color primaryColor = Theme.of(context).colorScheme.primary;
+  //   Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
+  //   return Padding(
+  //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+  //     child: Container(
+  //       width: MediaQuery.of(context).size.width * 0.85,
+  //       height: MediaQuery.of(context).size.height * 0.055,
+  //       decoration: BoxDecoration(
+  //         color: primaryColor,
+  //         borderRadius: BorderRadius.circular(10),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: Colors.grey.withOpacity(0.5),
+  //             spreadRadius: 2,
+  //             blurRadius: 5,
+  //             offset: const Offset(0, 3),
+  //           ),
+  //         ],
+  //       ),
+  //       child: Padding(
+  //         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+  //         child: Row(
+  //           children: [
+  //             Expanded(
+  //               child: TextField(
+  //                 controller: _searchController,
+  //                 onChanged: (query) => _debouncedSearch(query),
+  //                 style: GoogleFonts.kanit(
+  //                   fontSize: 18,
+  //                   color: tertiaryColor,
+  //                 ),
+  //                 decoration: InputDecoration(
+  //                   hintText: 'What you are looking for...',
+  //                   hintStyle: GoogleFonts.kanit(
+  //                     color: tertiaryColor.withOpacity(0.8),
+  //                     fontSize: 16,
+  //                   ),
+  //                   border: InputBorder.none,
+  //                   suffixIcon: IconButton(
+  //                     icon: Icon(
+  //                       Icons.search_outlined,
+  //                       color: tertiaryColor,
+  //                     ),
+  //                     onPressed: () => _showInterstitialAd(),
+  //                   ),
+  //                 ),
+  //                 cursorColor: primaryColor,
+  //                 cursorRadius: const Radius.circular(20),
+  //                 cursorWidth: 3,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Timer? _debounceTimer;
 
@@ -336,7 +394,7 @@ class SearchWallpaperState extends State<SearchWallpaper> {
     if (_debounceTimer != null && _debounceTimer!.isActive) {
       _debounceTimer!.cancel();
     }
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+    _debounceTimer = Timer(const Duration(milliseconds: 1000), () {
       _searchImages(query);
     });
   }

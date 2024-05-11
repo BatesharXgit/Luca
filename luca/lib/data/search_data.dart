@@ -1,5 +1,20 @@
 import 'package:flutter/material.dart';
 
+List<String> popularCategories = [
+  "Nature",
+  "Animals",
+  "Abstract",
+  "Minimalist",
+  "Space",
+  "Technology",
+  "Art",
+  "Cityscapes",
+  "Seasonal",
+  "Aesthetic",
+  "Vintage",
+  "Photography"
+];
+
 List<String> colors = [
   'Black',
   'Blue',
