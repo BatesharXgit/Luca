@@ -7,6 +7,7 @@ import 'package:async_wallpaper/async_wallpaper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 // ignore: depend_on_referenced_packages
 import 'package:fluttertoast/fluttertoast.dart';
@@ -47,14 +48,10 @@ class SearchWallpaperState extends State<SearchWallpaper> {
   List<dynamic> _images = [];
   final TextEditingController _searchController = TextEditingController();
   bool _isLoading = false;
-  // final String query;
-
-  // SearchWallpaperState(this.query);
 
   @override
   void dispose() {
     _searchController.dispose();
-    _debounceTimer!.cancel();
     super.dispose();
   }
 
@@ -107,8 +104,6 @@ class SearchWallpaperState extends State<SearchWallpaper> {
     super.initState();
     _createBannerAd();
     _createInterstitialAd();
-    // _searchController.text = widget.query;
-    // _searchImages(widget.query);
   }
 
   BannerAd? _banner;
@@ -165,123 +160,123 @@ class SearchWallpaperState extends State<SearchWallpaper> {
                   height: MediaQuery.of(context).size.height * 0.015,
                 ),
                 _buildSearchWidget(),
-                Divider(
-                  thickness: 2,
-                  color: Colors.transparent,
-                ),
-                _isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : _images.isEmpty
-                        ? Padding(
-                            padding:
-                                const EdgeInsets.only(left: 20.0, right: 20),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 20),
-                                Text(
-                                  'Popular Searches',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                SizedBox(
+                  height: MediaQuery.of(context).size.height - 50,
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : _images.isEmpty
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20.0, right: 20),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 20),
+                                  Text(
+                                    'Popular Searches',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 10),
-                                Wrap(
-                                  runSpacing: 8,
-                                  spacing: 10,
-                                  children: [
-                                    for (var i = 0; i < colors.length; i++)
-                                      InkWell(
-                                        onTap: () {
-                                          String query = popularCategories[i];
-                                          _searchImages(query);
-                                        },
-                                        child: Chip(
-                                          label: Text(popularCategories[i]),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                SizedBox(height: 20),
-                                Text(
-                                  'Search by Colors',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Wrap(
-                                  runSpacing: 8,
-                                  spacing: 10,
-                                  children: [
-                                    for (var i = 0; i < colors.length; i++)
-                                      InkWell(
-                                        onTap: () {
-                                          String query = colors[i];
-                                          _searchImages(query);
-                                        },
-                                        child: Container(
-                                          width: 60,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            color: chipColors[i],
-                                            shape: BoxShape.circle,
+                                  SizedBox(height: 10),
+                                  Wrap(
+                                    runSpacing: 8,
+                                    spacing: 10,
+                                    children: [
+                                      for (var i = 0; i < colors.length; i++)
+                                        InkWell(
+                                          onTap: () {
+                                            String query = popularCategories[i];
+                                            _searchImages(query);
+                                          },
+                                          child: Chip(
+                                            label: Text(popularCategories[i]),
                                           ),
                                         ),
-                                      ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        : MasonryGridView.builder(
-                            gridDelegate:
-                                const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2),
-                            itemCount: _images.length,
-                            itemBuilder: (context, index) {
-                              String mediumImageUrl =
-                                  _images[index]['src']['medium'];
-                              String originalImageUrl =
-                                  _images[index]['src']['original'];
-                              return GestureDetector(
-                                onTap: () {
-                                  _showInterstitialAd();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ApplyWallpaperPage(
-                                        uploaderName: '',
-                                        title: '',
-                                        thumbnailUrl: originalImageUrl,
-                                        url: originalImageUrl,
-                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20),
+                                  Text(
+                                    'Search by Colors',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  );
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Hero(
-                                      tag: originalImageUrl,
-                                      child: CachedNetworkImage(
-                                        imageUrl: mediumImageUrl,
-                                        fit: BoxFit.cover,
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.error),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Wrap(
+                                    runSpacing: 8,
+                                    spacing: 10,
+                                    children: [
+                                      for (var i = 0; i < colors.length; i++)
+                                        InkWell(
+                                          onTap: () {
+                                            String query = colors[i];
+                                            _searchImages(query);
+                                          },
+                                          child: Container(
+                                            width: 60,
+                                            height: 60,
+                                            decoration: BoxDecoration(
+                                              color: chipColors[i],
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            )
+                          : MasonryGridView.builder(
+                              gridDelegate:
+                                  const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2),
+                              itemCount: _images.length,
+                              itemBuilder: (context, index) {
+                                String mediumImageUrl =
+                                    _images[index]['src']['medium'];
+                                String originalImageUrl =
+                                    _images[index]['src']['original'];
+                                return GestureDetector(
+                                  onTap: () {
+                                    _showInterstitialAd();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            ApplyWallpaperPage(
+                                          uploaderName: '',
+                                          title: '',
+                                          thumbnailUrl: originalImageUrl,
+                                          url: originalImageUrl,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Hero(
+                                        tag: originalImageUrl,
+                                        child: CachedNetworkImage(
+                                          imageUrl: mediumImageUrl,
+                                          fit: BoxFit.cover,
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
+                                );
+                              },
+                            ),
+                ),
               ],
             ),
           ),
@@ -305,12 +300,12 @@ class SearchWallpaperState extends State<SearchWallpaper> {
     Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(20, 4, 20, 4),
+      padding: EdgeInsets.fromLTRB(20, 4, 20, 10),
       child: SizedBox(
         height: 44,
         child: TextField(
           controller: _searchController,
-          onChanged: _handleSearch, // Changed to call new handler method
+          onChanged: _handleSearch,
           style: TextStyle(color: secondaryColor),
           decoration: InputDecoration(
             hintText: 'Search for...',
@@ -331,7 +326,7 @@ class SearchWallpaperState extends State<SearchWallpaper> {
                 Icons.close,
                 color: Colors.red,
               ),
-              onPressed: _clearSearch, // Changed to call clear search method
+              onPressed: _clearSearch,
             ),
             prefixIcon: Icon(
               IconlyLight.search,
@@ -342,16 +337,5 @@ class SearchWallpaperState extends State<SearchWallpaper> {
         ),
       ),
     );
-  }
-
-  Timer? _debounceTimer;
-
-  void _debouncedSearch(String query) {
-    if (_debounceTimer != null && _debounceTimer!.isActive) {
-      _debounceTimer!.cancel();
-    }
-    _debounceTimer = Timer(const Duration(milliseconds: 1000), () {
-      _searchImages(query);
-    });
   }
 }

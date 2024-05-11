@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:luca/data/wallpaper.dart';
 import 'package:luca/pages/util/components.dart';
-import 'package:luca/pages/util/location_list.dart';
 
 import 'util/apply_walls.dart';
 
@@ -180,9 +179,9 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
         .collection('LikedImages')
         .get()
         .then((querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
+      for (var doc in querySnapshot.docs) {
         doc.reference.delete();
-      });
+      }
       print('All liked images deleted successfully!');
     }).catchError((error) {
       print('Failed to delete all liked images: $error');

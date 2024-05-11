@@ -1,18 +1,16 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:iconly/iconly.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:luca/pages/settings.dart';
-import 'package:luca/pages/static/categories.dart';
 import 'package:luca/pages/static/stock_categories.dart';
 
 class LucaHome extends StatefulWidget {
+  const LucaHome({super.key});
+
   @override
   _LucaHomeState createState() => _LucaHomeState();
 }

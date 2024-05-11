@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,16 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:iconly/iconly.dart';
 import 'package:luca/data/wallpaper.dart';
-import 'package:luca/pages/settings.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
-import 'package:luca/pages/util/location_list.dart';
-import 'package:luca/pages/searchresult.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:luca/services/admob_service.dart';
 
 class MyHomePage extends StatefulWidget {
   // final ScrollController controller;
@@ -35,7 +28,6 @@ class MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
   ScrollController scrollController = ScrollController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final TextEditingController _searchController = TextEditingController();
   late TabController _tabController;
   bool _isLoading = false;
 
@@ -65,7 +57,6 @@ class MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
-    _createInterstitialAd();
     fetchUserProfileData();
     _fetchInitialWallpapers();
     scrollController.addListener(_scrollListener);
@@ -159,40 +150,6 @@ class MyHomePageState extends State<MyHomePage>
       setState(() {
         _isLoading = false;
       });
-    }
-  }
-
-  InterstitialAd? _interstitialAd;
-
-  void _createInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: AdMobService.wallOpeninterstitialAdUnitId!,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) => _interstitialAd = ad,
-        onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null,
-      ),
-    );
-  }
-
-  void _showInterstitialAd() {
-    if (_interstitialAd != null) {
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose();
-          Future.delayed(const Duration(minutes: 1), () {
-            _createInterstitialAd();
-          });
-        },
-        onAdFailedToShowFullScreenContent: (ad, error) {
-          ad.dispose();
-          Future.delayed(const Duration(minutes: 1), () {
-            _createInterstitialAd();
-          });
-        },
-      );
-      _interstitialAd!.show();
-      _interstitialAd = null;
     }
   }
 
@@ -343,7 +300,7 @@ class MyHomePageState extends State<MyHomePage>
         future: _fetchWallpapers(category),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: Components.buildCircularIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
