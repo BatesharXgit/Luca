@@ -61,6 +61,7 @@ class SearchWallpaperState extends State<SearchWallpaper> {
   void _searchImages(String query) async {
     setState(() {
       _isLoading = true;
+      _searchController.text = query;
     });
 
     String url = 'https://api.pexels.com/v1/search?query=$query&per_page=60';
@@ -78,6 +79,23 @@ class SearchWallpaperState extends State<SearchWallpaper> {
     } else {
       setState(() {
         _isLoading = false;
+      });
+    }
+  }
+
+  void _clearSearch() {
+    setState(() {
+      _searchController.clear();
+      _images.clear();
+    });
+  }
+
+  void _handleSearch(String query) {
+    if (query.isNotEmpty) {
+      _searchImages(query);
+    } else {
+      setState(() {
+        _images.clear();
       });
     }
   }
@@ -139,28 +157,29 @@ class SearchWallpaperState extends State<SearchWallpaper> {
       appBar: null,
       backgroundColor: backgroundColor,
       body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.015,
-              ),
-              // buildSearchBox(context),
-              _buildSearchWidget(),
-              Divider(
-                thickness: 2,
-                color: Colors.transparent,
-              ),
-              Expanded(
-                child: _isLoading
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.015,
+                ),
+                _buildSearchWidget(),
+                Divider(
+                  thickness: 2,
+                  color: Colors.transparent,
+                ),
+                _isLoading
                     ? const Center(
                         child: CircularProgressIndicator(),
                       )
                     : _images.isEmpty
-                        ? Center(
+                        ? Padding(
+                            padding:
+                                const EdgeInsets.only(left: 20.0, right: 20),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(height: 20),
                                 Text(
@@ -263,8 +282,8 @@ class SearchWallpaperState extends State<SearchWallpaper> {
                               );
                             },
                           ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -291,7 +310,7 @@ class SearchWallpaperState extends State<SearchWallpaper> {
         height: 44,
         child: TextField(
           controller: _searchController,
-          onChanged: (query) => _debouncedSearch(query),
+          onChanged: _handleSearch, // Changed to call new handler method
           style: TextStyle(color: secondaryColor),
           decoration: InputDecoration(
             hintText: 'Search for...',
@@ -312,11 +331,7 @@ class SearchWallpaperState extends State<SearchWallpaper> {
                 Icons.close,
                 color: Colors.red,
               ),
-              onPressed: () {
-                setState(() {
-                  _searchController.clear();
-                });
-              },
+              onPressed: _clearSearch, // Changed to call clear search method
             ),
             prefixIcon: Icon(
               IconlyLight.search,
@@ -328,65 +343,6 @@ class SearchWallpaperState extends State<SearchWallpaper> {
       ),
     );
   }
-
-  // Widget buildSearchBox(BuildContext context) {
-  //   Color primaryColor = Theme.of(context).colorScheme.primary;
-  //   Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
-  //   return Padding(
-  //     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-  //     child: Container(
-  //       width: MediaQuery.of(context).size.width * 0.85,
-  //       height: MediaQuery.of(context).size.height * 0.055,
-  //       decoration: BoxDecoration(
-  //         color: primaryColor,
-  //         borderRadius: BorderRadius.circular(10),
-  //         boxShadow: [
-  //           BoxShadow(
-  //             color: Colors.grey.withOpacity(0.5),
-  //             spreadRadius: 2,
-  //             blurRadius: 5,
-  //             offset: const Offset(0, 3),
-  //           ),
-  //         ],
-  //       ),
-  //       child: Padding(
-  //         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-  //         child: Row(
-  //           children: [
-  //             Expanded(
-  //               child: TextField(
-  //                 controller: _searchController,
-  //                 onChanged: (query) => _debouncedSearch(query),
-  //                 style: GoogleFonts.kanit(
-  //                   fontSize: 18,
-  //                   color: tertiaryColor,
-  //                 ),
-  //                 decoration: InputDecoration(
-  //                   hintText: 'What you are looking for...',
-  //                   hintStyle: GoogleFonts.kanit(
-  //                     color: tertiaryColor.withOpacity(0.8),
-  //                     fontSize: 16,
-  //                   ),
-  //                   border: InputBorder.none,
-  //                   suffixIcon: IconButton(
-  //                     icon: Icon(
-  //                       Icons.search_outlined,
-  //                       color: tertiaryColor,
-  //                     ),
-  //                     onPressed: () => _showInterstitialAd(),
-  //                   ),
-  //                 ),
-  //                 cursorColor: primaryColor,
-  //                 cursorRadius: const Radius.circular(20),
-  //                 cursorWidth: 3,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Timer? _debounceTimer;
 
