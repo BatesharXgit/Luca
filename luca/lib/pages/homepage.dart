@@ -14,9 +14,7 @@ import 'package:luca/pages/util/components.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomePage extends StatefulWidget {
-  // final ScrollController controller;
   const MyHomePage({
-    // required this.controller,
     Key? key,
   }) : super(key: key);
 
@@ -31,12 +29,9 @@ class MyHomePageState extends State<MyHomePage>
   late TabController _tabController;
   bool _isLoading = false;
 
-  // final Reference wallpaperRef = storage.ref().child('wallpaper');
-  // List<Reference> wallpaperRefs = [];
   List<Wallpaper> wallpapers = [];
   List<Wallpaper> randomWallpapers = [];
-  String? userPhotoUrl;
-  String userName = 'there';
+
   int index = 0;
 
   static const String _wallpapersKey = 'wallpapers';
@@ -61,7 +56,7 @@ class MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
-    fetchWallpapers();
+    fetchInitialWallpapers();
     scrollController.addListener(_scrollListener);
     _tabController = TabController(length: data.length, vsync: this);
   }
@@ -85,6 +80,16 @@ class MyHomePageState extends State<MyHomePage>
   //         .map((wallpaperJson) => Wallpaper.fromJson(wallpaperJson))
   //         .toList();
 
+  //     // Order the saved wallpapers by timestamp
+  //     savedWallpapers.sort((a, b) {
+  //       final timestampA = a.timestamp;
+  //       final timestampB = b.timestamp;
+  //       if (timestampA != null && timestampB != null) {
+  //         return timestampB.compareTo(timestampA);
+  //       }
+  //       return 0;
+  //     });
+
   //     setState(() {
   //       wallpapers = savedWallpapers;
   //     });
@@ -92,34 +97,6 @@ class MyHomePageState extends State<MyHomePage>
   //     _fetchInitialWallpapers();
   //   }
   // }
-
-  void fetchWallpapers() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? wallpapersJson = prefs.getString(_wallpapersKey);
-
-    if (wallpapersJson != null) {
-      List<dynamic> savedWallpapersJson = json.decode(wallpapersJson);
-      List<Wallpaper> savedWallpapers = savedWallpapersJson
-          .map((wallpaperJson) => Wallpaper.fromJson(wallpaperJson))
-          .toList();
-
-      // Order the saved wallpapers by timestamp
-      savedWallpapers.sort((a, b) {
-        final timestampA = a.timestamp;
-        final timestampB = b.timestamp;
-        if (timestampA != null && timestampB != null) {
-          return timestampB.compareTo(timestampA);
-        }
-        return 0;
-      });
-
-      setState(() {
-        wallpapers = savedWallpapers;
-      });
-    } else {
-      _fetchInitialWallpapers();
-    }
-  }
 
   void saveWallpapersToSharedPreferences(List<Wallpaper> wallpapers) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -130,7 +107,7 @@ class MyHomePageState extends State<MyHomePage>
 
   DocumentSnapshot<Object?>? _lastDocument;
 
-  void _fetchInitialWallpapers() async {
+  void fetchInitialWallpapers() async {
     setState(() {
       _isLoading = true;
     });
@@ -156,7 +133,7 @@ class MyHomePageState extends State<MyHomePage>
         _lastDocument = snapshot.docs.last;
         _isLoading = false;
 
-        saveWallpapersToSharedPreferences(wallpapers);
+        // saveWallpapersToSharedPreferences(wallpapers);
       });
     } catch (e) {
       print('Error fetching wallpapers: $e');
@@ -178,13 +155,13 @@ class MyHomePageState extends State<MyHomePage>
             .collection('Explore')
             .orderBy("timestamp", descending: true)
             .startAfterDocument(_lastDocument!)
-            .limit(16)
+            .limit(20)
             .get();
       } else {
         snapshot = await FirebaseFirestore.instance
             .collection('Explore')
             .orderBy("timestamp", descending: true)
-            .limit(16)
+            .limit(20)
             .get();
       }
 
@@ -202,23 +179,12 @@ class MyHomePageState extends State<MyHomePage>
           _lastDocument = snapshot.docs.last;
         }
         _isLoading = false;
-        saveWallpapersToSharedPreferences(wallpapers);
+        // saveWallpapersToSharedPreferences(wallpapers);
       });
     } catch (e) {
       print('Error fetching more wallpapers: $e');
       setState(() {
         _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> fetchUserProfileData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      setState(() {
-        userPhotoUrl = user.photoURL;
-        userName = user.displayName!;
       });
     }
   }
@@ -236,7 +202,6 @@ class MyHomePageState extends State<MyHomePage>
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
     Color secondaryColor = Theme.of(context).colorScheme.secondary;
-    // EdgeInsets padding = MediaQuery.of(context).padding;
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: backgroundColor,

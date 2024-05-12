@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 import 'package:async_wallpaper/async_wallpaper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 // ignore: depend_on_referenced_packages
 import 'package:fluttertoast/fluttertoast.dart';
@@ -533,6 +535,9 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         }).catchError((error) {
           print('Failed to remove image from liked images: $error');
         });
+        setState(() {
+          _isImageLiked = true;
+        });
       } else {
         // Image not liked, so add it
         FirebaseFirestore.instance
@@ -577,25 +582,6 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
             children: [
               GestureDetector(
                 onTap: toggleWidgetsVisibility,
-                // onVerticalDragEnd: (DragEndDetails details) {
-                //   if (details.primaryVelocity! > 0) {
-                //     FirebaseAuth auth = FirebaseAuth.instance;
-                //     User? user = auth.currentUser;
-                //     checkIfImageIsLiked(
-                //         user!.uid, _wallpapers[_currentIndex].url);
-                //     setState(() {
-                //       _currentIndex--;
-                //     });
-                //   } else if (details.primaryVelocity! < 0) {
-                //     FirebaseAuth auth = FirebaseAuth.instance;
-                //     User? user = auth.currentUser;
-                //     checkIfImageIsLiked(
-                //         user!.uid, _wallpapers[_currentIndex].url);
-                //     setState(() {
-                //       _currentIndex++;
-                //     });
-                //   }
-                // },
                 child: Hero(
                   tag: widget.url,
                   child: RepaintBoundary(
@@ -617,9 +603,13 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                         } else {
                           return Container(
                             decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: CachedNetworkImageProvider(
-                                        widget.thumbnailUrl))),
+                              image: DecorationImage(
+                                image: CachedNetworkImageProvider(
+                                  widget.thumbnailUrl,
+                                ),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                             child: Center(
                               child: CircularProgressIndicator(
                                 color: Theme.of(context).colorScheme.primary,
@@ -635,154 +625,142 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                   ),
                 ),
               ),
-              AnimatedOpacity(
-                duration: const Duration(milliseconds: 500),
-                opacity: isWidgetsVisible ? 1.0 : 0.0,
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top + 10,
-                      right: 10,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.background,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          Iconsax.close_circle,
-                          color: Theme.of(context).iconTheme.color,
-                          size: 30,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
               Visibility(
                 visible: isWidgetsVisible,
                 child: Positioned(
                   left: 0,
                   right: 0,
                   bottom: MediaQuery.of(context).padding.bottom + 10,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            Get.to(EditPhotoScreen(url: widget.url));
-                          },
-                          icon: Icon(Icons.edit)),
-                      AnimatedOpacity(
-                        duration: const Duration(milliseconds: 500),
-                        opacity: isWidgetsVisible ? 1.0 : 0.0,
-                        child: Container(
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.background,
-                                shape: BoxShape.circle),
-                            child: IconButton(
-                              onPressed: () {
-                                FirebaseAuth auth = FirebaseAuth.instance;
-                                User? user = auth.currentUser;
-                                if (user != null) {
-                                  String userId = user.uid;
-                                  String imageUrl = widget.url;
-                                  String thumbnailUrl = widget.thumbnailUrl;
-                                  String uploader = widget.uploaderName;
-                                  String title = widget.title;
-
-                                  // Check if the image is already liked by the user
-                                  FirebaseFirestore.instance
-                                      .collection('Users')
-                                      .doc(userId)
-                                      .collection('LikedImages')
-                                      .where('url', isEqualTo: imageUrl)
-                                      .get()
-                                      .then((querySnapshot) {
-                                    if (querySnapshot.docs.isNotEmpty) {
-                                      // Image is liked, so remove it
-                                      toggleLikeImage(userId, imageUrl,
-                                          thumbnailUrl, uploader, title);
-                                    } else {
-                                      // Image is not liked, so add it
-                                      toggleLikeImage(userId, imageUrl,
-                                          thumbnailUrl, uploader, title);
-                                    }
-                                  }).catchError((error) {
-                                    print(
-                                        'Error checking if image is already liked: $error');
-                                  });
-                                } else {
-                                  print("User is not authenticated.");
-                                }
-                              },
-                              icon: Icon(
-                                // Conditionally display filled or outline icon based on whether the image is liked
-                                _isImageLiked
-                                    ? Icons.favorite
-                                    : Icons.favorite_border,
-                                color: _isImageLiked ? Colors.red : null,
-                              ),
-                            )),
-                      ),
-                      const SizedBox(
-                        width: 8.0,
-                      ),
-                      AnimatedOpacity(
-                        duration: const Duration(milliseconds: 500),
-                        opacity: isWidgetsVisible ? 1.0 : 0.0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.background,
-                              shape: BoxShape.circle),
-                          child: IconButton(
-                            onPressed: () {
-                              _showInterstitialAd();
-                              savetoGallery(context);
-                            },
-                            icon: Icon(
-                              IconlyBold.download,
-                              color: Theme.of(context).iconTheme.color,
-                              size: 34,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 8.0,
-                      ),
-                      AnimatedOpacity(
-                        duration: const Duration(milliseconds: 500),
-                        opacity: isWidgetsVisible ? 1.0 : 0.0,
-                        child: Align(
-                          alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
+                    child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 500),
+                      opacity: isWidgetsVisible ? 1.0 : 0.0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                           child: Container(
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.background,
-                                shape: BoxShape.circle),
-                            child: IconButton(
-                              onPressed: () {
-                                _showInterstitialAd();
-                                openDialog();
-                              },
-                              icon: Icon(
-                                Icons.format_paint,
-                                color: Theme.of(context).iconTheme.color,
-                                size: 34,
-                              ),
+                            height: 64,
+                            color: Colors.white.withOpacity(0.15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 500),
+                                  opacity: isWidgetsVisible ? 1.0 : 0.0,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    icon: Icon(
+                                      IconlyBold.close_square,
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    _showInterstitialAd();
+                                    savetoGallery(context);
+                                  },
+                                  icon: Icon(
+                                    IconlyBold.download,
+                                    color: Colors.white,
+                                    size: 34,
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      Get.to(EditPhotoScreen(
+                                          arguments: widget.url));
+                                    },
+                                    icon: Icon(
+                                      IconlyBold.edit,
+                                      color: Colors.white,
+                                      size: 34,
+                                    )),
+                                AnimatedOpacity(
+                                  duration: const Duration(milliseconds: 500),
+                                  opacity: isWidgetsVisible ? 1.0 : 0.0,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      FirebaseAuth auth = FirebaseAuth.instance;
+                                      User? user = auth.currentUser;
+                                      if (user != null) {
+                                        String userId = user.uid;
+                                        String imageUrl = widget.url;
+                                        String thumbnailUrl =
+                                            widget.thumbnailUrl;
+                                        String uploader = widget.uploaderName;
+                                        String title = widget.title;
+
+                                        // Check if the image is already liked by the user
+                                        FirebaseFirestore.instance
+                                            .collection('Users')
+                                            .doc(userId)
+                                            .collection('LikedImages')
+                                            .where('url', isEqualTo: imageUrl)
+                                            .get()
+                                            .then((querySnapshot) {
+                                          if (querySnapshot.docs.isNotEmpty) {
+                                            // Image is liked, so remove it
+                                            toggleLikeImage(userId, imageUrl,
+                                                thumbnailUrl, uploader, title);
+                                          } else {
+                                            // Image is not liked, so add it
+                                            toggleLikeImage(userId, imageUrl,
+                                                thumbnailUrl, uploader, title);
+                                          }
+                                        }).catchError((error) {
+                                          print(
+                                              'Error checking if image is already liked: $error');
+                                        });
+                                      } else {
+                                        print("User is not authenticated.");
+                                      }
+                                    },
+                                    icon: Icon(
+                                      _isImageLiked
+                                          ? IconlyBold.heart
+                                          : IconlyLight.heart,
+                                      color: _isImageLiked
+                                          ? Colors.red
+                                          : Colors.white,
+                                      size: 34,
+                                    ),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _showInterstitialAd();
+                                    openDialog();
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(Colors.white),
+                                    foregroundColor:
+                                        MaterialStateProperty.all(Colors.black),
+                                    minimumSize:
+                                        MaterialStateProperty.all(Size(70, 36)),
+                                    padding: MaterialStateProperty.all(
+                                        EdgeInsets.symmetric(horizontal: 16)),
+                                    shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(18.0),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text('Apply'),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

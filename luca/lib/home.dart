@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconly/iconly.dart';
@@ -30,6 +32,18 @@ class _LucaHomeState extends State<LucaHome> {
   @override
   void initState() {
     super.initState();
+    fetchUserProfileData();
+  }
+
+  String? userPhotoUrl;
+  Future<void> fetchUserProfileData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      setState(() {
+        userPhotoUrl = user.photoURL;
+      });
+    }
   }
 
   @override
@@ -49,6 +63,7 @@ class _LucaHomeState extends State<LucaHome> {
       bottomNavigationBar: SizedBox(
         height: 48,
         child: CustomNavigationBar(
+          blurEffect: true,
           iconSize: 32.0,
           selectedColor: primaryColor,
           strokeColor: Colors.transparent,
@@ -68,7 +83,12 @@ class _LucaHomeState extends State<LucaHome> {
               icon: Icon(IconlyBold.heart),
             ),
             CustomNavigationBarItem(
-              icon: Icon(IconlyBold.profile),
+              icon: userPhotoUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: CachedNetworkImage(
+                          height: 34, width: 34, imageUrl: userPhotoUrl!))
+                  : Icon(IconlyBold.profile),
             ),
           ],
           currentIndex: _currentIndex,

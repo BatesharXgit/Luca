@@ -1,15 +1,16 @@
 import 'dart:io';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:image_editor/image_editor.dart' hide ImageSource;
+import 'package:luca/pages/util/editor/saveImage.dart';
+import 'package:path_provider/path_provider.dart';
 
 class EditPhotoScreen extends StatefulWidget {
-  final String url;
-  EditPhotoScreen({required this.url});
+  final String arguments;
+  EditPhotoScreen({required this.arguments});
   @override
   _EditPhotoScreenState createState() => _EditPhotoScreenState();
 }
@@ -73,75 +74,66 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
   }
 
   // File? image;
+  String? imageUrl;
   @override
   void initState() {
     super.initState();
-    // image = widget.url;
+    // image = widget.arguments[0];
+    imageUrl = widget.arguments;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: null,
-      body: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: MediaQuery.of(context).size.width,
-                width: MediaQuery.of(context).size.width,
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: buildImage(),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height -
-                    MediaQuery.of(context).size.width,
-                width: MediaQuery.of(context).size.width,
-                child: SliderTheme(
-                  data: const SliderThemeData(
-                    showValueIndicator: ShowValueIndicator.never,
-                  ),
-                  child: Container(
-                    color: Colors.white,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 10,
-                        ),
-                        _buildSat(),
-                        Spacer(flex: 1),
-                        _buildBrightness(),
-                        Spacer(flex: 1),
-                        _buildCon(),
-                        Spacer(flex: 3),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
+      appBar: AppBar(
+          title: Text(
+            "Edit Image",
+            style: TextStyle(color: Colors.white),
           ),
-        ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.settings_backup_restore),
+              onPressed: () {
+                setState(() {
+                  sat = 1;
+                  bright = 0;
+                  con = 1;
+                });
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.check),
+              onPressed: () async {
+                await saveImage();
+              },
+            ),
+          ]),
+      body: Stack(
+        children: [
+          // Fullscreen image
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: buildImage(),
+          ),
+          // Sliders at the bottom
+          Positioned(
+            bottom: 10,
+            left: 0,
+            right: 0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildSat(),
+                _buildBrightness(),
+                _buildCon(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
-
-  // IconButton(
-  //             icon: Icon(Icons.settings_backup_restore),
-  //             onPressed: () {
-  //               setState(() {
-  //                 sat = 1;
-  //                 bright = 0;
-  //                 con = 1;
-  //               });
-  //             },
-  //           ),
 
   Widget buildImage() {
     return ColorFiltered(
@@ -153,72 +145,52 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
               ? Colors.white.withOpacity(bright)
               : Colors.black.withOpacity(-bright),
           colorBlendMode: bright > 0 ? BlendMode.lighten : BlendMode.darken,
-          image: ExtendedNetworkImageProvider(widget.url),
+          handleLoadingProgress: true,
+          image: ExtendedNetworkImageProvider(imageUrl!, cacheRawData: true),
           height: MediaQuery.of(context).size.width,
           width: MediaQuery.of(context).size.width,
           extendedImageEditorKey: editorKey,
+          mode: ExtendedImageMode.editor,
           fit: BoxFit.contain,
-          initEditorConfigHandler: (ExtendedImageState? state) {
-            return state == null
-                ? null
-                : EditorConfig(
-                    maxScale: 8.0,
-                    cropRectPadding: const EdgeInsets.all(20.0),
-                    hitTestSize: 20.0,
-                  );
-          },
         ),
       ),
     );
   }
 
-  Future<void> crop([bool test = false]) async {
-    final ExtendedImageEditorState state = editorKey.currentState!;
-    final Rect rect = state.getCropRect()!;
-    final EditActionDetails action = state.editAction!;
-    final double radian = action.rotateAngle;
+  Future<void> saveImage([bool test = false]) async {
+  final ExtendedImageEditorState state = editorKey.currentState!;
+  final Uint8List img = state.rawImageData;
 
-    final bool flipHorizontal = action.flipY;
-    final bool flipVertical = action.flipX;
-    final Uint8List img = state.rawImageData;
+  final ImageEditorOption option = ImageEditorOption();
+  // Adjust color options as needed
+  option.addOption(ColorOption.saturation(sat));
+  option.addOption(ColorOption.brightness(bright + 1));
+  option.addOption(ColorOption.contrast(con));
+  option.outputFormat = const OutputFormat.jpeg(100);
 
-    final ImageEditorOption option = ImageEditorOption();
+  final DateTime start = DateTime.now();
+  final Uint8List? result = await ImageEditor.editImage(
+    image: img,
+    imageEditorOption: option,
+  );
 
-    option.addOption(ClipOption.fromRect(rect));
-    option.addOption(
-        FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
-    if (action.hasRotateAngle) {
-      option.addOption(RotateOption(radian.toInt()));
-    }
+  final Duration diff = DateTime.now().difference(start);
+  print('image_editor time : $diff');
 
-    option.addOption(ColorOption.saturation(sat));
-    option.addOption(ColorOption.brightness(bright + 1));
-    option.addOption(ColorOption.contrast(con));
+  // Pass the edited image data to the next screen
+  Navigator.pushReplacement(
+    context,
+    CupertinoPageRoute(
+      builder: (context) => ApplyWalls(
+        editedImageBytes: result,
+      ),
+    ),
+  );
+}
 
-    option.outputFormat = const OutputFormat.jpeg(100);
 
-    print(const JsonEncoder.withIndent('  ').convert(option.toJson()));
-
-    final DateTime start = DateTime.now();
-
-    final Uint8List? result = await ImageEditor.editImage(
-      image: img,
-      imageEditorOption: option,
-    );
-
-    print('result.length = ${result?.length}');
-    final Duration diff = DateTime.now().difference(start);
-    // image!.writeAsBytesSync(result!);
-    print('image_editor time : $diff');
-    // Future.delayed(Duration(seconds: 0)).then(
-    //   (value) => Navigator.pushReplacement(
-    //     context,
-    // CupertinoPageRoute(
-    //     builder: (context) => SaveImageScreen(
-    //           arguments: [image],
-    //         )),
-    // ),
-    // );
+  void flip() {
+    editorKey.currentState!.flip();
   }
 
   Widget _buildSat() {
