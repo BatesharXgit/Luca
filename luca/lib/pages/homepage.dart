@@ -1,5 +1,5 @@
+import 'dart:convert';
 import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,7 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:luca/data/wallpaper.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomePage extends StatefulWidget {
   // final ScrollController controller;
@@ -32,12 +32,16 @@ class MyHomePageState extends State<MyHomePage>
   bool _isLoading = false;
 
   // final Reference wallpaperRef = storage.ref().child('wallpaper');
-  List<Reference> wallpaperRefs = [];
+  // List<Reference> wallpaperRefs = [];
   List<Wallpaper> wallpapers = [];
   List<Wallpaper> randomWallpapers = [];
   String? userPhotoUrl;
   String userName = 'there';
   int index = 0;
+
+  static const String _wallpapersKey = 'wallpapers';
+  static const String _categoriesWallpaperKey = 'categories';
+
   List<String> data = [
     'All',
     'Abstract',
@@ -57,8 +61,7 @@ class MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
-    fetchUserProfileData();
-    _fetchInitialWallpapers();
+    fetchWallpapers();
     scrollController.addListener(_scrollListener);
     _tabController = TabController(length: data.length, vsync: this);
   }
@@ -70,6 +73,59 @@ class MyHomePageState extends State<MyHomePage>
         _loadMoreWallpapers();
       }
     }
+  }
+
+  // void fetchWallpapers() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   String? wallpapersJson = prefs.getString(_wallpapersKey);
+
+  //   if (wallpapersJson != null) {
+  //     List<dynamic> savedWallpapersJson = json.decode(wallpapersJson);
+  //     List<Wallpaper> savedWallpapers = savedWallpapersJson
+  //         .map((wallpaperJson) => Wallpaper.fromJson(wallpaperJson))
+  //         .toList();
+
+  //     setState(() {
+  //       wallpapers = savedWallpapers;
+  //     });
+  //   } else {
+  //     _fetchInitialWallpapers();
+  //   }
+  // }
+
+  void fetchWallpapers() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? wallpapersJson = prefs.getString(_wallpapersKey);
+
+    if (wallpapersJson != null) {
+      List<dynamic> savedWallpapersJson = json.decode(wallpapersJson);
+      List<Wallpaper> savedWallpapers = savedWallpapersJson
+          .map((wallpaperJson) => Wallpaper.fromJson(wallpaperJson))
+          .toList();
+
+      // Order the saved wallpapers by timestamp
+      savedWallpapers.sort((a, b) {
+        final timestampA = a.timestamp;
+        final timestampB = b.timestamp;
+        if (timestampA != null && timestampB != null) {
+          return timestampB.compareTo(timestampA);
+        }
+        return 0;
+      });
+
+      setState(() {
+        wallpapers = savedWallpapers;
+      });
+    } else {
+      _fetchInitialWallpapers();
+    }
+  }
+
+  void saveWallpapersToSharedPreferences(List<Wallpaper> wallpapers) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String wallpapersJson =
+        json.encode(wallpapers.map((wallpaper) => wallpaper.toJson()).toList());
+    prefs.setString(_wallpapersKey, wallpapersJson);
   }
 
   DocumentSnapshot<Object?>? _lastDocument;
@@ -99,6 +155,8 @@ class MyHomePageState extends State<MyHomePage>
         }).toList();
         _lastDocument = snapshot.docs.last;
         _isLoading = false;
+
+        saveWallpapersToSharedPreferences(wallpapers);
       });
     } catch (e) {
       print('Error fetching wallpapers: $e');
@@ -144,6 +202,7 @@ class MyHomePageState extends State<MyHomePage>
           _lastDocument = snapshot.docs.last;
         }
         _isLoading = false;
+        saveWallpapersToSharedPreferences(wallpapers);
       });
     } catch (e) {
       print('Error fetching more wallpapers: $e');
@@ -224,7 +283,7 @@ class MyHomePageState extends State<MyHomePage>
       padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: CustomScrollView(
         controller: scrollController,
-        physics: const BouncingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         slivers: <Widget>[
           SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -353,25 +412,38 @@ class MyHomePageState extends State<MyHomePage>
   }
 
   Future<List<Wallpaper>> _fetchWallpapers(String category) async {
-    try {
-      CollectionReference categoryCollectionRef = FirebaseFirestore.instance
-          .collection('Categories')
-          .doc(category)
-          .collection('${category}Images');
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? wallpapersJson = prefs.getString(_categoriesWallpaperKey);
 
-      QuerySnapshot snapshot = await categoryCollectionRef.get();
+    if (wallpapersJson != null) {
+      List<dynamic> savedWallpapersJson = json.decode(wallpapersJson);
+      List<Wallpaper> savedWallpapers = savedWallpapersJson
+          .map((wallpaperJson) => Wallpaper.fromJson(wallpaperJson))
+          .toList();
+      return savedWallpapers;
+    } else {
+      try {
+        CollectionReference categoryCollectionRef = FirebaseFirestore.instance
+            .collection('Categories')
+            .doc(category)
+            .collection('${category}Images');
 
-      return snapshot.docs.map((doc) {
-        return Wallpaper(
-          title: doc['title'],
-          url: doc['url'],
-          thumbnailUrl: doc['thumbnailUrl'],
-          uploaderName: doc['uploaderName'],
-        );
-      }).toList();
-    } catch (e) {
-      print('Error fetching wallpapers for category $category: $e');
-      return [];
+        QuerySnapshot snapshot = await categoryCollectionRef.get();
+
+        List<Wallpaper> wallpapers = snapshot.docs.map((doc) {
+          return Wallpaper(
+            title: doc['title'],
+            url: doc['url'],
+            thumbnailUrl: doc['thumbnailUrl'],
+            uploaderName: doc['uploaderName'],
+          );
+        }).toList();
+        saveWallpapersToSharedPreferences(wallpapers);
+        return wallpapers;
+      } catch (e) {
+        print('Error fetching wallpapers for category $category: $e');
+        return [];
+      }
     }
   }
 }

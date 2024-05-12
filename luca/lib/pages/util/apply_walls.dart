@@ -11,10 +11,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 // ignore: depend_on_referenced_packages
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:luca/pages/util/editor/editor.dart';
 import 'package:luca/services/admob_service.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
@@ -671,6 +673,11 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      IconButton(
+                          onPressed: () {
+                            Get.to(EditPhotoScreen(url: widget.url));
+                          },
+                          icon: Icon(Icons.edit)),
                       AnimatedOpacity(
                         duration: const Duration(milliseconds: 500),
                         opacity: isWidgetsVisible ? 1.0 : 0.0,

@@ -72,6 +72,8 @@ dependencies:
   cloud_firestore: ^4.16.0
   image_picker: ^1.0.7
   custom_navigation_bar: ^0.8.2
+  image_editor: ^1.5.0
+  extended_image: ^8.2.0
 
 dev_dependencies:
   flutter_test:
