@@ -17,12 +17,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:luca/pages/util/editor/editor.dart';
 import 'package:luca/services/admob_service.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
+import 'package:http/http.dart' as http;
 
 class ApplyWallpaperPage extends StatefulWidget {
   final String url;
@@ -129,47 +131,83 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     super.dispose();
   }
 
-  void savetoGallery(BuildContext context) async {
-    try {
-      RenderRepaintBoundary boundary = _globalKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-      ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
+  // void savetoGallery(BuildContext context) async {
+  //   try {
+  //     RenderRepaintBoundary boundary = _globalKey.currentContext!
+  //         .findRenderObject() as RenderRepaintBoundary;
+  //     ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+  //     ByteData? byteData =
+  //         await image.toByteData(format: ui.ImageByteFormat.png);
 
-      if (byteData != null) {
-        Uint8List pngBytes = byteData.buffer.asUint8List();
-        final externalDir = await getExternalStorageDirectory();
-        final filePath = '${externalDir!.path}/LucaImage.png';
-        final file = File(filePath);
-        await file.writeAsBytes(pngBytes);
-        final result = await ImageGallerySaver.saveFile(filePath);
+  //     if (byteData != null) {
+  //       Uint8List pngBytes = byteData.buffer.asUint8List();
+  //       final externalDir = await getExternalStorageDirectory();
+  //       final filePath = '${externalDir!.path}/LucaImage.png';
+  //       final file = File(filePath);
+  //       await file.writeAsBytes(pngBytes);
+  //       final result = await ImageGallerySaver.saveFile(filePath);
 
-        if (result['isSuccess']) {
-          if (kDebugMode) {
-            print('Screenshot saved to gallery.');
-          }
+  //       if (result['isSuccess']) {
+  //         if (kDebugMode) {
+  //           print('Screenshot saved to gallery.');
+  //         }
 
-          // ignore: use_build_context_synchronously
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              backgroundColor: Color(0xFF131321),
-              content: Text(
-                'Successfully saved to gallery 😊',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          );
-        } else {
-          if (kDebugMode) {
-            print('Failed to save screenshot to gallery.');
-          }
-        }
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error: $e');
-      }
+  //         // ignore: use_build_context_synchronously
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           const SnackBar(
+  //             backgroundColor: Color(0xFF131321),
+  //             content: Text(
+  //               'Successfully saved to gallery 😊',
+  //               style: TextStyle(color: Colors.white),
+  //             ),
+  //           ),
+  //         );
+  //       } else {
+  //         if (kDebugMode) {
+  //           print('Failed to save screenshot to gallery.');
+  //         }
+  //       }
+  //     }
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print('Error: $e');
+  //     }
+  //   }
+  // }
+
+  Future<void> downloadImage(String imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode == 200) {
+      final Uint8List bytes = response.bodyBytes;
+      await saveToGallery(bytes);
+    } else {
+      throw Exception('Failed to load image');
+    }
+  }
+
+// Function to save the image to the device's gallery
+  Future<void> saveToGallery(Uint8List imageBytes) async {
+    final result = await ImageGallerySaver.saveImage(imageBytes);
+    if (result != null && result.isNotEmpty) {
+      Fluttertoast.showToast(
+        msg: "Image saved to gallery",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[800],
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: "Failed to save image",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey[800],
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
   }
 
@@ -328,10 +366,17 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   }
 
   bool isWidgetsVisible = true;
+  bool isInformationWidgetVisible = false;
 
   void toggleWidgetsVisibility() {
     setState(() {
       isWidgetsVisible = !isWidgetsVisible;
+    });
+  }
+
+  void toggleInfoVisibility() {
+    setState(() {
+      isInformationWidgetVisible = !isInformationWidgetVisible;
     });
   }
 
@@ -579,58 +624,141 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(
+            'Luca Walls',
+            style: GoogleFonts.kanit(
+              color: Theme.of(context).colorScheme.onBackground,
+              fontSize: 22,
+            ),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.background,
+          elevation: 0,
+          actions: [
+            IconButton(onPressed: () {}, icon: Icon(Iconsax.share)),
+          ]),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: AnimationLimiter(
         child: Center(
           child: Stack(
             children: [
               GestureDetector(
-                onTap: toggleWidgetsVisibility,
+                onTap: () {
+                  if (isInformationWidgetVisible) {
+                    toggleInfoVisibility();
+                  } else {
+                    toggleWidgetsVisibility();
+                  }
+                },
                 child: Hero(
                   tag: widget.url,
                   child: RepaintBoundary(
                     key: _globalKey,
-                    child: CachedNetworkImage(
-                      height: double.infinity,
-                      width: double.infinity,
-                      imageUrl: widget.url,
-                      fit: BoxFit.cover,
-                      filterQuality: FilterQuality.high,
-                      progressIndicatorBuilder:
-                          (context, url, downloadProgress) {
-                        if (downloadProgress.progress == 1.0) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          );
-                        } else {
-                          return Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: CachedNetworkImageProvider(
-                                  widget.thumbnailUrl,
-                                ),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            child: Center(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: CachedNetworkImage(
+                        height: double.infinity,
+                        width: double.infinity,
+                        imageUrl: widget.url,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.high,
+                        progressIndicatorBuilder:
+                            (context, url, downloadProgress) {
+                          if (downloadProgress.progress == 1.0) {
+                            return Center(
                               child: CircularProgressIndicator(
                                 color: Theme.of(context).colorScheme.primary,
-                                value: downloadProgress.progress,
                               ),
+                            );
+                          } else {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: CachedNetworkImageProvider(
+                                      widget.thumbnailUrl,
+                                    ),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    value: downloadProgress.progress,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 500),
+                opacity: isWidgetsVisible ? 1.0 : 0.0,
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: 10,
+                      right: 10,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(30),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: IconButton(
+                            onPressed: toggleInfoVisibility,
+                            icon: Icon(
+                              Iconsax.info_circle,
+                              color: Theme.of(context).iconTheme.color,
+                              size: 30,
                             ),
-                          );
-                        }
-                      },
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
               Visibility(
-                visible: isWidgetsVisible,
+                  child: Positioned(
+                left: 0,
+                right: 0,
+                bottom: MediaQuery.of(context).padding.bottom + 80,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(14, 0, 14, 0),
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 500),
+                    opacity: isInformationWidgetVisible ? 1.0 : 0.0,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                        child: Container(
+                          width: 200,
+                          height: 200,
+                          color: Colors.white.withOpacity(0.15),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )),
+              Visibility(
                 child: Positioned(
                   left: 0,
                   right: 0,
@@ -666,8 +794,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    _showInterstitialAd();
-                                    savetoGallery(context);
+                                    // _showInterstitialAd();
+                                    downloadImage(widget.url);
                                   },
                                   icon: Icon(
                                     IconlyBold.download,
