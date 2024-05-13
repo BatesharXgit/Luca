@@ -187,12 +187,11 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text(
           'Settings',
           style: GoogleFonts.kanit(
-              // fontWeight: FontWeight.bold,
               fontSize: 22,
               color: Theme.of(context).colorScheme.primary),
         ),
         elevation: 0,
-        backgroundColor: backgroundColor,
+        forceMaterialTransparency: true,
       ),
       backgroundColor: backgroundColor,
       body: SingleChildScrollView(

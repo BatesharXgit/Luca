@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_editor/image_editor.dart' hide ImageSource;
+import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/editor/saveImage.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -171,7 +172,10 @@ class _EditWallpaperState extends State<EditWallpaper> {
               : Colors.black.withOpacity(-bright),
           colorBlendMode: bright > 0 ? BlendMode.lighten : BlendMode.darken,
           handleLoadingProgress: true,
-          image: ExtendedNetworkImageProvider(imageUrl!, cacheRawData: true),
+          image: ExtendedNetworkImageProvider(
+            imageUrl!,
+            cacheRawData: true,
+          ),
           extendedImageEditorKey: editorKey,
           mode: ExtendedImageMode.editor,
           fit: BoxFit.contain,
@@ -180,6 +184,16 @@ class _EditWallpaperState extends State<EditWallpaper> {
               maxScale: 8.0,
               cropRectPadding: const EdgeInsets.all(0),
             );
+          },
+          loadStateChanged: (ExtendedImageState state) {
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                return Components.buildShimmerEffect(context);
+              case LoadState.completed:
+                return null;
+              case LoadState.failed:
+                return Components.buildErrorWidget();
+            }
           },
         ),
       ),

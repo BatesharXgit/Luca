@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,7 @@ import 'package:luca/pages/util/editor/editor.dart';
 import 'package:luca/services/admob_service.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
@@ -51,10 +53,12 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _globalKey = GlobalKey();
   bool _isImageLiked = false;
+  late Future<PaletteGenerator> _paletteGeneratorFuture;
 
   @override
   void initState() {
     super.initState();
+    _paletteGeneratorFuture = _generatePalette();
     _createBannerAd();
     _createInterstitialAd();
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -68,6 +72,11 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     }
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 10));
+  }
+
+  Future<PaletteGenerator> _generatePalette() async {
+    final imageProvider = CachedNetworkImageProvider(widget.thumbnailUrl);
+    return PaletteGenerator.fromImageProvider(imageProvider);
   }
 
   void checkIfImageIsLiked(String userId, String imageUrl) {
@@ -609,35 +618,26 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     });
   }
 
-//   void checkUserId() {
-//     FirebaseAuth auth = FirebaseAuth.instance;
-//     User? user = auth.currentUser;
-
-//   if (user != null) {
-//     String userId = user.uid;
-//     print('User is authenticated. User ID: $userId');
-//   } else {
-//     print('User is not authenticated.');
-//   }
-// }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text(
-            'Luca Walls',
-            style: GoogleFonts.kanit(
-              color: Theme.of(context).colorScheme.onBackground,
-              fontSize: 22,
-            ),
-          ),
-          backgroundColor: Theme.of(context).colorScheme.background,
-          elevation: 0,
-          actions: [
-            IconButton(onPressed: () {}, icon: Icon(Iconsax.share)),
-          ]),
+      appBar: isWidgetsVisible
+          ? AppBar(
+              automaticallyImplyLeading: false,
+              title: Text(
+                'Luca Walls',
+                style: GoogleFonts.kanit(
+                  color: Theme.of(context).colorScheme.onBackground,
+                  fontSize: 22,
+                ),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.background,
+              elevation: 0,
+              actions: [
+                IconButton(onPressed: () {}, icon: Icon(Iconsax.share)),
+              ],
+            )
+          : null,
       backgroundColor: Theme.of(context).colorScheme.background,
       body: AnimationLimiter(
         child: Center(
@@ -711,24 +711,12 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                       top: 10,
                       right: 10,
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: IconButton(
-                            onPressed: toggleInfoVisibility,
-                            icon: Icon(
-                              Iconsax.info_circle,
-                              color: Theme.of(context).iconTheme.color,
-                              size: 30,
-                            ),
-                          ),
-                        ),
+                    child: IconButton(
+                      onPressed: toggleInfoVisibility,
+                      icon: Icon(
+                        IconlyLight.info_circle,
+                        color: Theme.of(context).iconTheme.color,
+                        size: 30,
                       ),
                     ),
                   ),
@@ -747,13 +735,127 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(14),
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                        child: Container(
-                          width: 200,
-                          height: 200,
-                          color: Colors.white.withOpacity(0.15),
-                        ),
-                      ),
+                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                          child: FutureBuilder<PaletteGenerator>(
+                            future: _paletteGeneratorFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Center(
+                                  child: Text('Error: ${snapshot.error}'),
+                                );
+                              } else {
+                                final paletteGenerator = snapshot.data!;
+                                return Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height: 68,
+                                        child: GridView.builder(
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 5,
+                                          ),
+                                          itemCount: 5,
+                                          itemBuilder: (context, index) {
+                                            Color? color;
+                                            if (paletteGenerator
+                                                .colors.isNotEmpty) {
+                                              List<Color> colorList =
+                                                  paletteGenerator.colors
+                                                      .toList();
+                                              color = colorList[
+                                                  index % colorList.length];
+                                            }
+                                            return Container(
+                                              margin: EdgeInsets.all(2),
+                                              width: 50,
+                                              height: 50,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: color ?? Colors.grey,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      Divider(
+                                        color: Colors.grey,
+                                        thickness: 2,
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(Iconsax.image,
+                                                  color: Colors.grey),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                widget.title,
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Icon(Iconsax.user,
+                                                  color: Colors.grey),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                widget.uploaderName,
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      Row(
+                                        children: [
+                                          Icon(Iconsax.size,
+                                              color: Colors.grey),
+                                          SizedBox(width: 5),
+                                          Text(
+                                            '1632x3264',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                          )),
                     ),
                   ),
                 ),

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconly/iconly.dart';
+import 'package:luca/data/home_data.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/searchresult.dart';
@@ -20,18 +21,13 @@ class LucaHome extends StatefulWidget {
 class _LucaHomeState extends State<LucaHome> {
   int _currentIndex = 0;
 
-  List<Widget> _pages = [
-    MyHomePage(),
-    SearchWallpaper(),
-    // Categories(),
-    StockCategories(),
-    FavoriteImagesPage(),
-    SettingsPage(),
-  ];
+  late final List<Widget?> _pages;
 
   @override
   void initState() {
     super.initState();
+    _pages = List.generate(5, (_) => null);
+    _initializePage(0);
     fetchUserProfileData();
   }
 
@@ -56,8 +52,15 @@ class _LucaHomeState extends State<LucaHome> {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: _pages[_currentIndex],
+        child: IndexedStack(
+          index: _currentIndex,
+          children: _pages.map((page) {
+            if (page == null) {
+              return Container();
+            } else {
+              return page;
+            }
+          }).toList(),
         ),
       ),
       bottomNavigationBar: SizedBox(
@@ -95,10 +98,34 @@ class _LucaHomeState extends State<LucaHome> {
           onTap: (index) {
             setState(() {
               _currentIndex = index;
+              if (_pages[index] == null) {
+                _initializePage(index);
+              }
             });
           },
         ),
       ),
     );
+  }
+
+  void _initializePage(int index) {
+    switch (index) {
+      case 0:
+        _pages[index] = const MyHomePage();
+        break;
+      case 1:
+        _pages[index] = const SearchWallpaper();
+        break;
+      case 2:
+        _pages[index] = const StockCategories();
+        break;
+      case 3:
+        _pages[index] = const FavoriteImagesPage();
+        break;
+      case 4:
+        _pages[index] = const SettingsPage();
+      default:
+        throw Exception('Invalid index');
+    }
   }
 }

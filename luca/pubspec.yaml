@@ -74,6 +74,7 @@ dependencies:
   custom_navigation_bar: ^0.8.2
   image_editor: ^1.5.0
   extended_image: ^8.2.0
+  palette_generator: ^0.3.3+3
 
 dev_dependencies:
   flutter_test:
