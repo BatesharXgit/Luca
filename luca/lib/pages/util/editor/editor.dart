@@ -1,21 +1,23 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/widgets.dart';
 import 'package:image_editor/image_editor.dart' hide ImageSource;
 import 'package:luca/pages/util/editor/saveImage.dart';
 import 'package:path_provider/path_provider.dart';
 
-class EditPhotoScreen extends StatefulWidget {
+class EditWallpaper extends StatefulWidget {
   final String arguments;
-  EditPhotoScreen({required this.arguments});
+  EditWallpaper({required this.arguments});
   @override
-  _EditPhotoScreenState createState() => _EditPhotoScreenState();
+  _EditWallpaperState createState() => _EditWallpaperState();
 }
 
-class _EditPhotoScreenState extends State<EditPhotoScreen> {
+class _EditWallpaperState extends State<EditWallpaper> {
   final GlobalKey<ExtendedImageEditorState> editorKey =
       GlobalKey<ExtendedImageEditorState>();
 
@@ -84,6 +86,9 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     return Scaffold(
       appBar: AppBar(
           title: Text(
@@ -108,6 +113,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
               },
             ),
           ]),
+      backgroundColor: backgroundColor,
       body: Stack(
         children: [
           // Fullscreen image
@@ -116,18 +122,37 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
             width: MediaQuery.of(context).size.width,
             child: buildImage(),
           ),
-          // Sliders at the bottom
           Positioned(
-            bottom: 10,
+            bottom: 0,
             left: 0,
             right: 0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _buildSat(),
-                _buildBrightness(),
-                _buildCon(),
-              ],
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                child: Container(
+                  padding: EdgeInsets.only(top: 10),
+                  color: Colors.white.withOpacity(0.15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildSat(),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      _buildBrightness(),
+                      SizedBox(
+                        height: 4,
+                      ),
+                      _buildCon(),
+                      SizedBox(
+                        height: 4,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ],
@@ -147,69 +172,68 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
           colorBlendMode: bright > 0 ? BlendMode.lighten : BlendMode.darken,
           handleLoadingProgress: true,
           image: ExtendedNetworkImageProvider(imageUrl!, cacheRawData: true),
-          height: MediaQuery.of(context).size.width,
-          width: MediaQuery.of(context).size.width,
           extendedImageEditorKey: editorKey,
           mode: ExtendedImageMode.editor,
           fit: BoxFit.contain,
+          initEditorConfigHandler: (ExtendedImageState? state) {
+            return EditorConfig(
+              maxScale: 8.0,
+              cropRectPadding: const EdgeInsets.all(0),
+            );
+          },
         ),
       ),
     );
   }
 
   Future<void> saveImage([bool test = false]) async {
-  final ExtendedImageEditorState state = editorKey.currentState!;
-  final Uint8List img = state.rawImageData;
+    final ExtendedImageEditorState state = editorKey.currentState!;
+    final Uint8List img = state.rawImageData;
 
-  final ImageEditorOption option = ImageEditorOption();
-  // Adjust color options as needed
-  option.addOption(ColorOption.saturation(sat));
-  option.addOption(ColorOption.brightness(bright + 1));
-  option.addOption(ColorOption.contrast(con));
-  option.outputFormat = const OutputFormat.jpeg(100);
+    final ImageEditorOption option = ImageEditorOption();
+    // Adjust color options as needed
+    option.addOption(ColorOption.saturation(sat));
+    option.addOption(ColorOption.brightness(bright + 1));
+    option.addOption(ColorOption.contrast(con));
+    option.outputFormat = const OutputFormat.jpeg(100);
 
-  final DateTime start = DateTime.now();
-  final Uint8List? result = await ImageEditor.editImage(
-    image: img,
-    imageEditorOption: option,
-  );
+    final DateTime start = DateTime.now();
+    final Uint8List? result = await ImageEditor.editImage(
+      image: img,
+      imageEditorOption: option,
+    );
 
-  final Duration diff = DateTime.now().difference(start);
-  print('image_editor time : $diff');
+    final Duration diff = DateTime.now().difference(start);
+    print('image_editor time : $diff');
 
-  // Pass the edited image data to the next screen
-  Navigator.pushReplacement(
-    context,
-    CupertinoPageRoute(
-      builder: (context) => ApplyWalls(
-        editedImageBytes: result,
+    // Pass the edited image data to the next screen
+    Navigator.pushReplacement(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => ApplyWalls(
+          editedImageBytes: result,
+        ),
       ),
-    ),
-  );
-}
-
-
-  void flip() {
-    editorKey.currentState!.flip();
+    );
   }
 
   Widget _buildSat() {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.03,
-        ),
         Column(
           children: <Widget>[
             Icon(
               Icons.brush,
-              color: Colors.black,
+              color: primaryColor,
             ),
             Text(
               "Saturation",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: primaryColor),
             )
           ],
         ),
@@ -227,32 +251,28 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
             max: 2,
           ),
         ),
-        Padding(
-          padding:
-              EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.08),
-          child: Text(sat.toStringAsFixed(2)),
-        ),
+        Text(sat.toStringAsFixed(2)),
       ],
     );
   }
 
   Widget _buildBrightness() {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.03,
-        ),
         Column(
           children: <Widget>[
             Icon(
               Icons.brightness_4,
-              color: Colors.black,
+              color: primaryColor,
             ),
             Text(
               "Brightness",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: primaryColor),
             )
           ],
         ),
@@ -270,32 +290,28 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
             max: 1,
           ),
         ),
-        Padding(
-          padding:
-              EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.08),
-          child: Text(bright.toStringAsFixed(2)),
-        ),
+        Text(bright.toStringAsFixed(2)),
       ],
     );
   }
 
   Widget _buildCon() {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.03,
-        ),
         Column(
           children: <Widget>[
             Icon(
               Icons.color_lens,
-              color: Colors.amber,
+              color: primaryColor,
             ),
             Text(
-              "Contrast",
-              style: TextStyle(color: Colors.black),
+              "  Contrast  ",
+              style: TextStyle(color: primaryColor),
             )
           ],
         ),
@@ -313,11 +329,7 @@ class _EditPhotoScreenState extends State<EditPhotoScreen> {
             },
           ),
         ),
-        Padding(
-          padding:
-              EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.08),
-          child: Text(con.toStringAsFixed(2)),
-        ),
+        Text(con.toStringAsFixed(2)),
       ],
     );
   }

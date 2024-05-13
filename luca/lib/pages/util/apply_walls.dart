@@ -17,7 +17,6 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:luca/pages/util/editor/editor.dart';
 import 'package:luca/services/admob_service.dart';
 import 'package:flutter/rendering.dart';
@@ -520,7 +519,9 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   }
 
   void toggleLikeImage(String userId, String imageUrl, String thumbnailUrl,
-      String uploader, String title) {
+      String uploader, String title) async {
+    final isLiked = !_isImageLiked;
+
     FirebaseFirestore.instance
         .collection('Users')
         .doc(userId)
@@ -532,11 +533,11 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         // Image already liked, so remove it
         querySnapshot.docs.first.reference.delete().then((_) {
           print('Image removed from liked images!');
+          setState(() {
+            _isImageLiked = isLiked;
+          });
         }).catchError((error) {
           print('Failed to remove image from liked images: $error');
-        });
-        setState(() {
-          _isImageLiked = true;
         });
       } else {
         // Image not liked, so add it
@@ -551,6 +552,9 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
           'uploaderName': uploader,
         }).then((value) {
           print('Image liked and stored successfully!');
+          setState(() {
+            _isImageLiked = isLiked;
+          });
         }).catchError((error) {
           print('Failed to like image: $error');
         });
@@ -673,8 +677,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      Get.to(EditPhotoScreen(
-                                          arguments: widget.url));
+                                      Get.to(
+                                          EditWallpaper(arguments: widget.url));
                                     },
                                     icon: Icon(
                                       IconlyBold.edit,

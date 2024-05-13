@@ -2,10 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:luca/data/wallpaper.dart';
@@ -206,38 +203,40 @@ class MyHomePageState extends State<MyHomePage>
       key: _scaffoldKey,
       backgroundColor: backgroundColor,
       body: SafeArea(
-        child: Column(
-          children: [
-            TabBar(
-              padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-              tabAlignment: TabAlignment.start,
-              dividerColor: Colors.transparent,
-              physics: const BouncingScrollPhysics(),
-              indicatorPadding: const EdgeInsets.fromLTRB(0, 42, 0, 2),
-              controller: _tabController,
-              indicatorColor: primaryColor,
-              labelPadding: EdgeInsets.only(right: 10, left: 10),
-              indicator: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              labelColor: primaryColor,
-              unselectedLabelColor: secondaryColor,
-              isScrollable: true,
-              tabs: data.map((tab) {
-                return Tab(
-                  child: Text(
-                    tab,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
+        child: Center(
+          child: Column(
+            children: [
+              TabBar(
+                padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+                tabAlignment: TabAlignment.start,
+                dividerColor: Colors.transparent,
+                physics: const BouncingScrollPhysics(),
+                indicatorPadding: const EdgeInsets.fromLTRB(0, 42, 0, 2),
+                controller: _tabController,
+                indicatorColor: primaryColor,
+                labelPadding: EdgeInsets.only(right: 10, left: 10),
+                indicator: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                labelColor: primaryColor,
+                unselectedLabelColor: secondaryColor,
+                isScrollable: true,
+                tabs: data.map((tab) {
+                  return Tab(
+                    child: Text(
+                      tab,
+                      style: GoogleFonts.montserrat(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-            ),
-            Expanded(child: _buildTabViews()),
-          ],
+                  );
+                }).toList(),
+              ),
+              Expanded(child: _buildTabViews()),
+            ],
+          ),
         ),
       ),
     );
@@ -290,7 +289,7 @@ class MyHomePageState extends State<MyHomePage>
           if (_isLoading)
             SliverToBoxAdapter(
               child: Center(
-                child: Components.buildCircularIndicator(),
+                child: Components.buildPlaceholder(),
               ),
             ),
         ],
@@ -324,7 +323,7 @@ class MyHomePageState extends State<MyHomePage>
         future: _fetchWallpapers(category),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: Components.buildCircularIndicator());
+            return Center(child: Components.buildPlaceholder());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -345,7 +344,17 @@ class MyHomePageState extends State<MyHomePage>
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
                       return GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Get.to(
+                            ApplyWallpaperPage(
+                              url: wallpapers[index].url,
+                              uploaderName: wallpapers[index].uploaderName,
+                              title: wallpapers[index].title,
+                              thumbnailUrl: wallpapers[index].thumbnailUrl,
+                            ),
+                            transition: Transition.downToUp,
+                          );
+                        },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: CachedNetworkImage(
@@ -365,7 +374,7 @@ class MyHomePageState extends State<MyHomePage>
                 if (_isLoading)
                   SliverToBoxAdapter(
                     child: Center(
-                      child: Components.buildCircularIndicator(),
+                      child: Components.buildPlaceholder(),
                     ),
                   ),
               ],
