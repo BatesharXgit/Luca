@@ -280,9 +280,16 @@ class MyHomePageState extends State<MyHomePage>
       timestamp: snapshot.docs.first['timestamp'].millisecondsSinceEpoch,
     );
 
-    setState(() {
-      wallpapers.insert(0, newWallpaper);
-    });
+    // Check if the new wallpaper already exists in the list
+    bool exists =
+        wallpapers.any((wallpaper) => wallpaper.url == newWallpaper.url);
+
+    // Only insert the new wallpaper if it doesn't already exist
+    if (!exists) {
+      setState(() {
+        wallpapers.insert(0, newWallpaper);
+      });
+    }
   }
 
   Widget _buildImageGridFromRef() {
