@@ -80,7 +80,7 @@ class _LucaHomeState extends State<LucaHome> {
               icon: Icon(IconlyBold.search),
             ),
             CustomNavigationBarItem(
-              icon: Icon(Icons.phone_android),
+              icon: Icon(IconlyBold.category),
             ),
             CustomNavigationBarItem(
               icon: Icon(IconlyBold.heart),
