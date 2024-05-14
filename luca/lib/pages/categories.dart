@@ -1,24 +1,21 @@
-import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as path;
 
 class CategoriesWallpaper extends StatelessWidget {
   final String category;
-  static const String _categoriesWallpaperKey = 'categories';
 
   CategoriesWallpaper(this.category);
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<CategoryWallpaper>>(
-      future: _fetchWallpapers(),
+      future: _fetchWallpapers(category),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: Components.buildPlaceholder());
@@ -81,34 +78,92 @@ class CategoriesWallpaper extends StatelessWidget {
     );
   }
 
-  Future<List<CategoryWallpaper>> _fetchWallpapers() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? wallpapersJson = prefs.getString(_categoriesWallpaperKey);
+  Future<List<CategoryWallpaper>> _getWallpapersFromSQLite(
+      String category) async {
+    Database database = await _initDatabase();
+    List<Map<String, dynamic>> wallpapersMap = await database.query(
+      'category_wallpapers',
+      where: 'category = ?',
+      whereArgs: [category],
+    );
 
-    if (wallpapersJson != null) {
-      List<dynamic> savedWallpapersJson = json.decode(wallpapersJson);
-      List<CategoryWallpaper> savedWallpapers = savedWallpapersJson
-          .map((wallpaperJson) =>
-              CategoryWallpaper.fromSharedPreferencesJson(wallpaperJson))
-          .where((wallpaper) =>
-              wallpaper.category ==
-              category) // Filter wallpapers for current category
-          .toList();
-      return savedWallpapers;
-    } else {
-      // If wallpapers for the category are not found in SharedPreferences, return an empty list
+    List<CategoryWallpaper> wallpapers = wallpapersMap.map((map) {
+      return CategoryWallpaper(
+        title: map['title'],
+        url: map['url'],
+        thumbnailUrl: map['thumbnailUrl'],
+        uploaderName: map['uploaderName'],
+        category: map['category'],
+      );
+    }).toList();
+
+    return wallpapers;
+  }
+
+  Future<List<CategoryWallpaper>> _fetchWallpapers(String category) async {
+    try {
+      // Firestore collection reference
+      CollectionReference categoryCollectionRef = FirebaseFirestore.instance
+          .collection('Categories')
+          .doc(category)
+          .collection('${category}Images');
+
+      // Query Firestore for wallpapers ordered by timestamp in descending order
+      QuerySnapshot snapshot = await categoryCollectionRef
+          .orderBy("timestamp", descending: true)
+          .get();
+
+      List<CategoryWallpaper> wallpapers = snapshot.docs.map((doc) {
+        return CategoryWallpaper(
+          title: doc['title'],
+          url: doc['url'],
+          thumbnailUrl: doc['thumbnailUrl'],
+          uploaderName: doc['uploaderName'],
+          category: category,
+        );
+      }).toList();
+
+      // Store wallpapers in SQLite database
+      await _storeWallpapersInSQLite(wallpapers);
+
+      return wallpapers;
+    } catch (e) {
+      print('Error fetching wallpapers for category $category: $e');
       return [];
     }
   }
 
-  void saveWallpapersToSharedPreferences(
-      List<CategoryWallpaper> categoriesWallpapers) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<Map<String, dynamic>> wallpapersList = categoriesWallpapers
-        .map((categoriesWallpapers) =>
-            categoriesWallpapers.toSharedPreferencesJson())
-        .toList();
-    prefs.setString(_categoriesWallpaperKey, json.encode(wallpapersList));
+  Future<void> _storeWallpapersInSQLite(
+      List<CategoryWallpaper> wallpapers) async {
+    Database database = await _initDatabase();
+
+    // Insert wallpapers into SQLite database
+    for (var wallpaper in wallpapers) {
+      await database.insert(
+        'category_wallpapers', // SQLite table name
+        {
+          'title': wallpaper.title,
+          'url': wallpaper.url,
+          'thumbnailUrl': wallpaper.thumbnailUrl,
+          'uploaderName': wallpaper.uploaderName,
+          'category': wallpaper.category,
+        },
+      );
+    }
+  }
+
+  Future<Database> _initDatabase() async {
+    String pathToDatabase =
+        path.join(await getDatabasesPath(), 'category_wallpapers.db');
+    return await openDatabase(
+      pathToDatabase, // Database name
+      onCreate: (db, version) {
+        return db.execute(
+          'CREATE TABLE category_wallpapers(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT, thumbnailUrl TEXT, uploaderName TEXT, category TEXT)',
+        );
+      },
+      version: 1,
+    );
   }
 }
 
@@ -118,7 +173,7 @@ class CategoryWallpaper {
   String thumbnailUrl;
   String uploaderName;
   Timestamp? timestamp;
-  String category; // Add category property
+  String category;
 
   CategoryWallpaper({
     required this.title,
@@ -126,49 +181,6 @@ class CategoryWallpaper {
     required this.thumbnailUrl,
     required this.uploaderName,
     this.timestamp,
-    required this.category, // Initialize category property
+    required this.category,
   });
-
-  // Deserialize from JSON
-  factory CategoryWallpaper.fromJson(Map<String, dynamic> json) {
-    return CategoryWallpaper(
-      title: json['title'] ?? '',
-      url: json['url'] ?? '',
-      thumbnailUrl: json['thumbnailUrl'] ?? '',
-      uploaderName: json['uploaderName'] ?? '',
-      timestamp: json['timestamp'] != null
-          ? Timestamp.fromMillisecondsSinceEpoch(json['timestamp'])
-          : null,
-      category: json['category'] != null
-          ? json['category']
-          : '', // Provide a default value if category is null
-    );
-  }
-
-  // Serialize to JSON for SharedPreferences
-  Map<String, dynamic> toSharedPreferencesJson() {
-    return {
-      'title': title,
-      'url': url,
-      'thumbnailUrl': thumbnailUrl,
-      'uploaderName': uploaderName,
-      'timestamp': timestamp != null ? timestamp!.millisecondsSinceEpoch : null,
-      'category': category, // Serialize category property
-    };
-  }
-
-  // Deserialize from SharedPreferences JSON
-  factory CategoryWallpaper.fromSharedPreferencesJson(
-      Map<String, dynamic> json) {
-    return CategoryWallpaper(
-      title: json['title'],
-      url: json['url'],
-      thumbnailUrl: json['thumbnailUrl'],
-      uploaderName: json['uploaderName'],
-      timestamp: json['timestamp'] != null
-          ? Timestamp.fromMillisecondsSinceEpoch(json['timestamp'])
-          : null,
-      category: json['category'], // Deserialize category property
-    );
-  }
 }

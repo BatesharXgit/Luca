@@ -47,10 +47,10 @@ class MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
-    _initDatabase();
-    scrollController.addListener(_scrollListener);
+    // _initDatabase();
+    // scrollController.addListener(_scrollListener);
     _tabController = TabController(length: data.length, vsync: this);
-    _listenForNewWallpapers();
+    // _listenForNewWallpapers();
   }
 
   void _scrollListener() {
