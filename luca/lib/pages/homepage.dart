@@ -48,7 +48,8 @@ class MyHomePageState extends State<MyHomePage>
   void initState() {
     super.initState();
     // _initDatabase();
-    // scrollController.addListener(_scrollListener);
+    scrollController.addListener(_scrollListener);
+
     _tabController = TabController(length: data.length, vsync: this);
     // _listenForNewWallpapers();
   }
@@ -359,7 +360,7 @@ class MyHomePageState extends State<MyHomePage>
         } else {
           return SizedBox(
             height: MediaQuery.of(context).size.height,
-            child: CategoriesWallpaper(data[index]),
+            child: CategoriesWallpaper(data[index],),
           );
         }
       }),
