@@ -1,23 +1,23 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:luca/pages/static/premium/categories.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:luca/pages/categories.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class PremiumCategories extends StatefulWidget {
+  const PremiumCategories({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => MyHomePageState();
+  State<PremiumCategories> createState() => PremiumCategoriesState();
 }
 
-class MyHomePageState extends State<MyHomePage>
+class PremiumCategoriesState extends State<PremiumCategories>
     with SingleTickerProviderStateMixin {
   late Database _database;
   final ScrollController scrollController = ScrollController();
@@ -29,26 +29,31 @@ class MyHomePageState extends State<MyHomePage>
   int index = 0;
 
   List<String> data = [
-    'All',
     'Abstract',
+    'Aesthetic',
     'Amoled',
-    'Animals',
     'Anime',
+    'Digital Art',
     'Cars',
-    'Games',
+    'Cool Walls',
+    'Dark Fantasy Art',
+    'Foods',
+    'Funny',
+    'Homescreen',
     'Illustration',
-    'Minimalist',
-    'Nature',
-    'SciFi',
-    'Space',
+    'Lockscreen',
+    'Pixel Art',
+    'Pop Art',
     'Superhero',
+    'Text Wall',
+    'Vivid Paint',
   ];
 
   @override
   void initState() {
     super.initState();
     // _initDatabase();
-    scrollController.addListener(_scrollListener);
+    // scrollController.addListener(_scrollListener);
 
     _tabController = TabController(length: data.length, vsync: this);
     // _listenForNewWallpapers();
@@ -351,7 +356,6 @@ class MyHomePageState extends State<MyHomePage>
   Widget _buildTabViews(context) {
     return TabBarView(
       controller: _tabController,
-      physics: NeverScrollableScrollPhysics(),
       children: List.generate(data.length, (index) {
         if (index == 0) {
           return SizedBox(
@@ -361,7 +365,7 @@ class MyHomePageState extends State<MyHomePage>
         } else {
           return SizedBox(
             height: MediaQuery.of(context).size.height,
-            child: CategoriesWallpaper(
+            child: PremiumCategoriesWallpaper(
               data[index],
             ),
           );

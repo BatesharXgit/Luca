@@ -140,50 +140,6 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     super.dispose();
   }
 
-  // void savetoGallery(BuildContext context) async {
-  //   try {
-  //     RenderRepaintBoundary boundary = _globalKey.currentContext!
-  //         .findRenderObject() as RenderRepaintBoundary;
-  //     ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-  //     ByteData? byteData =
-  //         await image.toByteData(format: ui.ImageByteFormat.png);
-
-  //     if (byteData != null) {
-  //       Uint8List pngBytes = byteData.buffer.asUint8List();
-  //       final externalDir = await getExternalStorageDirectory();
-  //       final filePath = '${externalDir!.path}/LucaImage.png';
-  //       final file = File(filePath);
-  //       await file.writeAsBytes(pngBytes);
-  //       final result = await ImageGallerySaver.saveFile(filePath);
-
-  //       if (result['isSuccess']) {
-  //         if (kDebugMode) {
-  //           print('Screenshot saved to gallery.');
-  //         }
-
-  //         // ignore: use_build_context_synchronously
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(
-  //             backgroundColor: Color(0xFF131321),
-  //             content: Text(
-  //               'Successfully saved to gallery 😊',
-  //               style: TextStyle(color: Colors.white),
-  //             ),
-  //           ),
-  //         );
-  //       } else {
-  //         if (kDebugMode) {
-  //           print('Failed to save screenshot to gallery.');
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print('Error: $e');
-  //     }
-  //   }
-  // }
-
   Future<void> downloadImage(String imageUrl) async {
     final response = await http.get(Uri.parse(imageUrl));
     if (response.statusCode == 200) {
@@ -194,7 +150,6 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     }
   }
 
-// Function to save the image to the device's gallery
   Future<void> saveToGallery(Uint8List imageBytes) async {
     final result = await ImageGallerySaver.saveImage(imageBytes);
     if (result != null && result.isNotEmpty) {
@@ -653,50 +608,46 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                 },
                 child: Hero(
                   tag: widget.url,
-                  child: RepaintBoundary(
-                    key: _globalKey,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: CachedNetworkImage(
-                        height: double.infinity,
-                        width: double.infinity,
-                        imageUrl: widget.url,
-                        fit: BoxFit.cover,
-                        filterQuality: FilterQuality.high,
-                        progressIndicatorBuilder:
-                            (context, url, downloadProgress) {
-                          if (downloadProgress.progress == 1.0) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            );
-                          } else {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: CachedNetworkImageProvider(
-                                      widget.thumbnailUrl,
-                                    ),
-                                    fit: BoxFit.cover,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CachedNetworkImage(
+                      height: double.infinity,
+                      width: double.infinity,
+                      imageUrl: widget.url,
+                      fit: BoxFit.cover,
+                      filterQuality: FilterQuality.high,
+                      progressIndicatorBuilder:
+                          (context, url, downloadProgress) {
+                        if (downloadProgress.progress == 1.0) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          );
+                        } else {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: CachedNetworkImageProvider(
+                                    widget.thumbnailUrl,
                                   ),
-                                ),
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                    value: downloadProgress.progress,
-                                  ),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            );
-                          }
-                        },
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                      ),
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  value: downloadProgress.progress,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                   ),
                 ),

@@ -294,7 +294,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           textColor: primaryColor,
                           onTap: () {
                             showLicensePage(
-                                context: context); // Show the licenses page
+                                context: context);
                           },
                         ),
                         ListTile(

@@ -1,34 +1,34 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:luca/pages/util/apply_walls.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 
-class CategoriesWallpaper extends StatefulWidget {
+class PremiumCategoriesWallpaper extends StatefulWidget {
   final String category;
 
-  const CategoriesWallpaper(this.category);
+  const PremiumCategoriesWallpaper(this.category);
 
   @override
-  _CategoriesWallpaperState createState() => _CategoriesWallpaperState();
+  _PremiumCategoriesWallpaperState createState() =>
+      _PremiumCategoriesWallpaperState();
 }
 
-class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
+class _PremiumCategoriesWallpaperState
+    extends State<PremiumCategoriesWallpaper> {
   late ScrollController _scrollController;
   late Database _database;
   bool _isLoading = false;
-  List<CategoryWallpaper> categoriesWallpapers = [];
+  List<CategoryWallpaper> wallpapers = [];
   DocumentSnapshot<Object?>? _lastDocument;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _scrollController.addListener(_scrollListener);
-    _initDatabaseAndFetchWallpapers();
-    _listenForNewWallpapers();
+    // _scrollController.addListener(_scrollListener);
+    // _initDatabaseAndFetchWallpapers();
+    // _listenForNewWallpapers();
   }
 
   Future<void> _initDatabaseAndFetchWallpapers() async {
@@ -77,7 +77,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
       }
 
       setState(() {
-        categoriesWallpapers = fetchedWallpapers;
+        wallpapers = fetchedWallpapers;
         _isLoading = false;
       });
     } catch (e) {
@@ -99,8 +99,8 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
         wallpapersMap.map((map) => CategoryWallpaper.fromMap(map)).toList();
 
     // Filter out duplicate wallpapers
-    existingWallpapers.removeWhere((wallpaper) => categoriesWallpapers
-        .any((existingWallpaper) => existingWallpaper == wallpaper));
+    existingWallpapers.removeWhere((wallpaper) =>
+        wallpapers.any((existingWallpaper) => existingWallpaper == wallpaper));
 
     return existingWallpapers;
   }
@@ -126,7 +126,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
       }).toList();
 
       // Filter out duplicate wallpapers
-      fetchedWallpapers.removeWhere((newWallpaper) => categoriesWallpapers.any(
+      fetchedWallpapers.removeWhere((newWallpaper) => wallpapers.any(
           (existingWallpaper) => existingWallpaper.url == newWallpaper.url));
 
       await _storeWallpapersInSQLite(fetchedWallpapers);
@@ -202,7 +202,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
       }).toList();
 
       // Filter out duplicates
-      moreWallpapers.removeWhere((wallpaper) => categoriesWallpapers
+      moreWallpapers.removeWhere((wallpaper) => wallpapers
           .any((existingWallpaper) => existingWallpaper.url == wallpaper.url));
 
       if (snapshot.docs.isNotEmpty) {
@@ -212,7 +212,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
       await _storeWallpapersInSQLite(moreWallpapers);
 
       setState(() {
-        categoriesWallpapers.addAll(moreWallpapers);
+        wallpapers.addAll(moreWallpapers);
         _isLoading = false;
       });
     } catch (e) {
@@ -246,7 +246,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
             if (!sqliteWallpapers.contains(newWallpaper)) {
               _storeWallpaperInSQLite(newWallpaper);
               setState(() {
-                categoriesWallpapers.insert(0, newWallpaper);
+                wallpapers.insert(0, newWallpaper);
               });
             }
           }
@@ -288,12 +288,12 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
           .millisecondsSinceEpoch,
     );
 
-    bool exists = categoriesWallpapers
-        .any((wallpaper) => wallpaper.url == newWallpaper.url);
+    bool exists =
+        wallpapers.any((wallpaper) => wallpaper.url == newWallpaper.url);
 
     if (!exists) {
       setState(() {
-        categoriesWallpapers.insert(0, newWallpaper);
+        wallpapers.insert(0, newWallpaper);
       });
     }
   }
@@ -321,22 +321,14 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
             (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  Get.to(
-                    ApplyWallpaperPage(
-                      url: categoriesWallpapers[index].url,
-                      uploaderName: categoriesWallpapers[index].uploaderName,
-                      title: categoriesWallpapers[index].title,
-                      thumbnailUrl: categoriesWallpapers[index].thumbnailUrl,
-                    ),
-                    transition: Transition.downToUp,
-                  );
+                  // Handle wallpaper tap
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: CachedNetworkImage(
                     fadeInDuration: const Duration(milliseconds: 50),
                     fadeOutDuration: const Duration(milliseconds: 50),
-                    imageUrl: categoriesWallpapers[index].thumbnailUrl,
+                    imageUrl: wallpapers[index].thumbnailUrl,
                     fit: BoxFit.cover,
                     placeholder: (context, url) {
                       return Center(
@@ -347,7 +339,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
                 ),
               );
             },
-            childCount: categoriesWallpapers.length,
+            childCount: wallpapers.length,
           ),
         ),
         if (_isLoading)

@@ -9,7 +9,7 @@ import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:luca/pages/settings.dart';
-import 'package:luca/pages/static/stock_categories.dart';
+import 'package:luca/pages/static/premium/premium_categories.dart';
 
 class LucaHome extends StatefulWidget {
   const LucaHome({super.key});
@@ -77,10 +77,10 @@ class _LucaHomeState extends State<LucaHome> {
               icon: Icon(IconlyBold.home),
             ),
             CustomNavigationBarItem(
-              icon: Icon(IconlyBold.search),
+              icon: Icon(IconlyBold.discovery),
             ),
             CustomNavigationBarItem(
-              icon: Icon(IconlyBold.category),
+              icon: Icon(IconlyBold.search),
             ),
             CustomNavigationBarItem(
               icon: Icon(IconlyBold.heart),
@@ -114,10 +114,10 @@ class _LucaHomeState extends State<LucaHome> {
         _pages[index] = const MyHomePage();
         break;
       case 1:
-        _pages[index] = const SearchWallpaper();
+        _pages[index] = const PremiumCategories();
         break;
       case 2:
-        _pages[index] = const StockCategories();
+        _pages[index] = const SearchWallpaper();
         break;
       case 3:
         _pages[index] = const FavoriteImagesPage();

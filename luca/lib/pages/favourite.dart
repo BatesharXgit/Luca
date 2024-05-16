@@ -7,11 +7,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:luca/data/wallpaper.dart';
 import 'package:luca/pages/util/components.dart';
-
+import 'package:luca/authentication/auth%20pages/login_page.dart';
 import 'util/apply_walls.dart';
 
 class FavoriteImagesPage extends StatefulWidget {
-  // final ScrollController controller;
   const FavoriteImagesPage({super.key});
 
   @override
@@ -20,7 +19,7 @@ class FavoriteImagesPage extends StatefulWidget {
 
 class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
   ScrollController scrollController = ScrollController();
-  late Stream<QuerySnapshot> _likedImagesStream;
+  late Stream<QuerySnapshot>? _likedImagesStream;
   List<Wallpaper> wallpapers = [];
 
   @override
@@ -29,7 +28,7 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
     _fetchWallpapers();
   }
 
-  void _fetchWallpapers() async {
+  void _fetchWallpapers() {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user = auth.currentUser;
     if (user != null) {
@@ -38,39 +37,44 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
           .doc(user.uid)
           .collection('LikedImages')
           .snapshots();
-    }
 
-    _likedImagesStream.listen((QuerySnapshot snapshot) {
-      setState(() {
-        wallpapers = snapshot.docs.map((doc) {
-          return Wallpaper(
-            title: doc['title'],
-            url: doc['url'],
-            thumbnailUrl: doc['thumbnailUrl'],
-            uploaderName: doc['uploaderName'],
-          );
-        }).toList();
+      _likedImagesStream!.listen((QuerySnapshot snapshot) {
+        setState(() {
+          wallpapers = snapshot.docs.map((doc) {
+            return Wallpaper(
+              title: doc['title'],
+              url: doc['url'],
+              thumbnailUrl: doc['thumbnailUrl'],
+              uploaderName: doc['uploaderName'],
+            );
+          }).toList();
+        });
       });
-    });
+    } else {
+      _likedImagesStream = null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? user = auth.currentUser;
+
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
 
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-            onPressed: () {
-              FirebaseAuth auth = FirebaseAuth.instance;
-              User? user = auth.currentUser;
-              String userId = user!.uid;
-              _showClearFavoritesConfirmationDialog(context, userId);
-            },
-            icon: const Icon(Iconsax.trash),
-          )
+          if (user !=
+              null) // Show the delete icon only if the user is logged in
+            IconButton(
+              onPressed: () {
+                String userId = user.uid;
+                _showClearFavoritesConfirmationDialog(context, userId);
+              },
+              icon: const Icon(Iconsax.trash),
+            )
         ],
         elevation: 0,
         forceMaterialTransparency: true,
@@ -82,12 +86,37 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
           style: GoogleFonts.kanit(
             color: primaryColor,
             fontSize: 22,
-            // fontWeight: FontWeight.bold,
           ),
         ),
       ),
       backgroundColor: backgroundColor,
-      body: _buildImageGridFromRef(),
+      body:
+          user == null ? _buildSignInPrompt(context) : _buildImageGridFromRef(),
+    );
+  }
+
+  Widget _buildSignInPrompt(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'Please sign in to see liked images',
+            style: GoogleFonts.kanit(
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: 18,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Get.to(const LoginPage(),
+                  transition: Transition.rightToLeftWithFade);
+            },
+            child: Text('Sign In'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -108,15 +137,15 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
               (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    // _showInterstitialAd();
                     Get.to(
-                        ApplyWallpaperPage(
-                          url: wallpapers[index].url,
-                          uploaderName: wallpapers[index].uploaderName,
-                          title: wallpapers[index].title,
-                          thumbnailUrl: wallpapers[index].thumbnailUrl,
-                        ),
-                        transition: Transition.downToUp);
+                      ApplyWallpaperPage(
+                        url: wallpapers[index].url,
+                        uploaderName: wallpapers[index].uploaderName,
+                        title: wallpapers[index].title,
+                        thumbnailUrl: wallpapers[index].thumbnailUrl,
+                      ),
+                      transition: Transition.downToUp,
+                    );
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),

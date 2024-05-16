@@ -2,27 +2,25 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:luca/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:luca/authentication/services/auth_service.dart';
 import 'package:luca/components/square_tile.dart';
 import 'package:luca/pages/privacy_policy.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({
-    super.key,
-  });
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // Future<void> _signInAnonymously() async {
-  //   try {
-  //     await FirebaseAuth.instance.signInAnonymously();
-  //   } catch (e) {
-  //     print('Error signing in anonymously: $e');
-  //   }
-  // }
+  Future<void> _skipSignIn() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('skipSignIn', true);
+    Get.offAll(LucaHome());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,6 +113,19 @@ class _LoginPageState extends State<LoginPage> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            GestureDetector(
+                              onTap: _skipSignIn,
+                              child: const Text(
+                                'Skip Sign In',
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Color(0xFFE6EDFF),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
                             Text(
                               'By Continuing, you agree with Luca',
                               style: TextStyle(
