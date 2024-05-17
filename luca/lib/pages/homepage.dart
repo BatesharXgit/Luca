@@ -351,13 +351,18 @@ class MyHomePageState extends State<MyHomePage>
   Widget _buildTabViews(context) {
     return TabBarView(
       controller: _tabController,
-      physics: NeverScrollableScrollPhysics(),
+      physics: BouncingScrollPhysics(),
       children: List.generate(data.length, (index) {
         if (index == 0) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: _buildImageGridFromRef(),
+          return Center(
+            child: Components.buildCircularIndicator(),
           );
+
+          // if (index == 0) {
+          //   return SizedBox(
+          //     height: MediaQuery.of(context).size.height,
+          //     child: _buildImageGridFromRef(),
+          //   );
         } else {
           return SizedBox(
             height: MediaQuery.of(context).size.height,

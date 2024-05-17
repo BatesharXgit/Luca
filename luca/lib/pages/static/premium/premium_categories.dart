@@ -1,34 +1,23 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:luca/pages/static/premium/categories.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:luca/pages/util/apply_walls.dart';
-import 'package:luca/pages/util/components.dart';
+import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
+import 'package:sqflite/sqflite.dart';
 
-class PremiumCategories extends StatefulWidget {
-  const PremiumCategories({Key? key}) : super(key: key);
+class PremiumCategoriesWallpaper extends StatefulWidget {
+  final String category;
+
+  const PremiumCategoriesWallpaper(this.category);
 
   @override
-  State<PremiumCategories> createState() => PremiumCategoriesState();
+  _PremiumCategoriesWallpaperState createState() =>
+      _PremiumCategoriesWallpaperState();
 }
 
-class PremiumCategoriesState extends State<PremiumCategories>
-    with SingleTickerProviderStateMixin {
-  late Database _database;
-  final ScrollController scrollController = ScrollController();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  late TabController _tabController;
-  bool _isLoading = false;
+class _PremiumCategoriesWallpaperState
+    extends State<PremiumCategoriesWallpaper> {
 
-  List<Wallpaper> wallpapers = [];
-  int index = 0;
-
-  List<String> data = [
+      List<String> premiumData = [
     'Abstract',
     'Aesthetic',
     'Amoled',
@@ -48,20 +37,36 @@ class PremiumCategoriesState extends State<PremiumCategories>
     'Text Wall',
     'Vivid Paint',
   ];
+  
+  late ScrollController _scrollController;
+  late Database _database;
+  bool _isLoading = false;
+  List<CategoryWallpaper> wallpapers = [];
+  DocumentSnapshot<Object?>? _lastDocument;
 
   @override
   void initState() {
     super.initState();
-    // _initDatabase();
-    // scrollController.addListener(_scrollListener);
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+    _initDatabaseAndFetchWallpapers();
+    _listenForNewWallpapers();
+  }
 
-    _tabController = TabController(length: data.length, vsync: this);
-    // _listenForNewWallpapers();
+  Future<void> _initDatabaseAndFetchWallpapers() async {
+    await _initDatabase();
+    await fetchInitialWallpapers();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _scrollListener() {
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       if (!_isLoading) {
         _loadMoreWallpapers();
       }
@@ -70,15 +75,14 @@ class PremiumCategoriesState extends State<PremiumCategories>
 
   Future<void> _initDatabase() async {
     _database = await openDatabase(
-      join(await getDatabasesPath(), 'wallpapers.db'),
+      path.join(await getDatabasesPath(), 'premium_category_wallpapers.db'),
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE wallpapers(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT, thumbnailUrl TEXT, uploaderName TEXT, timestamp INTEGER)',
+          'CREATE TABLE premium_category_wallpapers(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT, thumbnailUrl TEXT, uploaderName TEXT, timestamp INTEGER, category TEXT)',
         );
       },
       version: 1,
     );
-    await fetchInitialWallpapers();
   }
 
   Future<void> fetchInitialWallpapers() async {
@@ -87,10 +91,10 @@ class PremiumCategoriesState extends State<PremiumCategories>
     });
 
     try {
-      List<Wallpaper> fetchedWallpapers = await _getWallpapersFromSQLite();
+      List<CategoryWallpaper> fetchedWallpapers =
+          await _getWallpapersFromSQLite();
 
       if (fetchedWallpapers.isEmpty) {
-        // If no wallpapers found in SQLite, fetch from Firestore
         fetchedWallpapers = await _fetchWallpapersFromFirestore();
       }
 
@@ -106,12 +110,15 @@ class PremiumCategoriesState extends State<PremiumCategories>
     }
   }
 
-  Future<List<Wallpaper>> _getWallpapersFromSQLite() async {
-    final List<Map<String, dynamic>> wallpapersMap =
-        await _database.query('wallpapers');
+  Future<List<CategoryWallpaper>> _getWallpapersFromSQLite() async {
+    final List<Map<String, dynamic>> wallpapersMap = await _database.query(
+      'premium_category_wallpapers',
+      where: 'category = ?',
+      whereArgs: [widget.category],
+    );
 
-    List<Wallpaper> existingWallpapers =
-        wallpapersMap.map((map) => Wallpaper.fromMap(map)).toList();
+    List<CategoryWallpaper> existingWallpapers =
+        wallpapersMap.map((map) => CategoryWallpaper.fromMap(map)).toList();
 
     // Filter out duplicate wallpapers
     existingWallpapers.removeWhere((wallpaper) =>
@@ -120,52 +127,66 @@ class PremiumCategoriesState extends State<PremiumCategories>
     return existingWallpapers;
   }
 
-  Future<List<Wallpaper>> _fetchWallpapersFromFirestore() async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection("Explore")
-        .orderBy("timestamp", descending: true)
-        .limit(20)
-        .get();
+  Future<List<CategoryWallpaper>> _fetchWallpapersFromFirestore() async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Premium')
+          .doc(widget.category)
+          .collection('${widget.category}Images')
+          .orderBy('timestamp', descending: true)
+          .limit(20)
+          .get();
 
-    List<Wallpaper> fetchedWallpapers = snapshot.docs.map((doc) {
-      return Wallpaper(
-        title: doc['title'],
-        url: doc['url'],
-        thumbnailUrl: doc['thumbnailUrl'],
-        uploaderName: doc['uploaderName'],
-        timestamp: doc['timestamp'].millisecondsSinceEpoch,
-      );
-    }).toList();
+      List<CategoryWallpaper> fetchedWallpapers = snapshot.docs.map((doc) {
+        return CategoryWallpaper(
+          title: doc['title'],
+          url: doc['url'],
+          thumbnailUrl: doc['thumbnailUrl'],
+          uploaderName: doc['uploaderName'],
+          timestamp: (doc['timestamp'] as Timestamp).millisecondsSinceEpoch,
+        );
+      }).toList();
 
-    // Filter out duplicate wallpapers
-    fetchedWallpapers.removeWhere((newWallpaper) => wallpapers
-        .any((existingWallpaper) => existingWallpaper.url == newWallpaper.url));
+      // Filter out duplicate wallpapers
+      fetchedWallpapers.removeWhere((newWallpaper) => wallpapers.any(
+          (existingWallpaper) => existingWallpaper.url == newWallpaper.url));
 
-    await _storeWallpapersInSQLite(fetchedWallpapers);
+      await _storeWallpapersInSQLite(fetchedWallpapers);
 
-    return fetchedWallpapers;
+      if (snapshot.docs.isNotEmpty) {
+        _lastDocument = snapshot.docs.last;
+      }
+
+      return fetchedWallpapers;
+    } catch (e) {
+      print('Error fetching wallpapers from Firestore: $e');
+      return [];
+    }
   }
 
-  Future<void> _storeWallpapersInSQLite(List<Wallpaper> wallpapers) async {
-    // Clear existing data in the wallpapers table
-    // await _database.delete('wallpapers');
+  Future<void> _storeWallpapersInSQLite(
+      List<CategoryWallpaper> wallpapers) async {
+    // Clear existing data in the premium_category_wallpapers table
+    await _database.delete('premium_category_wallpapers',
+        where: 'category = ?', whereArgs: [widget.category]);
 
     // Insert new wallpapers into the database
     for (var wallpaper in wallpapers) {
       await _database.insert(
-        'wallpapers',
+        'premium_category_wallpapers',
         {
           'title': wallpaper.title,
           'url': wallpaper.url,
           'thumbnailUrl': wallpaper.thumbnailUrl,
           'uploaderName': wallpaper.uploaderName,
           'timestamp': wallpaper.timestamp,
+          'category': widget.category,
         },
+        conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
   }
 
-  DocumentSnapshot<Object?>? _lastDocument;
   Future<void> _loadMoreWallpapers() async {
     setState(() {
       _isLoading = true;
@@ -174,38 +195,39 @@ class PremiumCategoriesState extends State<PremiumCategories>
     try {
       QuerySnapshot snapshot;
       if (_lastDocument != null) {
-        // Fetch more wallpapers after the last document in the current list
         snapshot = await FirebaseFirestore.instance
-            .collection('Explore')
-            .orderBy("timestamp", descending: true)
+            .collection('Premium')
+            .doc(widget.category)
+            .collection('${widget.category}Images')
+            .orderBy('timestamp', descending: true)
             .startAfterDocument(_lastDocument!)
             .limit(20)
             .get();
       } else {
-        // Fetch initial wallpapers if the list is empty
         snapshot = await FirebaseFirestore.instance
-            .collection('Explore')
-            .orderBy("timestamp", descending: true)
+            .collection('Categories')
+            .doc(widget.category)
+            .collection('${widget.category}Images')
+            .orderBy('timestamp', descending: true)
             .limit(20)
             .get();
       }
 
-      List<Wallpaper> moreWallpapers = snapshot.docs
-          .map((doc) => Wallpaper(
-                title: doc['title'],
-                url: doc['url'],
-                thumbnailUrl: doc['thumbnailUrl'],
-                uploaderName: doc['uploaderName'],
-                timestamp: doc['timestamp'].millisecondsSinceEpoch,
-              ))
-          .toList();
+      List<CategoryWallpaper> moreWallpapers = snapshot.docs.map((doc) {
+        return CategoryWallpaper(
+          title: doc['title'],
+          url: doc['url'],
+          thumbnailUrl: doc['thumbnailUrl'],
+          uploaderName: doc['uploaderName'],
+          timestamp: (doc['timestamp'] as Timestamp).millisecondsSinceEpoch,
+        );
+      }).toList();
 
       // Filter out duplicates
       moreWallpapers.removeWhere((wallpaper) => wallpapers
           .any((existingWallpaper) => existingWallpaper.url == wallpaper.url));
 
       if (snapshot.docs.isNotEmpty) {
-        // Update _lastDocument only if there are more documents available
         _lastDocument = snapshot.docs.last;
       }
 
@@ -223,15 +245,11 @@ class PremiumCategoriesState extends State<PremiumCategories>
     }
   }
 
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
-
   void _listenForNewWallpapers() {
     FirebaseFirestore.instance
-        .collection('Explore')
+        .collection('Premium')
+        .doc(widget.category)
+        .collection('${widget.category}Images')
         .snapshots()
         .listen((snapshot) {
       if (snapshot.docs.isNotEmpty) {
@@ -239,16 +257,19 @@ class PremiumCategoriesState extends State<PremiumCategories>
           if (sqliteWallpapers.isEmpty) {
             _fetchAndDisplayNewWallpaper();
           } else {
-            Wallpaper newWallpaper = Wallpaper(
+            CategoryWallpaper newWallpaper = CategoryWallpaper(
               title: snapshot.docs.first['title'],
               url: snapshot.docs.first['url'],
               thumbnailUrl: snapshot.docs.first['thumbnailUrl'],
               uploaderName: snapshot.docs.first['uploaderName'],
-              timestamp:
-                  snapshot.docs.first['timestamp'].millisecondsSinceEpoch,
+              timestamp: (snapshot.docs.first['timestamp'] as Timestamp)
+                  .millisecondsSinceEpoch,
             );
             if (!sqliteWallpapers.contains(newWallpaper)) {
               _storeWallpaperInSQLite(newWallpaper);
+              setState(() {
+                wallpapers.insert(0, newWallpaper);
+              });
             }
           }
         });
@@ -256,41 +277,42 @@ class PremiumCategoriesState extends State<PremiumCategories>
     });
   }
 
-  Future<void> _storeWallpaperInSQLite(Wallpaper wallpaper) async {
+  Future<void> _storeWallpaperInSQLite(CategoryWallpaper wallpaper) async {
     await _database.insert(
-      'wallpapers',
+      'premium_category_wallpapers',
       {
         'title': wallpaper.title,
         'url': wallpaper.url,
         'thumbnailUrl': wallpaper.thumbnailUrl,
         'uploaderName': wallpaper.uploaderName,
         'timestamp': wallpaper.timestamp,
+        'category': widget.category,
       },
-      conflictAlgorithm:
-          ConflictAlgorithm.ignore, // Ignore if wallpaper already exists
+      conflictAlgorithm: ConflictAlgorithm.ignore,
     );
   }
 
   void _fetchAndDisplayNewWallpaper() async {
     QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection("Explore")
-        .orderBy("timestamp", descending: true)
+        .collection('Premium')
+        .doc(widget.category)
+        .collection('${widget.category}Images')
+        .orderBy('timestamp', descending: true)
         .limit(1)
         .get();
 
-    Wallpaper newWallpaper = Wallpaper(
+    CategoryWallpaper newWallpaper = CategoryWallpaper(
       title: snapshot.docs.first['title'],
       url: snapshot.docs.first['url'],
       thumbnailUrl: snapshot.docs.first['thumbnailUrl'],
       uploaderName: snapshot.docs.first['uploaderName'],
-      timestamp: snapshot.docs.first['timestamp'].millisecondsSinceEpoch,
+      timestamp: (snapshot.docs.first['timestamp'] as Timestamp)
+          .millisecondsSinceEpoch,
     );
 
-    // Check if the new wallpaper already exists in the list
     bool exists =
         wallpapers.any((wallpaper) => wallpaper.url == newWallpaper.url);
 
-    // Only insert the new wallpaper if it doesn't already exist
     if (!exists) {
       setState(() {
         wallpapers.insert(0, newWallpaper);
@@ -298,139 +320,69 @@ class PremiumCategoriesState extends State<PremiumCategories>
     }
   }
 
-  Widget _buildImageGridFromRef() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-      child: CustomScrollView(
-        controller: scrollController,
-        physics: const ClampingScrollPhysics(),
-        slivers: <Widget>[
-          SliverGrid(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.6,
-              mainAxisSpacing: 6,
-              crossAxisSpacing: 6,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return GestureDetector(
-                  onTap: () {
-                    Get.to(
-                      ApplyWallpaperPage(
-                        url: wallpapers[index].url,
-                        uploaderName: wallpapers[index].uploaderName,
-                        title: wallpapers[index].title,
-                        thumbnailUrl: wallpapers[index].thumbnailUrl,
-                      ),
-                      transition: Transition.downToUp,
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: CachedNetworkImage(
-                      fadeInDuration: const Duration(milliseconds: 50),
-                      fadeOutDuration: const Duration(milliseconds: 50),
-                      imageUrl: wallpapers[index].thumbnailUrl,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) =>
-                          Components.buildShimmerEffect(context),
-                    ),
-                  ),
-                );
-              },
-              childCount: wallpapers.length,
-            ),
-          ),
-          if (_isLoading)
-            SliverToBoxAdapter(
-              child: Center(
-                child: Components.buildPlaceholder(),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTabViews(context) {
-    return TabBarView(
-      controller: _tabController,
-      children: List.generate(data.length, (index) {
-        if (index == 0) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: _buildImageGridFromRef(),
-          );
-        } else {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: PremiumCategoriesWallpaper(
-              data[index],
-            ),
-          );
-        }
-      }),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = Theme.of(context).colorScheme.background;
-    Color primaryColor = Theme.of(context).colorScheme.primary;
-    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: Center(
-          child: Column(
-            children: [
-              TabBar(
-                padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-                tabAlignment: TabAlignment.start,
-                dividerColor: Colors.transparent,
-                physics: const BouncingScrollPhysics(),
-                indicatorPadding: const EdgeInsets.fromLTRB(0, 42, 0, 2),
-                controller: _tabController,
-                indicatorColor: primaryColor,
-                labelPadding: EdgeInsets.only(right: 10, left: 10),
-                indicator: BoxDecoration(
-                  color: primaryColor,
+      body: _buildImageGrid(),
+    );
+  }
+
+  Widget _buildImageGrid() {
+    return CustomScrollView(
+      controller: _scrollController,
+      physics: const ClampingScrollPhysics(),
+      slivers: <Widget>[
+        SliverGrid(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.6,
+            mainAxisSpacing: 6,
+            crossAxisSpacing: 6,
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+                  // Handle wallpaper tap
+                },
+                child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
+                  child: CachedNetworkImage(
+                    fadeInDuration: const Duration(milliseconds: 50),
+                    fadeOutDuration: const Duration(milliseconds: 50),
+                    imageUrl: wallpapers[index].thumbnailUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
                 ),
-                labelColor: primaryColor,
-                unselectedLabelColor: secondaryColor,
-                isScrollable: true,
-                tabs: data.map((tab) {
-                  return Tab(
-                    child: Text(
-                      tab,
-                      style: GoogleFonts.montserrat(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-              Expanded(child: _buildTabViews(context)),
-            ],
+              );
+            },
+            childCount: wallpapers.length,
           ),
         ),
-      ),
+        if (_isLoading)
+          SliverToBoxAdapter(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+      ],
     );
   }
 }
 
-class Wallpaper {
+class CategoryWallpaper {
   final String title;
   final String url;
   final String thumbnailUrl;
   final String uploaderName;
   final int timestamp;
 
-  Wallpaper({
+  CategoryWallpaper({
     required this.title,
     required this.url,
     required this.thumbnailUrl,
@@ -438,20 +390,20 @@ class Wallpaper {
     required this.timestamp,
   });
 
-  factory Wallpaper.fromMap(Map<String, dynamic> map) {
-    return Wallpaper(
+  factory CategoryWallpaper.fromMap(Map<String, dynamic> map) {
+    return CategoryWallpaper(
       title: map['title'],
       url: map['url'],
       thumbnailUrl: map['thumbnailUrl'],
       uploaderName: map['uploaderName'],
-      timestamp: map['timestamp'] as int, // Corrected parsing here
+      timestamp: map['timestamp'] != null ? map['timestamp'] as int : 0,
     );
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Wallpaper &&
+      other is CategoryWallpaper &&
           runtimeType == other.runtimeType &&
           title == other.title &&
           url == other.url &&

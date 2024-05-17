@@ -6,16 +6,13 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:iconly/iconly.dart';
+import 'package:luca/authentication/auth%20pages/login_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'privacy_policy.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class SettingsPage extends StatefulWidget {
-  // final ScrollController controller;
-  const SettingsPage({
-    // required this.controller,
-    Key? key,
-  }) : super(key: key);
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -24,7 +21,6 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   void _clearCache(BuildContext context) async {
     await DefaultCacheManager().emptyCache();
-    // ignore: use_build_context_synchronously
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: const Color(0xFF1E1E2A),
@@ -65,9 +61,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 TextButton(
                   onPressed: () async {
                     await user.delete();
-                    // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
-                    // ignore: use_build_context_synchronously
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Account deleted successfully.'),
@@ -143,6 +137,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+
     Widget title = const Text(
       'Luca',
       style: TextStyle(
@@ -151,9 +147,9 @@ class _SettingsPageState extends State<SettingsPage> {
         fontSize: 84,
         color: Colors.white,
         height: 0.9,
-        // letterSpacing: -5,
       ),
     );
+
     title = title.animate(adapter: ValueAdapter(0.5)).shimmer(
       colors: [
         const Color(0xFFFFFF00),
@@ -169,8 +165,9 @@ class _SettingsPageState extends State<SettingsPage> {
     title = title
         .animate(onPlay: (controller) => controller.repeat(reverse: true))
         .saturate(
-            delay: NumDurationExtensions(1).seconds,
-            duration: NumDurationExtensions(2).seconds)
+          delay: NumDurationExtensions(1).seconds,
+          duration: NumDurationExtensions(2).seconds,
+        )
         .then()
         .tint(color: const Color(0xFF80DDFF))
         .then()
@@ -180,15 +177,14 @@ class _SettingsPageState extends State<SettingsPage> {
     Color primaryColor = Theme.of(context).colorScheme.primary;
     Color secondaryColor = Theme.of(context).colorScheme.secondary;
     Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
+
     return Scaffold(
       appBar: AppBar(
-        // centerTitle: true,
         iconTheme: IconThemeData(color: Theme.of(context).colorScheme.primary),
         title: Text(
           'Settings',
           style: GoogleFonts.kanit(
-              fontSize: 22,
-              color: Theme.of(context).colorScheme.primary),
+              fontSize: 22, color: Theme.of(context).colorScheme.primary),
         ),
         elevation: 0,
         forceMaterialTransparency: true,
@@ -264,8 +260,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           iconColor: primaryColor,
                           textColor: primaryColor,
                           onTap: () {
-                            _clearCache(
-                                context); // Call the function to clear cache and show snackbar
+                            _clearCache(context);
                           },
                         ),
                       ],
@@ -287,26 +282,26 @@ class _SettingsPageState extends State<SettingsPage> {
                             IconlyBold.bookmark,
                             size: 28,
                           ),
-                          title: const Text('Liscenses'),
-                          subtitle: const Text('View open source liscenses',
+                          title: const Text('Licenses'),
+                          subtitle: const Text('View open source licenses',
                               style: TextStyle(color: Colors.grey)),
                           iconColor: primaryColor,
                           textColor: primaryColor,
                           onTap: () {
-                            showLicensePage(
-                                context: context);
+                            showLicensePage(context: context);
                           },
                         ),
                         ListTile(
-                            leading: const Icon(IconlyBold.document),
-                            title: const Text('Privacy Policy'),
-                            subtitle: const Text('Luca privacy policy',
-                                style: TextStyle(color: Colors.grey)),
-                            iconColor: primaryColor,
-                            textColor: primaryColor,
-                            onTap: () {
-                              Get.to(const PrivacyPage());
-                            }),
+                          leading: const Icon(IconlyBold.document),
+                          title: const Text('Privacy Policy'),
+                          subtitle: const Text('Luca privacy policy',
+                              style: TextStyle(color: Colors.grey)),
+                          iconColor: primaryColor,
+                          textColor: primaryColor,
+                          onTap: () {
+                            Get.to(const PrivacyPage());
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -320,30 +315,44 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          leading: const Icon(IconlyBold.logout),
-                          title: const Text('Logout'),
-                          subtitle: const Text('Logout of your account',
-                              style: TextStyle(color: Colors.grey)),
-                          iconColor: primaryColor,
-                          textColor: primaryColor,
-                          onTap: signUserOut,
-                        ),
-                        ListTile(
-                          leading: const Icon(IconlyBold.delete),
-                          title: const Text('Delete Account'),
-                          subtitle: const Text(
-                            'Warning! This cannot be undone',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          iconColor: Colors.red,
-                          textColor: primaryColor,
-                          onTap: () {
-                            deleteAccount(context);
-                          },
-                        ),
-                      ],
+                      children: user != null
+                          ? [
+                              ListTile(
+                                leading: const Icon(IconlyBold.logout),
+                                title: const Text('Logout'),
+                                subtitle: const Text('Logout of your account',
+                                    style: TextStyle(color: Colors.grey)),
+                                iconColor: primaryColor,
+                                textColor: primaryColor,
+                                onTap: signUserOut,
+                              ),
+                              ListTile(
+                                leading: const Icon(IconlyBold.delete),
+                                title: const Text('Delete Account'),
+                                subtitle: const Text(
+                                  'Warning! This cannot be undone',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                iconColor: Colors.red,
+                                textColor: primaryColor,
+                                onTap: () {
+                                  deleteAccount(context);
+                                },
+                              ),
+                            ]
+                          : [
+                              ListTile(
+                                leading: const Icon(IconlyBold.login),
+                                title: const Text('Login'),
+                                subtitle: const Text('Login to your account',
+                                    style: TextStyle(color: Colors.grey)),
+                                iconColor: primaryColor,
+                                textColor: primaryColor,
+                                onTap: () {
+                                  Get.to(LoginPage());
+                                },
+                              ),
+                            ],
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -422,54 +431,54 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+}
 
-  void _showAboutAppBottomSheet(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+void _showAboutAppBottomSheet(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        backgroundColor: const Color(0xFF1E1E2A),
+        content: Container(
+          color: Colors.transparent,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'About the App',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '🌟 Immerse yourself in the world of Luca – the ultimate wallpaper app. Discover an extensive selection of static and dynamic wallpapers across various categories, all presented through a beautifully designed and intuitive interface. Elevate your device\'s aesthetic with Luca\'s stunning visuals that cater to every mood and style. 🎨📱',
+                style: TextStyle(
+                  color: Colors.grey[400],
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Version: 1.0.0',
+                style: TextStyle(
+                  color: Colors.grey[400],
+                  fontSize: 16,
+                ),
+              ),
+            ],
           ),
-          backgroundColor: const Color(0xFF1E1E2A),
-          content: Container(
-            color: Colors.transparent,
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'About the App',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  '🌟 Immerse yourself in the world of Luca – the ultimate wallpaper app. Discover an extensive selection of static and dynamic wallpapers across various categories, all presented through a beautifully designed and intuitive interface. Elevate your device\'s aesthetic with Luca\'s stunning visuals that cater to every mood and style. 🎨📱',
-                  style: TextStyle(
-                    color: Colors.grey[400],
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Version: 1.0.0',
-                  style: TextStyle(
-                    color: Colors.grey[400],
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
 }
 
 void _showChangelogPopup(BuildContext context) {

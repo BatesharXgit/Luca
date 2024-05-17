@@ -9,7 +9,7 @@ import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/searchresult.dart';
 import 'package:luca/pages/settings.dart';
-import 'package:luca/pages/static/premium/premium_categories.dart';
+import 'package:luca/pages/static/premium/premium_homepage.dart';
 
 class LucaHome extends StatefulWidget {
   const LucaHome({super.key});
