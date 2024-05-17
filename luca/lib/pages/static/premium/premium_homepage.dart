@@ -44,6 +44,27 @@ class PremiumCategoriesState extends State<PremiumCategories>
     'Vivid Paint',
   ];
 
+List<String> _category = [
+    'Abstract',
+    'Aesthetic',
+    'Amoled',
+    'Anime',
+    'Art',
+    'Cars',
+    'Cool',
+    'Fantasy',
+    'Foods',
+    'Funny',
+    'Homescreen',
+    'Illustration',
+    'Lockscreen',
+    'PixelArt',
+    'PopArt',
+    'Superheroes',
+    'TextWall',
+    'Vivid',
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -64,7 +85,7 @@ class PremiumCategoriesState extends State<PremiumCategories>
         return SizedBox(
           height: MediaQuery.of(context).size.height,
           child: PremiumCategoriesWallpaper(
-            premiumData[index],
+            _category[index],
           ),
         );
       }),

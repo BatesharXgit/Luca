@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:luca/pages/util/apply_walls.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 
@@ -16,28 +18,6 @@ class PremiumCategoriesWallpaper extends StatefulWidget {
 
 class _PremiumCategoriesWallpaperState
     extends State<PremiumCategoriesWallpaper> {
-
-      List<String> premiumData = [
-    'Abstract',
-    'Aesthetic',
-    'Amoled',
-    'Anime',
-    'Digital Art',
-    'Cars',
-    'Cool Walls',
-    'Dark Fantasy Art',
-    'Foods',
-    'Funny',
-    'Homescreen',
-    'Illustration',
-    'Lockscreen',
-    'Pixel Art',
-    'Pop Art',
-    'Superhero',
-    'Text Wall',
-    'Vivid Paint',
-  ];
-  
   late ScrollController _scrollController;
   late Database _database;
   bool _isLoading = false;
@@ -343,7 +323,15 @@ class _PremiumCategoriesWallpaperState
             (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  // Handle wallpaper tap
+                  Get.to(
+                    ApplyWallpaperPage(
+                      url: wallpapers[index].url,
+                      uploaderName: wallpapers[index].uploaderName,
+                      title: wallpapers[index].title,
+                      thumbnailUrl: wallpapers[index].thumbnailUrl,
+                    ),
+                    transition: Transition.downToUp,
+                  );
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
