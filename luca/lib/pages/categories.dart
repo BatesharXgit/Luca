@@ -17,6 +17,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
   late ScrollController _scrollController;
   bool _isLoading = false;
   List<CategoryWallpaper> categoriesWallpapers = [];
+  DocumentSnapshot? _lastDocument;
 
   @override
   void initState() {
@@ -35,7 +36,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
   void _scrollListener() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      if (!_isLoading) {
+      if (!_isLoading && _lastDocument != null) {
         _loadMoreWallpapers();
       }
     }
@@ -67,6 +68,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
 
       setState(() {
         categoriesWallpapers = fetchedWallpapers;
+        _lastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
         _isLoading = false;
       });
     } catch (e) {
@@ -77,7 +79,6 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
     }
   }
 
-  DocumentSnapshot<Object?>? _lastDocument;
   Future<void> _loadMoreWallpapers() async {
     setState(() {
       _isLoading = true;
@@ -105,6 +106,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
 
       setState(() {
         categoriesWallpapers.addAll(moreWallpapers);
+        _lastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
         _isLoading = false;
       });
     } catch (e) {

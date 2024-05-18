@@ -26,6 +26,7 @@ class MyHomePageState extends State<MyHomePage>
   bool _isLoading = false;
 
   List<Wallpaper> wallpapers = [];
+
   int index = 0;
 
   List<String> data = [
@@ -47,11 +48,11 @@ class MyHomePageState extends State<MyHomePage>
   @override
   void initState() {
     super.initState();
-    // _initDatabase();
+    _initDatabase();
     scrollController.addListener(_scrollListener);
 
     _tabController = TabController(length: data.length, vsync: this);
-    // _listenForNewWallpapers();
+    _listenForNewWallpapers();
   }
 
   void _scrollListener() {
@@ -119,7 +120,7 @@ class MyHomePageState extends State<MyHomePage>
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection("Explore")
         .orderBy("timestamp", descending: true)
-        .limit(20)
+        .limit(10)
         .get();
 
     List<Wallpaper> fetchedWallpapers = snapshot.docs.map((doc) {
@@ -162,6 +163,7 @@ class MyHomePageState extends State<MyHomePage>
 
   DocumentSnapshot<Object?>? _lastDocument;
   Future<void> _loadMoreWallpapers() async {
+    if (_isLoading) return; // Prevent multiple simultaneous requests
     setState(() {
       _isLoading = true;
     });
@@ -210,6 +212,9 @@ class MyHomePageState extends State<MyHomePage>
         wallpapers.addAll(moreWallpapers);
         _isLoading = false;
       });
+
+      print('Loaded ${moreWallpapers.length} more wallpapers.');
+      print('Last document timestamp: ${_lastDocument?.get("timestamp")}');
     } catch (e) {
       print('Error fetching more wallpapers: $e');
       setState(() {
@@ -353,16 +358,16 @@ class MyHomePageState extends State<MyHomePage>
       controller: _tabController,
       physics: BouncingScrollPhysics(),
       children: List.generate(data.length, (index) {
-        if (index == 0) {
-          return Center(
-            child: Components.buildCircularIndicator(),
-          );
+        // if (index == 0) {
+        //   return Center(
+        //     child: Components.buildCircularIndicator(),
+        //   );
 
-          // if (index == 0) {
-          //   return SizedBox(
-          //     height: MediaQuery.of(context).size.height,
-          //     child: _buildImageGridFromRef(),
-          //   );
+        if (index == 0) {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: _buildImageGridFromRef(),
+          );
         } else {
           return SizedBox(
             height: MediaQuery.of(context).size.height,
@@ -445,7 +450,7 @@ class Wallpaper {
       url: map['url'],
       thumbnailUrl: map['thumbnailUrl'],
       uploaderName: map['uploaderName'],
-      timestamp: map['timestamp'] as int, // Corrected parsing here
+      timestamp: map['timestamp'] as int,
     );
   }
 
@@ -467,4 +472,202 @@ class Wallpaper {
       thumbnailUrl.hashCode ^
       uploaderName.hashCode ^
       timestamp.hashCode;
+}
+
+class CategoriesWallpaper extends StatefulWidget {
+  final String category;
+
+  const CategoriesWallpaper(this.category);
+
+  @override
+  _CategoriesWallpaperState createState() => _CategoriesWallpaperState();
+}
+
+class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
+  late ScrollController _scrollController;
+  bool _isLoading = false;
+  List<CategoryWallpaper> categoriesWallpapers = [];
+  DocumentSnapshot? _lastDocument;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+    _fetchInitialWallpapers();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      if (!_isLoading && _lastDocument != null) {
+        _loadMoreWallpapers();
+      }
+    }
+  }
+
+  Future<void> _fetchInitialWallpapers() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Categories')
+          .doc(widget.category)
+          .collection('${widget.category}Images')
+          .orderBy('timestamp', descending: true)
+          .limit(10)
+          .get();
+
+      // Counting the number of documents read
+      print('Fetched ${snapshot.docs.length} documents.');
+
+      List<CategoryWallpaper> fetchedWallpapers = snapshot.docs.map((doc) {
+        return CategoryWallpaper(
+          title: doc['title'],
+          url: doc['url'],
+          thumbnailUrl: doc['thumbnailUrl'],
+          uploaderName: doc['uploaderName'],
+          timestamp: (doc['timestamp'] as Timestamp).millisecondsSinceEpoch,
+        );
+      }).toList();
+
+      setState(() {
+        categoriesWallpapers = fetchedWallpapers;
+        _lastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching wallpapers: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loadMoreWallpapers() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('Categories')
+          .doc(widget.category)
+          .collection('${widget.category}Images')
+          .orderBy('timestamp', descending: true)
+          .startAfterDocument(_lastDocument!)
+          .limit(20)
+          .get();
+
+      // Counting the number of documents read
+      print('Fetched ${snapshot.docs.length} documents.');
+
+      List<CategoryWallpaper> moreWallpapers = snapshot.docs.map((doc) {
+        return CategoryWallpaper(
+          title: doc['title'],
+          url: doc['url'],
+          thumbnailUrl: doc['thumbnailUrl'],
+          uploaderName: doc['uploaderName'],
+          timestamp: (doc['timestamp'] as Timestamp).millisecondsSinceEpoch,
+        );
+      }).toList();
+
+      setState(() {
+        categoriesWallpapers.addAll(moreWallpapers);
+        _lastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error fetching more wallpapers: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _buildImageGrid(),
+    );
+  }
+
+  Widget _buildImageGrid() {
+    return CustomScrollView(
+      controller: _scrollController,
+      physics: const ClampingScrollPhysics(),
+      slivers: <Widget>[
+        SliverGrid(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.6,
+            mainAxisSpacing: 6,
+            crossAxisSpacing: 6,
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (BuildContext context, int index) {
+              return GestureDetector(
+                onTap: () {
+                  Get.to(
+                    ApplyWallpaperPage(
+                      url: categoriesWallpapers[index].url,
+                      uploaderName: categoriesWallpapers[index].uploaderName,
+                      title: categoriesWallpapers[index].title,
+                      thumbnailUrl: categoriesWallpapers[index].thumbnailUrl,
+                    ),
+                    transition: Transition.downToUp,
+                  );
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: CachedNetworkImage(
+                    fadeInDuration: const Duration(milliseconds: 50),
+                    fadeOutDuration: const Duration(milliseconds: 50),
+                    imageUrl: categoriesWallpapers[index].thumbnailUrl,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+            childCount: categoriesWallpapers.length,
+          ),
+        ),
+        if (_isLoading)
+          SliverToBoxAdapter(
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class CategoryWallpaper {
+  final String title;
+  final String url;
+  final String thumbnailUrl;
+  final String uploaderName;
+  final int timestamp;
+
+  CategoryWallpaper({
+    required this.title,
+    required this.url,
+    required this.thumbnailUrl,
+    required this.uploaderName,
+    required this.timestamp,
+  });
 }

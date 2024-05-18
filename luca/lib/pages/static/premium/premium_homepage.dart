@@ -44,7 +44,7 @@ class PremiumCategoriesState extends State<PremiumCategories>
     'Vivid Paint',
   ];
 
-List<String> _category = [
+  List<String> _category = [
     'Abstract',
     'Aesthetic',
     'Amoled',
@@ -79,7 +79,7 @@ List<String> _category = [
 
   Widget _buildTabViews(context) {
     return TabBarView(
-      physics: BouncingScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       controller: _tabController,
       children: List.generate(premiumData.length, (index) {
         return SizedBox(
@@ -104,6 +104,15 @@ List<String> _category = [
         child: Center(
           child: Column(
             children: [
+              Container(
+                width: double.infinity,
+                color: Colors.red,
+                child: Center(
+                    child: Text(
+                  'Premium wallpapers, free for a limited time',
+                  style: GoogleFonts.kanit(),
+                )),
+              ),
               TabBar(
                 padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
                 tabAlignment: TabAlignment.start,
