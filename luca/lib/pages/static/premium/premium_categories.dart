@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,7 @@ class _PremiumCategoriesWallpaperState
   bool _isLoading = false;
   List<CategoryWallpaper> wallpapers = [];
   DocumentSnapshot<Object?>? _lastDocument;
+  StreamSubscription<QuerySnapshot>? _subscription;
 
   @override
   void initState() {
@@ -41,6 +44,7 @@ class _PremiumCategoriesWallpaperState
   @override
   void dispose() {
     _scrollController.dispose();
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -58,7 +62,7 @@ class _PremiumCategoriesWallpaperState
       path.join(await getDatabasesPath(), 'premium_category_wallpapers.db'),
       onCreate: (db, version) {
         return db.execute(
-          'CREATE TABLE premium_category_wallpapers(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT, thumbnailUrl TEXT, uploaderName TEXT, timestamp INTEGER, category TEXT)',
+          'CREATE TABLE premium_category_wallpapers(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT, thumbnailUrl TEXT, uploaderName TEXT, timestamp INTEGER, premium_category TEXT)',
         );
       },
       version: 1,
@@ -93,16 +97,17 @@ class _PremiumCategoriesWallpaperState
   Future<List<CategoryWallpaper>> _getWallpapersFromSQLite() async {
     final List<Map<String, dynamic>> wallpapersMap = await _database.query(
       'premium_category_wallpapers',
-      where: 'category = ?',
+      where: 'premium_category = ?',
       whereArgs: [widget.category],
     );
 
     List<CategoryWallpaper> existingWallpapers =
         wallpapersMap.map((map) => CategoryWallpaper.fromMap(map)).toList();
 
-    // Filter out duplicate wallpapers
-    existingWallpapers.removeWhere((wallpaper) =>
-        wallpapers.any((existingWallpaper) => existingWallpaper == wallpaper));
+    // Using a set to filter out duplicate URLs
+    Set<String> existingUrls = wallpapers.map((e) => e.url).toSet();
+    existingWallpapers
+        .removeWhere((wallpaper) => existingUrls.contains(wallpaper.url));
 
     return existingWallpapers;
   }
@@ -127,9 +132,10 @@ class _PremiumCategoriesWallpaperState
         );
       }).toList();
 
-      // Filter out duplicate wallpapers
-      fetchedWallpapers.removeWhere((newWallpaper) => wallpapers.any(
-          (existingWallpaper) => existingWallpaper.url == newWallpaper.url));
+      // Using a set to filter out duplicate URLs
+      Set<String> existingUrls = wallpapers.map((e) => e.url).toSet();
+      fetchedWallpapers.removeWhere(
+          (newWallpaper) => existingUrls.contains(newWallpaper.url));
 
       await _storeWallpapersInSQLite(fetchedWallpapers);
 
@@ -148,7 +154,7 @@ class _PremiumCategoriesWallpaperState
       List<CategoryWallpaper> wallpapers) async {
     // Clear existing data in the premium_category_wallpapers table
     await _database.delete('premium_category_wallpapers',
-        where: 'category = ?', whereArgs: [widget.category]);
+        where: 'premium_category = ?', whereArgs: [widget.category]);
 
     // Insert new wallpapers into the database
     for (var wallpaper in wallpapers) {
@@ -160,7 +166,7 @@ class _PremiumCategoriesWallpaperState
           'thumbnailUrl': wallpaper.thumbnailUrl,
           'uploaderName': wallpaper.uploaderName,
           'timestamp': wallpaper.timestamp,
-          'category': widget.category,
+          'premium_category': widget.category,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -203,9 +209,10 @@ class _PremiumCategoriesWallpaperState
         );
       }).toList();
 
-      // Filter out duplicates
-      moreWallpapers.removeWhere((wallpaper) => wallpapers
-          .any((existingWallpaper) => existingWallpaper.url == wallpaper.url));
+      // Using a set to filter out duplicate URLs
+      Set<String> existingUrls = wallpapers.map((e) => e.url).toSet();
+      moreWallpapers
+          .removeWhere((wallpaper) => existingUrls.contains(wallpaper.url));
 
       if (snapshot.docs.isNotEmpty) {
         _lastDocument = snapshot.docs.last;
@@ -226,7 +233,7 @@ class _PremiumCategoriesWallpaperState
   }
 
   void _listenForNewWallpapers() {
-    FirebaseFirestore.instance
+    _subscription = FirebaseFirestore.instance
         .collection('Premium')
         .doc(widget.category)
         .collection('${widget.category}Images')
@@ -266,7 +273,7 @@ class _PremiumCategoriesWallpaperState
         'thumbnailUrl': wallpaper.thumbnailUrl,
         'uploaderName': wallpaper.uploaderName,
         'timestamp': wallpaper.timestamp,
-        'category': widget.category,
+        'premium_category': widget.category,
       },
       conflictAlgorithm: ConflictAlgorithm.ignore,
     );
