@@ -114,7 +114,7 @@ class _LucaHomeState extends State<LucaHome> {
         _pages[index] = MyHomePage();
         break;
       case 1:
-        _pages[index] = const PremiumCategories();
+        _pages[index] = PremiumHomepage();
         break;
       case 2:
         _pages[index] = const SearchWallpaper();
