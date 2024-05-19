@@ -111,7 +111,7 @@ class _LucaHomeState extends State<LucaHome> {
   void _initializePage(int index) {
     switch (index) {
       case 0:
-        _pages[index] = const MyHomePage();
+        _pages[index] = MyHomePage();
         break;
       case 1:
         _pages[index] = const PremiumCategories();
