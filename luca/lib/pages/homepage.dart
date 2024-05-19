@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:luca/helpers/ad_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:get/get.dart';
@@ -316,15 +317,17 @@ class MyHomePageState extends State<MyHomePage>
               (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    Get.to(
-                      ApplyWallpaperPage(
-                        url: wallpapers[index].url,
-                        uploaderName: wallpapers[index].uploaderName,
-                        title: wallpapers[index].title,
-                        thumbnailUrl: wallpapers[index].thumbnailUrl,
-                      ),
-                      transition: Transition.downToUp,
-                    );
+                    AdHelper.showInterstitialAd(onComplete: () async {
+                      await Get.to(
+                        ApplyWallpaperPage(
+                          url: wallpapers[index].url,
+                          uploaderName: wallpapers[index].uploaderName,
+                          title: wallpapers[index].title,
+                          thumbnailUrl: wallpapers[index].thumbnailUrl,
+                        ),
+                        transition: Transition.downToUp,
+                      );
+                    });
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -356,7 +359,7 @@ class MyHomePageState extends State<MyHomePage>
   Widget _buildTabViews(context) {
     return TabBarView(
       controller: _tabController,
-      physics: BouncingScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       children: List.generate(data.length, (index) {
         // if (index == 0) {
         //   return Center(
@@ -616,15 +619,17 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
             (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  Get.to(
-                    ApplyWallpaperPage(
-                      url: categoriesWallpapers[index].url,
-                      uploaderName: categoriesWallpapers[index].uploaderName,
-                      title: categoriesWallpapers[index].title,
-                      thumbnailUrl: categoriesWallpapers[index].thumbnailUrl,
-                    ),
-                    transition: Transition.downToUp,
-                  );
+                  AdHelper.showInterstitialAd(onComplete: () async {
+                    await Get.to(
+                      ApplyWallpaperPage(
+                        url: categoriesWallpapers[index].url,
+                        uploaderName: categoriesWallpapers[index].uploaderName,
+                        title: categoriesWallpapers[index].title,
+                        thumbnailUrl: categoriesWallpapers[index].thumbnailUrl,
+                      ),
+                      transition: Transition.downToUp,
+                    );
+                  });
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),

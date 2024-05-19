@@ -7,6 +7,8 @@ import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:luca/authentication/auth%20pages/auth_page.dart';
 import 'package:luca/get_upload.dart';
+import 'package:luca/helpers/ad_helper.dart';
+import 'package:luca/helpers/config.dart';
 // import 'package:luca/download_upload.dart';
 import 'package:luca/pages/util/notify/notification.dart';
 import 'package:luca/pages/util/notify/notify.dart';
@@ -26,6 +28,10 @@ Future<void> main() async {
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug,
   );
+  await Config.initConfig();
+  await AdHelper.initAds();
+  // AdHelper.precacheNativeAd();
+
   // homePageKey.currentState?.fetchInitialWallpapers();
   await FirebaseApi().initNotifications();
   runApp(
