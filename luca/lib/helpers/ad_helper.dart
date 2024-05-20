@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -13,8 +12,12 @@ class AdHelper {
   static InterstitialAd? _interstitialAd;
   static bool _interstitialAdLoaded = false;
 
+  static InterstitialAd? _premiumInterstitialAd;
+  static bool _premiumInterstitialAdLoaded = false;
+
   static NativeAd? _nativeAd;
   static bool _nativeAdLoaded = false;
+
 
 //Interstitial Ad
 
@@ -78,6 +81,81 @@ class AdHelper {
             onComplete();
             _resetInterstitialAd();
             precacheInterstitialAd();
+          });
+          Get.back();
+          ad.show();
+        },
+        onAdFailedToLoad: (err) {
+          Get.back();
+          log('Failed to load an interstitial ad: ${err.message}');
+          onComplete();
+        },
+      ),
+    );
+  }
+
+  //premium interstitial ad
+
+  static void precachePremiumInterstitialAd() {
+    log('Precache Interstitial Ad - Id: ${Config.interstitialAd}');
+
+    if (Config.hideAds) return;
+
+    InterstitialAd.load(
+      adUnitId: Config.interstitialAd,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          //ad listener
+          ad.fullScreenContentCallback =
+              FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+            _resetPremiumInterstitialAd();
+            precachePremiumInterstitialAd();
+          });
+          _premiumInterstitialAd = ad;
+          _premiumInterstitialAdLoaded = true;
+        },
+        onAdFailedToLoad: (err) {
+          _resetPremiumInterstitialAd();
+          log('Failed to load an interstitial ad: ${err.message}');
+        },
+      ),
+    );
+  }
+
+  static void _resetPremiumInterstitialAd() {
+    _premiumInterstitialAd?.dispose();
+    _premiumInterstitialAd = null;
+    _premiumInterstitialAdLoaded = false;
+  }
+
+  static void showPremiumInterstitialAd({required VoidCallback onComplete}) {
+    log('Interstitial Ad Id: ${Config.interstitialAd}');
+
+    if (Config.hideAds) {
+      onComplete();
+      return;
+    }
+
+    if (_premiumInterstitialAdLoaded && _premiumInterstitialAd != null) {
+      _premiumInterstitialAd?.show();
+      onComplete();
+      return;
+    }
+
+    // OverseasDialogs.showProgress();
+
+    InterstitialAd.load(
+      adUnitId: Config.interstitialAd,
+      request: AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          //ad listener
+          ad.fullScreenContentCallback =
+              FullScreenContentCallback(onAdDismissedFullScreenContent: (ad) {
+            onComplete();
+            _resetPremiumInterstitialAd();
+            precachePremiumInterstitialAd();
           });
           Get.back();
           ad.show();
