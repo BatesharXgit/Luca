@@ -11,6 +11,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 // ignore: depend_on_referenced_packages
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
@@ -21,6 +22,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:luca/controllers/ad_controller.dart';
 import 'package:luca/data/search_data.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/services/admob_service.dart';
@@ -43,6 +45,8 @@ class SearchWallpaper extends StatefulWidget {
   @override
   State<SearchWallpaper> createState() => SearchWallpaperState();
 }
+
+final AdController adController = Get.put(AdController());
 
 class SearchWallpaperState extends State<SearchWallpaper> {
   List<dynamic> _images = [];
@@ -102,46 +106,6 @@ class SearchWallpaperState extends State<SearchWallpaper> {
   @override
   void initState() {
     super.initState();
-    _createBannerAd();
-    _createInterstitialAd();
-  }
-
-  BannerAd? _banner;
-  InterstitialAd? _interstitialAd;
-  void _createBannerAd() {
-    _banner = BannerAd(
-      size: AdSize.banner,
-      adUnitId: AdMobService.bannerAdUnitId!,
-      listener: AdMobService.bannerListener,
-      request: const AdRequest(),
-    )..load();
-  }
-
-  void _createInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: AdMobService.interstitialAdUnitId!,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (ad) => _interstitialAd = ad,
-          onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null),
-    );
-  }
-
-  void _showInterstitialAd() {
-    if (_interstitialAd != null) {
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose();
-          _createInterstitialAd();
-        },
-        onAdFailedToShowFullScreenContent: (ad, error) {
-          ad.dispose();
-          _createInterstitialAd();
-        },
-      );
-      _interstitialAd!.show();
-      _interstitialAd = null;
-    }
   }
 
   @override
@@ -244,7 +208,6 @@ class SearchWallpaperState extends State<SearchWallpaper> {
                                     _images[index]['src']['original'];
                                 return GestureDetector(
                                   onTap: () {
-                                    _showInterstitialAd();
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -282,14 +245,6 @@ class SearchWallpaperState extends State<SearchWallpaper> {
           ),
         ),
       ),
-      bottomNavigationBar: _banner == null
-          ? const SizedBox(
-              height: 0,
-            )
-          : SizedBox(
-              height: 52,
-              child: AdWidget(ad: _banner!),
-            ),
     );
   }
 

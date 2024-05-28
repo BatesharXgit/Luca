@@ -1,0 +1,204 @@
+import 'dart:ui';
+
+import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:luca/services/admob.dart';
+
+class AdController extends GetxController {
+  InterstitialAd? _interstitialAd;
+  RewardedAd? _rewardedAd;
+  // NativeAd? _nativeAd;
+  BannerAd? _bannerAd;
+  bool _isAdBeingLoaded = false;
+
+  @override
+  void onInit() {
+    super.onInit();
+    _createInterstitialAd();
+    _createPremiumInterstitialAd();
+    _createRewardedAd();
+    // _createBannerAd();
+    // _createNativeAd();
+  }
+
+  // Interstitial Ad Methods
+  void _createInterstitialAd() {
+    if (_isAdBeingLoaded) return;
+    _isAdBeingLoaded = true;
+
+    InterstitialAd.load(
+      adUnitId: AdMobService.interstitialAdUnitId!,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+          _isAdBeingLoaded = false;
+          print('Interstitial Ad loaded.');
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          _interstitialAd = null;
+          _isAdBeingLoaded = false;
+          print('Failed to load Interstitial Ad: $error');
+        },
+      ),
+    );
+  }
+
+  void showInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    } else {
+      print('Interstitial Ad not available.');
+      _createInterstitialAd();
+    }
+  }
+
+  // premium interstitial Ad
+  void _createPremiumInterstitialAd() {
+    if (_isAdBeingLoaded) return;
+    _isAdBeingLoaded = true;
+
+    InterstitialAd.load(
+      adUnitId: AdMobService.interstitialAdUnitId!,
+      request: const AdRequest(),
+      adLoadCallback: InterstitialAdLoadCallback(
+        onAdLoaded: (ad) {
+          _interstitialAd = ad;
+          _isAdBeingLoaded = false;
+          print('Interstitial Ad loaded.');
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          _interstitialAd = null;
+          _isAdBeingLoaded = false;
+          print('Failed to load Interstitial Ad: $error');
+        },
+      ),
+    );
+  }
+
+  void showPremiumInterstitialAd() {
+    if (_interstitialAd != null) {
+      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          _createInterstitialAd();
+        },
+      );
+      _interstitialAd!.show();
+      _interstitialAd = null;
+    } else {
+      print('Interstitial Ad not available.');
+      _createInterstitialAd();
+    }
+  }
+
+  // Rewarded Ad Methods
+  void _createRewardedAd() {
+    RewardedAd.load(
+      adUnitId: AdMobService.rewardedAdUnitId!,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          _rewardedAd = ad;
+          print('Rewarded Ad loaded.');
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          _rewardedAd = null;
+          print('Failed to load Rewarded Ad: $error');
+        },
+      ),
+    );
+  }
+
+  void showRewardedAd({required VoidCallback onComplete}) {
+    if (_rewardedAd != null) {
+      _rewardedAd!.fullScreenContentCallback = FullScreenContentCallback(
+        onAdDismissedFullScreenContent: (ad) {
+          ad.dispose();
+          _createRewardedAd();
+        },
+        onAdFailedToShowFullScreenContent: (ad, error) {
+          ad.dispose();
+          _createRewardedAd();
+        },
+      );
+      _rewardedAd!.show(
+        onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
+          onComplete();
+          print('User earned reward: ${reward.amount} ${reward.type}');
+          // Handle the reward
+        },
+      );
+      _rewardedAd = null;
+    } else {
+      print('Rewarded Ad not available.');
+      _createRewardedAd();
+    }
+  }
+
+  // Banner Ad Methods
+  // void _createBannerAd() {
+  //   _bannerAd = BannerAd(
+  //     adUnitId: AdMobService.bannerAdUnitId!,
+  //     size: AdSize.banner,
+  //     request: const AdRequest(),
+  //     listener: BannerAdListener(
+  //       onAdLoaded: (Ad ad) {
+  //         print('Banner Ad loaded.');
+  //       },
+  //       onAdFailedToLoad: (Ad ad, LoadAdError error) {
+  //         ad.dispose();
+  //         print('Failed to load Banner Ad: $error');
+  //       },
+  //     ),
+  //   );
+  //   _bannerAd!.load();
+  // }
+
+  // BannerAd? get bannerAd => _bannerAd;
+
+  // Native Ad Methods
+  // void _createNativeAd() {
+  //   _nativeAd = NativeAd(
+  //     adUnitId: AdMobService.nativeAdUnitId!,
+  //     factoryId: 'adFactoryExample', // Replace with your actual factory ID
+  //     request: const AdRequest(),
+  //     listener: NativeAdListener(
+  //       onAdLoaded: (Ad ad) {
+  //         print('Native Ad loaded.');
+  //       },
+  //       onAdFailedToLoad: (Ad ad, LoadAdError error) {
+  //         ad.dispose();
+  //         print('Failed to load Native Ad: $error');
+  //       },
+  //     ),
+  //   );
+  //   _nativeAd!.load();
+  // }
+
+  // NativeAd? get nativeAd => _nativeAd;
+
+  @override
+  void onClose() {
+    _interstitialAd?.dispose();
+    _rewardedAd?.dispose();
+    // _nativeAd?.dispose();
+    _bannerAd?.dispose();
+    super.onClose();
+  }
+}

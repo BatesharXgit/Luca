@@ -3,16 +3,18 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:luca/controllers/ad_controller.dart';
 import 'package:luca/controllers/category_controller.dart';
 import 'package:luca/controllers/home_controller.dart';
 import 'package:luca/helpers/ad_helper.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
-
 import '../models/category_wallpaper.dart';
 
 class MyHomePage extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
+  final AdController adController = Get.put(AdController());
 
   MyHomePage({super.key});
 
@@ -79,6 +81,14 @@ class MyHomePage extends StatelessWidget {
           ),
         ),
       ),
+      // bottomNavigationBar: adController.bannerAd != null
+      //     ? Container(
+      //         alignment: Alignment.center,
+      //         child: AdWidget(ad: adController.bannerAd!),
+      //         width: adController.bannerAd!.size.width.toDouble(),
+      //         height: adController.bannerAd!.size.height.toDouble(),
+      //       )
+      //     : null,
     );
   }
 
@@ -100,19 +110,17 @@ class MyHomePage extends StatelessWidget {
               (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    AdHelper.showInterstitialAd(onComplete: () async {
-                      await Get.to(
-                        ApplyWallpaperPage(
-                          url: controller.wallpapers[index].url,
-                          uploaderName:
-                              controller.wallpapers[index].uploaderName,
-                          title: controller.wallpapers[index].title,
-                          thumbnailUrl:
-                              controller.wallpapers[index].thumbnailUrl,
-                        ),
-                        transition: Transition.downToUp,
-                      );
-                    });
+                    adController.showInterstitialAd();
+                    // adController.showRewardedAd();
+                    Get.to(
+                      ApplyWallpaperPage(
+                        url: controller.wallpapers[index].url,
+                        uploaderName: controller.wallpapers[index].uploaderName,
+                        title: controller.wallpapers[index].title,
+                        thumbnailUrl: controller.wallpapers[index].thumbnailUrl,
+                      ),
+                      transition: Transition.downToUp,
+                    );
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),

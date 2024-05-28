@@ -19,6 +19,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:luca/controllers/ad_controller.dart';
 import 'package:luca/pages/util/editor/editor.dart';
 import 'package:luca/services/admob_service.dart';
 import 'package:flutter/rendering.dart';
@@ -47,11 +48,12 @@ class ApplyWallpaperPage extends StatefulWidget {
   _ApplyWallpaperPageState createState() => _ApplyWallpaperPageState();
 }
 
+final AdController adController = Get.put(AdController());
+
 class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   late ConfettiController _controllerCenter;
 
   final ScrollController _scrollController = ScrollController();
-  final GlobalKey _globalKey = GlobalKey();
   bool _isImageLiked = false;
   late Future<PaletteGenerator> _paletteGeneratorFuture;
 
@@ -59,8 +61,6 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   void initState() {
     super.initState();
     _paletteGeneratorFuture = _generatePalette();
-    _createBannerAd();
-    _createInterstitialAd();
     // SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     //     systemNavigationBarColor: Colors.transparent));
@@ -101,36 +101,6 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
     }).catchError((error) {
       print('Error checking if image is already liked: $error');
     });
-  }
-
-  InterstitialAd? _interstitialAd;
-  void _createBannerAd() {}
-
-  void _createInterstitialAd() {
-    InterstitialAd.load(
-      adUnitId: AdMobService.interstitialAdUnitId!,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-          onAdLoaded: (ad) => _interstitialAd = ad,
-          onAdFailedToLoad: (LoadAdError error) => _interstitialAd = null),
-    );
-  }
-
-  void _showInterstitialAd() {
-    if (_interstitialAd != null) {
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose();
-          _createInterstitialAd();
-        },
-        onAdFailedToShowFullScreenContent: (ad, error) {
-          ad.dispose();
-          _createInterstitialAd();
-        },
-      );
-      _interstitialAd!.show();
-      _interstitialAd = null;
-    }
   }
 
   @override
@@ -847,8 +817,10 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    // _showInterstitialAd();
-                                    downloadImage(widget.url);
+                                    adController.showRewardedAd(
+                                      onComplete: () =>
+                                          downloadImage(widget.url),
+                                    );
                                   },
                                   icon: Icon(
                                     IconlyBold.download,
@@ -905,6 +877,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                       } else {
                                         print("User is not authenticated.");
                                       }
+                                      adController.showInterstitialAd();
                                     },
                                     icon: Icon(
                                       _isImageLiked
@@ -919,7 +892,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    _showInterstitialAd();
+                                    adController.showInterstitialAd();
                                     openDialog();
                                   },
                                   style: ButtonStyle(

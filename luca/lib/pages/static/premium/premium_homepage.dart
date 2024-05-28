@@ -176,11 +176,13 @@ class PremiumHomepage extends StatelessWidget {
             children: [
               Container(
                 width: double.infinity,
-                color: Colors.red,
+                color: Theme.of(context).colorScheme.primary,
                 child: Center(
                     child: Text(
-                  'Premium wallpapers, free for a limited time',
-                  style: GoogleFonts.kanit(),
+                  'Premium wallpapers',
+                  style: GoogleFonts.kanit(
+                    color: Theme.of(context).colorScheme.background,
+                  ),
                 )),
               ),
               TabBar(
