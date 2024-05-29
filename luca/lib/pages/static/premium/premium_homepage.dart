@@ -1,161 +1,13 @@
-// import 'dart:async';
-// import 'package:flutter/material.dart';
-// import 'package:luca/pages/static/premium/premium_categories.dart';
-// import 'package:sqflite/sqflite.dart';
-// import 'package:path/path.dart';
-// import 'package:get/get.dart';
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:luca/pages/util/apply_walls.dart';
-// import 'package:luca/pages/util/components.dart';
-
-// class PremiumCategories extends StatefulWidget {
-//   const PremiumCategories({Key? key}) : super(key: key);
-
-//   @override
-//   State<PremiumCategories> createState() => PremiumCategoriesState();
-// }
-
-// class PremiumCategoriesState extends State<PremiumCategories>
-//     with SingleTickerProviderStateMixin {
-//   final ScrollController scrollController = ScrollController();
-//   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-//   late TabController _tabController;
-
-//   List<String> premiumData = [
-//     'Abstract',
-//     'Aesthetic',
-//     'Amoled',
-//     'Anime',
-//     'Digital Art',
-//     'Cars',
-//     'Cool Walls',
-//     'Dark Fantasy Art',
-//     'Foods',
-//     'Funny',
-//     'Homescreen',
-//     'Illustration',
-//     'Lockscreen',
-//     'Pixel Art',
-//     'Pop Art',
-//     'Superhero',
-//     'Text Wall',
-//     'Vivid Paint',
-//   ];
-
-//   List<String> _category = [
-//     'Abstract',
-//     'Aesthetic',
-//     'Amoled',
-//     'Anime',
-//     'Art',
-//     'Cars',
-//     'Cool',
-//     'Fantasy',
-//     'Foods',
-//     'Funny',
-//     'Homescreen',
-//     'Illustration',
-//     'Lockscreen',
-//     'PixelArt',
-//     'PopArt',
-//     'Superheroes',
-//     'TextWall',
-//     'Vivid',
-//   ];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _tabController = TabController(length: premiumData.length, vsync: this);
-//   }
-
-//   @override
-//   void dispose() {
-//     scrollController.dispose();
-//     super.dispose();
-//   }
-
-//   Widget _buildTabViews(context) {
-//     return TabBarView(
-//       physics: NeverScrollableScrollPhysics(),
-//       controller: _tabController,
-//       children: List.generate(premiumData.length, (index) {
-//         return SizedBox(
-//           height: MediaQuery.of(context).size.height,
-//           child: PremiumCategoriesWallpaper(
-//             _category[index],
-//           ),
-//         );
-//       }),
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     Color backgroundColor = Theme.of(context).colorScheme.background;
-//     Color primaryColor = Theme.of(context).colorScheme.primary;
-//     Color secondaryColor = Theme.of(context).colorScheme.secondary;
-//     return Scaffold(
-//       key: _scaffoldKey,
-//       backgroundColor: backgroundColor,
-//       body: SafeArea(
-//         child: Center(
-//           child: Column(
-//             children: [
-//               Container(
-//                 width: double.infinity,
-//                 color: Colors.red,
-//                 child: Center(
-//                     child: Text(
-//                   'Premium wallpapers, free for a limited time',
-//                   style: GoogleFonts.kanit(),
-//                 )),
-//               ),
-//               TabBar(
-//                 padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-//                 tabAlignment: TabAlignment.start,
-//                 dividerColor: Colors.transparent,
-//                 physics: const BouncingScrollPhysics(),
-//                 indicatorPadding: const EdgeInsets.fromLTRB(0, 42, 0, 2),
-//                 controller: _tabController,
-//                 indicatorColor: primaryColor,
-//                 labelPadding: EdgeInsets.only(right: 10, left: 10),
-//                 indicator: BoxDecoration(
-//                   color: primaryColor,
-//                   borderRadius: BorderRadius.circular(20),
-//                 ),
-//                 labelColor: primaryColor,
-//                 unselectedLabelColor: secondaryColor,
-//                 isScrollable: true,
-//                 tabs: premiumData.map((tab) {
-//                   return Tab(
-//                     child: Text(
-//                       tab,
-//                       style: GoogleFonts.montserrat(
-//                         fontSize: 16,
-//                         fontWeight: FontWeight.w600,
-//                       ),
-//                     ),
-//                   );
-//                 }).toList(),
-//               ),
-//               Expanded(child: _buildTabViews(context)),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:luca/controllers/ad_controller.dart';
 import 'package:luca/controllers/premium_category_controller.dart';
 import 'package:luca/controllers/premium_home_controller.dart';
+import 'package:luca/pages/util/apply_walls.dart';
+import 'package:luca/pages/util/components.dart';
+import 'package:luca/subscription/subscription.dart';
 
 class PremiumHomepage extends StatelessWidget {
   final PremiumHomeController controller = Get.put(PremiumHomeController());
@@ -232,6 +84,9 @@ class PremiumHomepage extends StatelessWidget {
 
 class CategoryPage extends StatelessWidget {
   final String category;
+  final AdController adController = Get.put(AdController());
+  final SubscriptionController subscriptionController =
+      Get.put(SubscriptionController());
   CategoryPage({required this.category});
 
   @override
@@ -242,7 +97,7 @@ class CategoryPage extends StatelessWidget {
     return Obx(() {
       if (controller.isLoading.value &&
           controller.categoriesWallpapers.isEmpty) {
-        return Center(child: CircularProgressIndicator());
+        return Center(child: Components.buildCircularIndicator());
       }
 
       return _buildImageGrid(controller);
@@ -267,19 +122,38 @@ class CategoryPage extends StatelessWidget {
               (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    // AdHelper.showInterstitialAd(onComplete: () async {
-                    //   await Get.to(
-                    //     ApplyWallpaperPage(
-                    //       url: controller.categoriesWallpapers[index].url,
-                    //       uploaderName: controller
-                    //           .categoriesWallpapers[index].uploaderName,
-                    //       title: controller.categoriesWallpapers[index].title,
-                    //       thumbnailUrl: controller
-                    //           .categoriesWallpapers[index].thumbnailUrl,
-                    //     ),
-                    //     transition: Transition.downToUp,
-                    //   );
-                    // });
+                    if (subscriptionController.isSubscribed.value) {
+                      Get.to(
+                        ApplyWallpaperPage(
+                          url: controller.categoriesWallpapers[index].url,
+                          uploaderName: controller
+                              .categoriesWallpapers[index].uploaderName,
+                          title: controller.categoriesWallpapers[index].title,
+                          thumbnailUrl: controller
+                              .categoriesWallpapers[index].thumbnailUrl,
+                        ),
+                        transition: Transition.downToUp,
+                      );
+                    } else {
+                      _showSubscriptionDialog(context,
+                          onComplete: () => adController.showRewardedAd(
+                                onComplete: () => Get.to(
+                                  ApplyWallpaperPage(
+                                    url: controller
+                                        .categoriesWallpapers[index].url,
+                                    uploaderName: controller
+                                        .categoriesWallpapers[index]
+                                        .uploaderName,
+                                    title: controller
+                                        .categoriesWallpapers[index].title,
+                                    thumbnailUrl: controller
+                                        .categoriesWallpapers[index]
+                                        .thumbnailUrl,
+                                  ),
+                                  transition: Transition.downToUp,
+                                ),
+                              ));
+                    }
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -291,7 +165,7 @@ class CategoryPage extends StatelessWidget {
                       fit: BoxFit.cover,
                       placeholder: (context, url) {
                         return Center(
-                          child: CircularProgressIndicator(),
+                          child: Components.buildShimmerEffect(context),
                         );
                       },
                     ),
@@ -304,9 +178,65 @@ class CategoryPage extends StatelessWidget {
           if (controller.isLoading.value)
             SliverToBoxAdapter(
               child: Center(
-                child: CircularProgressIndicator(),
+                child: Components.buildCircularIndicator(),
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  void _showSubscriptionDialog(BuildContext context,
+      {required VoidCallback onComplete}) {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        title: Text(
+          'Access Required',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        content: Text(
+          'You need to subscribe or watch an ad to access this feature.',
+          style: TextStyle(
+            fontSize: 16,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        actionsPadding: EdgeInsets.symmetric(horizontal: 12.0),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blueAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            onPressed: () {
+              adController.showRewardedAd(
+                onComplete: onComplete,
+              );
+            },
+            child: Text('Watch Ad'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            onPressed: () {
+              Get.to(() => SubscriptionPage());
+            },
+            child: Text('Buy Pro'),
+          ),
         ],
       ),
     );

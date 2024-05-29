@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/location_list.dart';
-import 'package:luca/pages/static/walls_category.dart';
 import 'package:shimmer/shimmer.dart';
 
 class Components {

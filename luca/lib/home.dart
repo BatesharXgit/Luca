@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:iconly/iconly.dart';
-import 'package:luca/data/home_data.dart';
 import 'package:luca/pages/favourite.dart';
 import 'package:luca/pages/homepage.dart';
 import 'package:luca/pages/search_wallpaper.dart';
@@ -74,16 +73,16 @@ class _LucaHomeState extends State<LucaHome> {
           backgroundColor: backgroundColor,
           items: [
             CustomNavigationBarItem(
-              icon: Icon(IconlyBold.home),
+              icon: const Icon(IconlyBold.home),
             ),
             CustomNavigationBarItem(
-              icon: Icon(IconlyBold.discovery),
+              icon: const Icon(IconlyBold.discovery),
             ),
             CustomNavigationBarItem(
-              icon: Icon(IconlyBold.search),
+              icon: const Icon(IconlyBold.search),
             ),
             CustomNavigationBarItem(
-              icon: Icon(IconlyBold.heart),
+              icon: const Icon(IconlyBold.heart),
             ),
             CustomNavigationBarItem(
               icon: userPhotoUrl != null
@@ -91,7 +90,7 @@ class _LucaHomeState extends State<LucaHome> {
                       borderRadius: BorderRadius.circular(20),
                       child: CachedNetworkImage(
                           height: 34, width: 34, imageUrl: userPhotoUrl!))
-                  : Icon(IconlyBold.profile),
+                  : const Icon(IconlyBold.profile),
             ),
           ],
           currentIndex: _currentIndex,

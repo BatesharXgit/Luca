@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:luca/controllers/ad_controller.dart';
 import 'package:luca/controllers/category_controller.dart';
 import 'package:luca/controllers/home_controller.dart';
-import 'package:luca/helpers/ad_helper.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/pages/util/components.dart';
-import '../models/category_wallpaper.dart';
+import 'package:luca/subscription/subscription.dart';
 
 class MyHomePage extends StatelessWidget {
   final HomeController controller = Get.put(HomeController());
   final AdController adController = Get.put(AdController());
+  final SubscriptionController subscriptionController =
+      Get.put(SubscriptionController());
 
   MyHomePage({super.key});
 
@@ -31,14 +30,14 @@ class MyHomePage extends StatelessWidget {
           child: Column(
             children: [
               TabBar(
-                padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                 tabAlignment: TabAlignment.start,
                 dividerColor: Colors.transparent,
                 physics: const BouncingScrollPhysics(),
                 indicatorPadding: const EdgeInsets.fromLTRB(0, 42, 0, 2),
                 controller: controller.tabController,
                 indicatorColor: primaryColor,
-                labelPadding: EdgeInsets.only(right: 10, left: 10),
+                labelPadding: const EdgeInsets.only(right: 10, left: 10),
                 indicator: BoxDecoration(
                   color: primaryColor,
                   borderRadius: BorderRadius.circular(20),
@@ -67,7 +66,7 @@ class MyHomePage extends StatelessWidget {
                       return Obx(() {
                         if (controller.isLoading.value &&
                             controller.wallpapers.isEmpty) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         }
                         return _buildImageGridFromRef(controller);
                       });
@@ -110,17 +109,33 @@ class MyHomePage extends StatelessWidget {
               (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    adController.showInterstitialAd();
+                    if (subscriptionController.isSubscribed.value) {
+                      Get.to(
+                        ApplyWallpaperPage(
+                          url: controller.wallpapers[index].url,
+                          uploaderName:
+                              controller.wallpapers[index].uploaderName,
+                          title: controller.wallpapers[index].title,
+                          thumbnailUrl:
+                              controller.wallpapers[index].thumbnailUrl,
+                        ),
+                        transition: Transition.downToUp,
+                      );
+                    } else {
+                      adController.showInterstitialAd();
+                      Get.to(
+                        ApplyWallpaperPage(
+                          url: controller.wallpapers[index].url,
+                          uploaderName:
+                              controller.wallpapers[index].uploaderName,
+                          title: controller.wallpapers[index].title,
+                          thumbnailUrl:
+                              controller.wallpapers[index].thumbnailUrl,
+                        ),
+                        transition: Transition.downToUp,
+                      );
+                    }
                     // adController.showRewardedAd();
-                    Get.to(
-                      ApplyWallpaperPage(
-                        url: controller.wallpapers[index].url,
-                        uploaderName: controller.wallpapers[index].uploaderName,
-                        title: controller.wallpapers[index].title,
-                        thumbnailUrl: controller.wallpapers[index].thumbnailUrl,
-                      ),
-                      transition: Transition.downToUp,
-                    );
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -152,6 +167,8 @@ class MyHomePage extends StatelessWidget {
 
 class CategoryPage extends StatelessWidget {
   final String category;
+  final SubscriptionController subscriptionController =
+      Get.put(SubscriptionController());
   CategoryPage({required this.category});
 
   @override
@@ -162,7 +179,7 @@ class CategoryPage extends StatelessWidget {
     return Obx(() {
       if (controller.isLoading.value &&
           controller.categoriesWallpapers.isEmpty) {
-        return Center(child: CircularProgressIndicator());
+        return const Center(child: CircularProgressIndicator());
       }
 
       return _buildImageGrid(controller);
@@ -187,8 +204,8 @@ class CategoryPage extends StatelessWidget {
               (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
-                    AdHelper.showInterstitialAd(onComplete: () async {
-                      await Get.to(
+                    if (subscriptionController.isSubscribed.value) {
+                      Get.to(
                         ApplyWallpaperPage(
                           url: controller.categoriesWallpapers[index].url,
                           uploaderName: controller
@@ -199,7 +216,21 @@ class CategoryPage extends StatelessWidget {
                         ),
                         transition: Transition.downToUp,
                       );
-                    });
+                    } else {
+                      adController.showInterstitialAd();
+                      Get.to(
+                        ApplyWallpaperPage(
+                          url: controller.categoriesWallpapers[index].url,
+                          uploaderName: controller
+                              .categoriesWallpapers[index].uploaderName,
+                          title: controller.categoriesWallpapers[index].title,
+                          thumbnailUrl: controller
+                              .categoriesWallpapers[index].thumbnailUrl,
+                        ),
+                        transition: Transition.downToUp,
+                      );
+                    }
+                    // adController.showRewardedAd();
                   },
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -210,7 +241,7 @@ class CategoryPage extends StatelessWidget {
                           controller.categoriesWallpapers[index].thumbnailUrl,
                       fit: BoxFit.cover,
                       placeholder: (context, url) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       },
@@ -222,7 +253,7 @@ class CategoryPage extends StatelessWidget {
             ),
           ),
           if (controller.isLoading.value)
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: Center(
                 child: CircularProgressIndicator(),
               ),

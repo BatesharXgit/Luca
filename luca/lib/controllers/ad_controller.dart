@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:luca/services/admob.dart';
@@ -22,6 +21,8 @@ class AdController extends GetxController {
   }
 
   // Interstitial Ad Methods
+  DateTime? _lastAdTime;
+
   void _createInterstitialAd() {
     if (_isAdBeingLoaded) return;
     _isAdBeingLoaded = true;
@@ -45,6 +46,12 @@ class AdController extends GetxController {
   }
 
   void showInterstitialAd() {
+    if (_lastAdTime != null &&
+        DateTime.now().difference(_lastAdTime!).inMinutes < 1) {
+      print('Interstitial Ad cannot be shown yet. Please wait a minute.');
+      return;
+    }
+
     if (_interstitialAd != null) {
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
@@ -57,6 +64,7 @@ class AdController extends GetxController {
         },
       );
       _interstitialAd!.show();
+      _lastAdTime = DateTime.now();
       _interstitialAd = null;
     } else {
       print('Interstitial Ad not available.');
@@ -64,7 +72,7 @@ class AdController extends GetxController {
     }
   }
 
-  // premium interstitial Ad
+// premium interstitial Ad
   void _createPremiumInterstitialAd() {
     if (_isAdBeingLoaded) return;
     _isAdBeingLoaded = true;
@@ -88,6 +96,13 @@ class AdController extends GetxController {
   }
 
   void showPremiumInterstitialAd() {
+    if (_lastAdTime != null &&
+        DateTime.now().difference(_lastAdTime!).inMinutes < 1) {
+      print(
+          'Premium Interstitial Ad cannot be shown yet. Please wait a minute.');
+      return;
+    }
+
     if (_interstitialAd != null) {
       _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
         onAdDismissedFullScreenContent: (ad) {
@@ -100,9 +115,10 @@ class AdController extends GetxController {
         },
       );
       _interstitialAd!.show();
+      _lastAdTime = DateTime.now(); // Update the last ad time
       _interstitialAd = null;
     } else {
-      print('Interstitial Ad not available.');
+      print('Premium Interstitial Ad not available.');
       _createInterstitialAd();
     }
   }

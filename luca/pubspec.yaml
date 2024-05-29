@@ -78,6 +78,7 @@ dependencies:
   sqflite: ^2.3.3+1
   firebase_remote_config: ^4.4.5
   purchases_flutter: ^6.29.2
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

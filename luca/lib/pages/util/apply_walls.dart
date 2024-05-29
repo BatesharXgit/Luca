@@ -21,9 +21,9 @@ import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:luca/controllers/ad_controller.dart';
 import 'package:luca/pages/util/editor/editor.dart';
-import 'package:luca/services/admob_service.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:luca/subscription/subscription.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
@@ -49,6 +49,7 @@ class ApplyWallpaperPage extends StatefulWidget {
 }
 
 final AdController adController = Get.put(AdController());
+final SubscriptionController controller = Get.put(SubscriptionController());
 
 class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
   late ConfettiController _controllerCenter;
@@ -817,10 +818,16 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    adController.showRewardedAd(
-                                      onComplete: () =>
-                                          downloadImage(widget.url),
-                                    );
+                                    if (controller.isSubscribed.value) {
+                                      downloadImage(widget.url);
+                                      Navigator.pop(context);
+                                    } else {
+                                      _showSubscriptionDialog(context,
+                                          onComplete: () {
+                                        downloadImage(widget.url);
+                                        Navigator.pop(context);
+                                      });
+                                    }
                                   },
                                   icon: Icon(
                                     IconlyBold.download,
@@ -830,8 +837,18 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      Get.to(
-                                          EditWallpaper(arguments: widget.url));
+                                      if (controller.isSubscribed.value) {
+                                        Get.to(EditWallpaper(
+                                            arguments: widget.url));
+                                      } else {
+                                        _showSubscriptionDialog(
+                                          context,
+                                          onComplete: () => Get.to(
+                                            EditWallpaper(
+                                                arguments: widget.url),
+                                          ),
+                                        );
+                                      }
                                     },
                                     icon: Icon(
                                       IconlyBold.edit,
@@ -892,8 +909,12 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                 ),
                                 ElevatedButton(
                                   onPressed: () {
-                                    adController.showInterstitialAd();
-                                    openDialog();
+                                    if (controller.isSubscribed.value) {
+                                      openDialog();
+                                    } else {
+                                      adController.showInterstitialAd();
+                                      openDialog();
+                                    }
                                   },
                                   style: ButtonStyle(
                                     backgroundColor:
@@ -934,6 +955,62 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       //     : const SizedBox(
       //         height: 0,
       //       ),
+    );
+  }
+
+  void _showSubscriptionDialog(BuildContext context,
+      {required VoidCallback onComplete}) {
+    Get.dialog(
+      AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        title: Text(
+          'Access Required',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        content: Text(
+          'You need to subscribe or watch an ad to access this feature.',
+          style: TextStyle(
+            fontSize: 16,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+        actionsPadding: EdgeInsets.symmetric(horizontal: 12.0),
+        actions: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blueAccent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            onPressed: () {
+              adController.showRewardedAd(
+                onComplete: onComplete,
+              );
+            },
+            child: Text('Watch Ad'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+            onPressed: () {
+              Get.to(() => SubscriptionPage());
+            },
+            child: Text('Buy Pro'),
+          ),
+        ],
+      ),
     );
   }
 }

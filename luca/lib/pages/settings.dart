@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:iconly/iconly.dart';
 import 'package:luca/authentication/auth%20pages/login_page.dart';
+import 'package:luca/subscription/subscription.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'privacy_policy.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -49,8 +50,8 @@ class _SettingsPageState extends State<SettingsPage> {
             return AlertDialog(
               backgroundColor: backgroundColor,
               title: const Text('Confirm Deletion'),
-              content:
-                  const Text('Are you sure you want to delete your account?'),
+              content: const Text(
+                  '⚠️You will lost your favourite wallpapers and purchases.\n😕Are you sure you want to delete your account?'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
@@ -269,14 +270,29 @@ class _SettingsPageState extends State<SettingsPage> {
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 10),
                     width: 300,
-                    height: 150,
+                    height: 250,
                     decoration: BoxDecoration(
                       color: tertiaryColor,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        ListTile(
+                          leading: const Icon(
+                            IconlyBold.buy,
+                            size: 28,
+                          ),
+                          title: const Text('Buy Pro Version'),
+                          subtitle: const Text('Access all premium features',
+                              style: TextStyle(color: Colors.grey)),
+                          iconColor: primaryColor,
+                          textColor: primaryColor,
+                          onTap: () {
+                            Get.to(SubscriptionPage());
+                          },
+                        ),
                         ListTile(
                           leading: const Icon(
                             IconlyBold.bookmark,

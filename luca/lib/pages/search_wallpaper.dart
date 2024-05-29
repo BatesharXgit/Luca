@@ -25,7 +25,6 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:luca/controllers/ad_controller.dart';
 import 'package:luca/data/search_data.dart';
 import 'package:luca/pages/util/apply_walls.dart';
-import 'package:luca/services/admob_service.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
 

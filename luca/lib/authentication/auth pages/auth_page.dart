@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:luca/subscription/subscription.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:luca/authentication/auth%20pages/login_page.dart';
 import 'package:luca/home.dart';
@@ -22,8 +24,27 @@ class _AuthPageState extends State<AuthPage> {
 
   Future<void> _checkSkipSignIn() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _skipSignIn = prefs.getBool('skipSignIn') ?? false;
+    final lastShownDate = prefs.getString('lastShownDate');
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+
+    if (lastShownDate != today) {
+      prefs.setString('lastShownDate', today);
+      _showSubscriptionPage();
+    } else {
+      setState(() {
+        _skipSignIn = prefs.getBool('skipSignIn') ?? false;
+      });
+    }
+  }
+
+  void _showSubscriptionPage() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Get.to(() => SubscriptionPage(), transition: Transition.fadeIn)
+          ?.then((_) {
+        setState(() {
+          _skipSignIn = true;
+        });
+      });
     });
   }
 
@@ -34,14 +55,15 @@ class _AuthPageState extends State<AuthPage> {
     } else {
       return Scaffold(
         body: StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return LucaHome();
-              } else {
-                return const LoginPage();
-              }
-            }),
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return LucaHome();
+            } else {
+              return const LoginPage();
+            }
+          },
+        ),
       );
     }
   }

@@ -37,6 +37,33 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           Positioned(
+              top: 56,
+              right: 26,
+              child: GestureDetector(
+                onTap: _skipSignIn,
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: Colors.black.withOpacity(0.6),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'Skip',
+                    style: GoogleFonts.kanit(
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              )),
+          Positioned(
             bottom: -1,
             left: 0,
             right: 0,
@@ -113,18 +140,6 @@ class _LoginPageState extends State<LoginPage> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            GestureDetector(
-                              onTap: _skipSignIn,
-                              child: const Text(
-                                'Skip Sign In',
-                                style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Color(0xFFE6EDFF),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
                             const SizedBox(height: 10),
                             Text(
                               'By Continuing, you agree with Luca',
