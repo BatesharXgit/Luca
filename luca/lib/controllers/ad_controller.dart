@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:luca/services/admob.dart';
@@ -34,12 +34,16 @@ class AdController extends GetxController {
         onAdLoaded: (ad) {
           _interstitialAd = ad;
           _isAdBeingLoaded = false;
-          print('Interstitial Ad loaded.');
+          if (kDebugMode) {
+            print('Interstitial Ad loaded.');
+          }
         },
         onAdFailedToLoad: (LoadAdError error) {
           _interstitialAd = null;
           _isAdBeingLoaded = false;
-          print('Failed to load Interstitial Ad: $error');
+          if (kDebugMode) {
+            print('Failed to load Interstitial Ad: $error');
+          }
         },
       ),
     );
@@ -48,7 +52,9 @@ class AdController extends GetxController {
   void showInterstitialAd() {
     if (_lastAdTime != null &&
         DateTime.now().difference(_lastAdTime!).inMinutes < 1) {
-      print('Interstitial Ad cannot be shown yet. Please wait a minute.');
+      if (kDebugMode) {
+        print('Interstitial Ad cannot be shown yet. Please wait a minute.');
+      }
       return;
     }
 
@@ -67,7 +73,9 @@ class AdController extends GetxController {
       _lastAdTime = DateTime.now();
       _interstitialAd = null;
     } else {
-      print('Interstitial Ad not available.');
+      if (kDebugMode) {
+        print('Interstitial Ad not available.');
+      }
       _createInterstitialAd();
     }
   }
@@ -84,12 +92,16 @@ class AdController extends GetxController {
         onAdLoaded: (ad) {
           _interstitialAd = ad;
           _isAdBeingLoaded = false;
-          print('Interstitial Ad loaded.');
+          if (kDebugMode) {
+            print('Interstitial Ad loaded.');
+          }
         },
         onAdFailedToLoad: (LoadAdError error) {
           _interstitialAd = null;
           _isAdBeingLoaded = false;
-          print('Failed to load Interstitial Ad: $error');
+          if (kDebugMode) {
+            print('Failed to load Interstitial Ad: $error');
+          }
         },
       ),
     );
@@ -98,8 +110,10 @@ class AdController extends GetxController {
   void showPremiumInterstitialAd() {
     if (_lastAdTime != null &&
         DateTime.now().difference(_lastAdTime!).inMinutes < 1) {
-      print(
+      if (kDebugMode) {
+        print(
           'Premium Interstitial Ad cannot be shown yet. Please wait a minute.');
+      }
       return;
     }
 
@@ -118,7 +132,9 @@ class AdController extends GetxController {
       _lastAdTime = DateTime.now(); // Update the last ad time
       _interstitialAd = null;
     } else {
-      print('Premium Interstitial Ad not available.');
+      if (kDebugMode) {
+        print('Premium Interstitial Ad not available.');
+      }
       _createInterstitialAd();
     }
   }
@@ -131,11 +147,15 @@ class AdController extends GetxController {
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
           _rewardedAd = ad;
-          print('Rewarded Ad loaded.');
+          if (kDebugMode) {
+            print('Rewarded Ad loaded.');
+          }
         },
         onAdFailedToLoad: (LoadAdError error) {
           _rewardedAd = null;
-          print('Failed to load Rewarded Ad: $error');
+          if (kDebugMode) {
+            print('Failed to load Rewarded Ad: $error');
+          }
         },
       ),
     );
@@ -156,13 +176,17 @@ class AdController extends GetxController {
       _rewardedAd!.show(
         onUserEarnedReward: (AdWithoutView ad, RewardItem reward) {
           onComplete();
-          print('User earned reward: ${reward.amount} ${reward.type}');
+          if (kDebugMode) {
+            print('User earned reward: ${reward.amount} ${reward.type}');
+          }
           // Handle the reward
         },
       );
       _rewardedAd = null;
     } else {
-      print('Rewarded Ad not available.');
+      if (kDebugMode) {
+        print('Rewarded Ad not available.');
+      }
       _createRewardedAd();
     }
   }

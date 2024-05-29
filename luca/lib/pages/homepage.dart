@@ -19,7 +19,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
     Color secondaryColor = Theme.of(context).colorScheme.secondary;
 
@@ -170,7 +169,7 @@ class CategoryPage extends StatelessWidget {
   final String category;
   final SubscriptionController subscriptionController =
       Get.put(SubscriptionController());
-  CategoryPage({required this.category});
+  CategoryPage({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {

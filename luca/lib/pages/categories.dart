@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:luca/pages/util/apply_walls.dart';
@@ -7,13 +8,13 @@ import 'package:luca/pages/util/apply_walls.dart';
 class CategoriesWallpaper extends StatefulWidget {
   final String category;
 
-  const CategoriesWallpaper(this.category);
+  const CategoriesWallpaper(this.category, {super.key});
 
   @override
-  _CategoriesWallpaperState createState() => _CategoriesWallpaperState();
+  CategoriesWallpaperState createState() => CategoriesWallpaperState();
 }
 
-class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
+class CategoriesWallpaperState extends State<CategoriesWallpaper> {
   late ScrollController _scrollController;
   bool _isLoading = false;
   List<CategoryWallpaper> categoriesWallpapers = [];
@@ -72,7 +73,9 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error fetching wallpapers: $e');
+      if (kDebugMode) {
+        print('Error fetching wallpapers: $e');
+      }
       setState(() {
         _isLoading = false;
       });
@@ -110,7 +113,9 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
         _isLoading = false;
       });
     } catch (e) {
-      print('Error fetching more wallpapers: $e');
+      if (kDebugMode) {
+        print('Error fetching more wallpapers: $e');
+      }
       setState(() {
         _isLoading = false;
       });
@@ -158,7 +163,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
                     imageUrl: categoriesWallpapers[index].thumbnailUrl,
                     fit: BoxFit.cover,
                     placeholder: (context, url) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     },
@@ -170,7 +175,7 @@ class _CategoriesWallpaperState extends State<CategoriesWallpaper> {
           ),
         ),
         if (_isLoading)
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Center(
               child: CircularProgressIndicator(),
             ),

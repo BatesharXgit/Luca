@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -43,7 +44,9 @@ class CategoryController extends GetxController {
           .get();
 
       // Counting the number of documents read
-      print('Fetched ${snapshot.docs.length} documents.');
+      if (kDebugMode) {
+        print('Fetched ${snapshot.docs.length} documents.');
+      }
 
       List<CategoryWallpaper> fetchedWallpapers = snapshot.docs.map((doc) {
         return CategoryWallpaper(
@@ -58,7 +61,9 @@ class CategoryController extends GetxController {
       categoriesWallpapers.value = fetchedWallpapers;
       lastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
     } catch (e) {
-      print('Error fetching wallpapers: $e');
+      if (kDebugMode) {
+        print('Error fetching wallpapers: $e');
+      }
     } finally {
       isLoading.value = false;
     }
@@ -79,7 +84,9 @@ class CategoryController extends GetxController {
           .get();
 
       // Counting the number of documents read
-      print('Fetched ${snapshot.docs.length} documents.');
+      if (kDebugMode) {
+        print('Fetched ${snapshot.docs.length} documents.');
+      }
 
       List<CategoryWallpaper> moreWallpapers = snapshot.docs.map((doc) {
         return CategoryWallpaper(
@@ -94,7 +101,9 @@ class CategoryController extends GetxController {
       categoriesWallpapers.addAll(moreWallpapers);
       lastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
     } catch (e) {
-      print('Error fetching more wallpapers: $e');
+      if (kDebugMode) {
+        print('Error fetching more wallpapers: $e');
+      }
     } finally {
       isLoading.value = false;
     }

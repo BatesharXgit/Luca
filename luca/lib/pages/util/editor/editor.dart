@@ -1,24 +1,20 @@
-import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/widgets.dart';
 import 'package:image_editor/image_editor.dart' hide ImageSource;
 import 'package:luca/pages/util/components.dart';
 import 'package:luca/pages/util/editor/saveImage.dart';
-import 'package:path_provider/path_provider.dart';
 
 class EditWallpaper extends StatefulWidget {
   final String arguments;
-  EditWallpaper({required this.arguments});
+  const EditWallpaper({super.key, required this.arguments});
   @override
-  _EditWallpaperState createState() => _EditWallpaperState();
+  EditWallpaperState createState() => EditWallpaperState();
 }
 
-class _EditWallpaperState extends State<EditWallpaper> {
+class EditWallpaperState extends State<EditWallpaper> {
   final GlobalKey<ExtendedImageEditorState> editorKey =
       GlobalKey<ExtendedImageEditorState>();
 
@@ -88,17 +84,15 @@ class _EditWallpaperState extends State<EditWallpaper> {
   @override
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).colorScheme.background;
-    Color primaryColor = Theme.of(context).colorScheme.primary;
-    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     return Scaffold(
       appBar: AppBar(
-          title: Text(
+          title: const Text(
             "Edit Image",
             style: TextStyle(color: Colors.white),
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.settings_backup_restore),
+              icon: const Icon(Icons.settings_backup_restore),
               onPressed: () {
                 setState(() {
                   sat = 1;
@@ -108,7 +102,7 @@ class _EditWallpaperState extends State<EditWallpaper> {
               },
             ),
             IconButton(
-              icon: Icon(Icons.check),
+              icon: const Icon(Icons.check),
               onPressed: () async {
                 await saveImage();
               },
@@ -132,22 +126,22 @@ class _EditWallpaperState extends State<EditWallpaper> {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                 child: Container(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   color: Colors.white.withOpacity(0.15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _buildSat(),
-                      SizedBox(
+                      const SizedBox(
                         height: 4,
                       ),
                       _buildBrightness(),
-                      SizedBox(
+                      const SizedBox(
                         height: 4,
                       ),
                       _buildCon(),
-                      SizedBox(
+                      const SizedBox(
                         height: 4,
                       ),
                     ],
@@ -218,7 +212,9 @@ class _EditWallpaperState extends State<EditWallpaper> {
     );
 
     final Duration diff = DateTime.now().difference(start);
-    print('image_editor time : $diff');
+    if (kDebugMode) {
+      print('image_editor time : $diff');
+    }
 
     // Pass the edited image data to the next screen
     Navigator.pushReplacement(
@@ -232,9 +228,7 @@ class _EditWallpaperState extends State<EditWallpaper> {
   }
 
   Widget _buildSat() {
-    Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
-    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
@@ -251,7 +245,7 @@ class _EditWallpaperState extends State<EditWallpaper> {
             )
           ],
         ),
-        Container(
+        SizedBox(
           width: MediaQuery.of(context).size.width * 0.6,
           child: Slider(
             label: 'sat : ${sat.toStringAsFixed(2)}',
@@ -271,7 +265,6 @@ class _EditWallpaperState extends State<EditWallpaper> {
   }
 
   Widget _buildBrightness() {
-    Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -289,7 +282,7 @@ class _EditWallpaperState extends State<EditWallpaper> {
             )
           ],
         ),
-        Container(
+        SizedBox(
           width: MediaQuery.of(context).size.width * 0.6,
           child: Slider(
             label: '${bright.toStringAsFixed(2)}',
@@ -309,9 +302,7 @@ class _EditWallpaperState extends State<EditWallpaper> {
   }
 
   Widget _buildCon() {
-    Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
-    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
@@ -328,7 +319,7 @@ class _EditWallpaperState extends State<EditWallpaper> {
             )
           ],
         ),
-        Container(
+        SizedBox(
           width: MediaQuery.of(context).size.width * 0.6,
           child: Slider(
             label: 'con : ${con.toStringAsFixed(2)}',

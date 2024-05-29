@@ -51,14 +51,14 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     if (_skipSignIn) {
-      return LucaHome();
+      return const LucaHome();
     } else {
       return Scaffold(
         body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return LucaHome();
+              return const LucaHome();
             } else {
               return const LoginPage();
             }

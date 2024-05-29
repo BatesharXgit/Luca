@@ -29,6 +29,7 @@ Future<void> main() async {
 
   // homePageKey.currentState?.fetchInitialWallpapers();
 
+  // ignore: deprecated_member_use
   await Purchases.setDebugLogsEnabled(true);
   await Purchases.configure(
       PurchasesConfiguration("goog_nmYisRzhLUSZtpMjMRDcrTFvwJl"));

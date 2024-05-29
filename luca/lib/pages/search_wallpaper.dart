@@ -10,7 +10,7 @@ import 'package:luca/data/search_data.dart';
 import 'package:luca/pages/util/apply_walls.dart';
 import 'package:luca/subscription/subscription.dart';
 
-const String API_KEY =
+const String apiKey =
     'tLLFbgWVeyvt2Onc1QYv0R1BZ3IfLH7iT7zduYlsHkDyB8eSpddwR2th';
 
 class SearchWallpaper extends StatelessWidget {
@@ -20,10 +20,11 @@ class SearchWallpaper extends StatelessWidget {
   final SubscriptionController subscriptionController =
       Get.put(SubscriptionController());
 
+  SearchWallpaper({super.key});
+
   @override
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).colorScheme.background;
-    Color primaryColor = Theme.of(context).colorScheme.primary;
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) {
@@ -62,7 +63,7 @@ class SearchWallpaper extends StatelessWidget {
     Color secondaryColor = Theme.of(context).colorScheme.secondary;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(20, 4, 20, 10),
+      padding: const EdgeInsets.fromLTRB(20, 4, 20, 10),
       child: SizedBox(
         height: 44,
         child: TextField(
@@ -102,12 +103,12 @@ class SearchWallpaper extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 20),
-          Text(
+          const SizedBox(height: 20),
+          const Text(
             'Popular Searches',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Wrap(
             runSpacing: 8,
             spacing: 10,
@@ -130,12 +131,12 @@ class SearchWallpaper extends StatelessWidget {
                 ),
             ],
           ),
-          SizedBox(height: 20),
-          Text(
+          const SizedBox(height: 20),
+          const Text(
             'Search by Colors',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Wrap(
             runSpacing: 8,
             spacing: 10,
@@ -221,7 +222,7 @@ class SearchWallpaperController extends GetxController {
     String url = 'https://api.pexels.com/v1/search?query=$query&per_page=60';
 
     final response = await http.get(Uri.parse(url), headers: {
-      'Authorization': API_KEY,
+      'Authorization': apiKey,
     });
 
     if (response.statusCode == 200) {

@@ -94,7 +94,9 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
         });
       }
     }).catchError((error) {
-      print('Error checking if image is already liked: $error');
+      if (kDebugMode) {
+        print('Error checking if image is already liked: $error');
+      }
     });
   }
 
@@ -506,12 +508,16 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
       if (querySnapshot.docs.isNotEmpty) {
         // Image already liked, so remove it
         querySnapshot.docs.first.reference.delete().then((_) {
-          print('Image removed from liked images!');
+          if (kDebugMode) {
+            print('Image removed from liked images!');
+          }
           setState(() {
             _isImageLiked = isLiked;
           });
         }).catchError((error) {
-          print('Failed to remove image from liked images: $error');
+          if (kDebugMode) {
+            print('Failed to remove image from liked images: $error');
+          }
         });
       } else {
         // Image not liked, so add it
@@ -525,16 +531,22 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
           'url': imageUrl,
           'uploaderName': uploader,
         }).then((value) {
-          print('Image liked and stored successfully!');
+          if (kDebugMode) {
+            print('Image liked and stored successfully!');
+          }
           setState(() {
             _isImageLiked = isLiked;
           });
         }).catchError((error) {
-          print('Failed to like image: $error');
+          if (kDebugMode) {
+            print('Failed to like image: $error');
+          }
         });
       }
     }).catchError((error) {
-      print('Error checking if image is already liked: $error');
+      if (kDebugMode) {
+        print('Error checking if image is already liked: $error');
+      }
     });
   }
 
@@ -882,11 +894,15 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                                 thumbnailUrl, uploader, title);
                                           }
                                         }).catchError((error) {
-                                          print(
+                                          if (kDebugMode) {
+                                            print(
                                               'Error checking if image is already liked: $error');
+                                          }
                                         });
                                       } else {
-                                        print("User is not authenticated.");
+                                        if (kDebugMode) {
+                                          print("User is not authenticated.");
+                                        }
                                       }
                                       adController.showInterstitialAd();
                                     },

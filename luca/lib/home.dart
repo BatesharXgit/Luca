@@ -14,10 +14,10 @@ class LucaHome extends StatefulWidget {
   const LucaHome({super.key});
 
   @override
-  _LucaHomeState createState() => _LucaHomeState();
+  LucaHomeState createState() => LucaHomeState();
 }
 
-class _LucaHomeState extends State<LucaHome> {
+class LucaHomeState extends State<LucaHome> {
   int _currentIndex = 0;
 
   late final List<Widget?> _pages;

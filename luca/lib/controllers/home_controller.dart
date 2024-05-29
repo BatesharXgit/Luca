@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
+// ignore: deprecated_member_use
 class HomeController extends GetxController with SingleGetTickerProviderMixin {
   late Database _database;
   final ScrollController scrollController = ScrollController();
@@ -71,7 +74,9 @@ class HomeController extends GetxController with SingleGetTickerProviderMixin {
 
       wallpapers.value = fetchedWallpapers;
     } catch (e) {
-      print('Error fetching wallpapers: $e');
+      if (kDebugMode) {
+        print('Error fetching wallpapers: $e');
+      }
     } finally {
       isLoading.value = false;
     }
@@ -136,11 +141,12 @@ class HomeController extends GetxController with SingleGetTickerProviderMixin {
     }
   }
 
+  // ignore: prefer_typing_uninitialized_variables
   var _lastDocument;
-  var _isLoading = false.obs;
+  final _isLoading = false.obs;
 
   Future<void> _loadMoreWallpapers() async {
-    if (_isLoading.value) return; // Prevent multiple simultaneous requests
+    if (_isLoading.value) return;
     _isLoading.value = true;
 
     try {
@@ -186,10 +192,16 @@ class HomeController extends GetxController with SingleGetTickerProviderMixin {
       wallpapers.addAll(moreWallpapers);
       _isLoading.value = false;
 
-      print('Loaded ${moreWallpapers.length} more wallpapers.');
-      print('Last document timestamp: ${_lastDocument?.get("timestamp")}');
+      if (kDebugMode) {
+        print('Loaded ${moreWallpapers.length} more wallpapers.');
+      }
+      if (kDebugMode) {
+        print('Last document timestamp: ${_lastDocument?.get("timestamp")}');
+      }
     } catch (e) {
-      print('Error fetching more wallpapers: $e');
+      if (kDebugMode) {
+        print('Error fetching more wallpapers: $e');
+      }
       _isLoading.value = false;
     }
   }

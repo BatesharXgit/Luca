@@ -38,5 +38,5 @@ List<Color> chipColors = [
   Colors.purple,
   Colors.red,
   Colors.yellow,
-  Color(0xFFF5F5DC),
+  const Color(0xFFF5F5DC),
 ];

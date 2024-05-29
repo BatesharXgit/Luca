@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _skipSignIn() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('skipSignIn', true);
-    Get.offAll(LucaHome());
+    Get.offAll(const LucaHome());
   }
 
   @override
@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
               child: GestureDetector(
                 onTap: _skipSignIn,
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(14),
                     color: Colors.black.withOpacity(0.6),
@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.black.withOpacity(0.1),
                         spreadRadius: 5,
                         blurRadius: 7,
-                        offset: Offset(0, 3),
+                        offset: const Offset(0, 3),
                       ),
                     ],
                   ),

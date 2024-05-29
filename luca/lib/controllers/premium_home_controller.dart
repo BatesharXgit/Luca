@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class PremiumHomeController extends GetxController
+    // ignore: deprecated_member_use
     with SingleGetTickerProviderMixin {
   final ScrollController scrollController = ScrollController();
   late TabController tabController;

@@ -1,9 +1,6 @@
-import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -25,7 +22,7 @@ class SubscriptionController extends GetxController {
     try {
       Offerings offerings = await Purchases.getOfferings();
       this.offerings.value = offerings;
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // Handle error fetching offerings
     }
   }
@@ -41,7 +38,7 @@ class SubscriptionController extends GetxController {
       // } else {
       //   Get.snackbar("Info", "No active subscriptions found.");
       // }
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // Handle error restoring purchases
       Get.snackbar("Error", "Failed to restore purchases.");
     }
@@ -52,7 +49,7 @@ class SubscriptionController extends GetxController {
       CustomerInfo customerInfo = await Purchases.purchasePackage(package);
       isSubscribed.value = customerInfo.entitlements.active.isNotEmpty;
       Get.snackbar("😍", "Purchased Successfully.");
-    } on PlatformException catch (e) {
+    } on PlatformException {
       // Handle error during purchase
       Get.snackbar("Error", "Failed to purchase.");
     }
@@ -62,11 +59,12 @@ class SubscriptionController extends GetxController {
 class SubscriptionPage extends StatelessWidget {
   final SubscriptionController controller = Get.put(SubscriptionController());
 
+  SubscriptionPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
-    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
     return Scaffold(
       appBar: null,
@@ -82,7 +80,7 @@ class SubscriptionPage extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 84,
               ),
               Padding(
@@ -109,7 +107,7 @@ class SubscriptionPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 32,
               ),
               Align(
@@ -123,25 +121,25 @@ class SubscriptionPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Expanded(
                 child: ListView(
                   padding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+                      const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
                   children: [
                     if (controller.offerings.value?.current != null)
                       ...controller.offerings.value!.current!.availablePackages
                           .map(
                             (package) => Container(
-                              margin: EdgeInsets.only(bottom: 16),
+                              margin: const EdgeInsets.only(bottom: 16),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
                                 color: tertiaryColor,
                               ),
                               child: ListTile(
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                     vertical: 12.0, horizontal: 16.0),
                                 title: Text(
                                   package.storeProduct.title,
@@ -160,7 +158,7 @@ class SubscriptionPage extends StatelessWidget {
                                   children: [
                                     Text(
                                       _getCustomPrice(package),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 16.0,
                                         color: Colors.red,
                                         decoration: TextDecoration.lineThrough,
@@ -182,7 +180,7 @@ class SubscriptionPage extends StatelessWidget {
                           )
                           .toList(),
                     if (controller.isSubscribed.value)
-                      Card(
+                      const Card(
                         color: Colors.lime,
                         elevation: 4.0,
                         margin: EdgeInsets.only(bottom: 16.0),
@@ -207,15 +205,15 @@ class SubscriptionPage extends StatelessWidget {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text("No Purchases Found"),
-                                  content: Text(
+                                  title: const Text("No Purchases Found"),
+                                  content: const Text(
                                       "You haven't made any purchases yet."),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text("OK"),
+                                      child: const Text("OK"),
                                     ),
                                   ],
                                 );
@@ -227,17 +225,17 @@ class SubscriptionPage extends StatelessWidget {
                                 .restorePurchasesAndCheckSubscriptionStatus();
                           }
                         },
-                        child: Text(
-                          "Restore Purchases",
-                          style: TextStyle(fontSize: 16.0),
-                        ),
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               vertical: 16.0, horizontal: 32.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           backgroundColor: Colors.blue,
+                        ),
+                        child: const Text(
+                          "Restore Purchases",
+                          style: TextStyle(fontSize: 16.0),
                         ),
                       ),
                   ],

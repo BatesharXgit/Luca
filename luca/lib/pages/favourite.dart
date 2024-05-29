@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -113,7 +114,7 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
               Get.to(const LoginPage(),
                   transition: Transition.rightToLeftWithFade);
             },
-            child: Text('Sign In'),
+            child: const Text('Sign In'),
           ),
         ],
       ),
@@ -211,9 +212,13 @@ class _FavoriteImagesPageState extends State<FavoriteImagesPage> {
       for (var doc in querySnapshot.docs) {
         doc.reference.delete();
       }
-      print('All liked images deleted successfully!');
+      if (kDebugMode) {
+        print('All liked images deleted successfully!');
+      }
     }).catchError((error) {
-      print('Failed to delete all liked images: $error');
+      if (kDebugMode) {
+        print('Failed to delete all liked images: $error');
+      }
     });
   }
 }
