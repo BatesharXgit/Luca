@@ -12,6 +12,8 @@ class SubscriptionController extends GetxController {
   var offerings = Rxn<Offerings>();
   var isSubscribed = false.obs;
 
+  final List<String> prices = ['₹500', '₹5000'];
+
   @override
   void onInit() {
     super.onInit();
@@ -62,14 +64,18 @@ class SubscriptionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color backgroundColor = Theme.of(context).colorScheme.background;
+    Color primaryColor = Theme.of(context).colorScheme.primary;
+    Color secondaryColor = Theme.of(context).colorScheme.secondary;
+    Color tertiaryColor = Theme.of(context).colorScheme.tertiary;
     return Scaffold(
       appBar: null,
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: backgroundColor,
       body: Obx(() {
         if (controller.offerings.value == null) {
           return Center(
             child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+              valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
             ),
           );
         } else {
@@ -85,7 +91,7 @@ class SubscriptionPage extends StatelessWidget {
                   textAlign: TextAlign.start,
                   'Get',
                   style: GoogleFonts.openSans(
-                    color: Colors.white,
+                    color: primaryColor,
                     fontSize: 34,
                     fontWeight: FontWeight.w700,
                   ),
@@ -97,22 +103,22 @@ class SubscriptionPage extends StatelessWidget {
                   textAlign: TextAlign.start,
                   'Luca Pro',
                   style: GoogleFonts.openSans(
-                    color: Colors.white,
+                    color: primaryColor,
                     fontSize: 34,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
               SizedBox(
-                height: 42,
+                height: 32,
               ),
               Align(
                 alignment: Alignment.center,
                 child: Text(
                   textAlign: TextAlign.start,
-                  '✔️ Get Ad-Free access to Luca. \n✔️ Access to Premium Categories\n✔️ Unlock 1000+ wallpapers \n✔️ Wallpaper edit Functionality',
+                  '✔️ Get Ad-Free access to Luca. \n✔️ Access to Premium Categories\n✔️ Unlock 20+ categories\n✔️ Unlock 1000+ wallpapers \n✔️ Wallpaper edit Functionality',
                   style: GoogleFonts.kanit(
-                    color: Colors.white,
+                    color: primaryColor,
                     fontSize: 16,
                   ),
                 ),
@@ -132,15 +138,7 @@ class SubscriptionPage extends StatelessWidget {
                               margin: EdgeInsets.only(bottom: 16),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Colors.white.withOpacity(0.2),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
-                                    spreadRadius: 5,
-                                    blurRadius: 7,
-                                    offset: Offset(0, 3),
-                                  ),
-                                ],
+                                color: tertiaryColor,
                               ),
                               child: ListTile(
                                 contentPadding: EdgeInsets.symmetric(
@@ -149,17 +147,33 @@ class SubscriptionPage extends StatelessWidget {
                                   package.storeProduct.title,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16.0),
+                                      fontSize: 16.0,
+                                      color: primaryColor),
                                 ),
                                 subtitle: Text(
                                   package.storeProduct.description,
-                                  style: TextStyle(fontSize: 14.0),
-                                ),
-                                trailing: Text(
-                                  package.storeProduct.priceString,
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16.0),
+                                      fontSize: 14.0, color: primaryColor),
+                                ),
+                                trailing: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _getCustomPrice(package),
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.red,
+                                        decoration: TextDecoration.lineThrough,
+                                      ),
+                                    ),
+                                    Text(
+                                      package.storeProduct.priceString,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0,
+                                          color: primaryColor),
+                                    ),
+                                  ],
                                 ),
                                 onTap: () =>
                                     controller.purchasePackage(package),
@@ -229,9 +243,6 @@ class SubscriptionPage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 20,
-              ),
               Align(
                 alignment: Alignment.center,
                 child: InkWell(
@@ -239,11 +250,11 @@ class SubscriptionPage extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   child: SizedBox(
-                      height: 58,
+                      height: 50,
                       child: Text(
                         'May be later',
                         style: GoogleFonts.kanit(
-                          color: Colors.white,
+                          color: primaryColor,
                           fontSize: 18,
                           decoration: TextDecoration.underline,
                         ),
@@ -255,5 +266,14 @@ class SubscriptionPage extends StatelessWidget {
         }
       }),
     );
+  }
+
+  String _getCustomPrice(Package package) {
+    int index =
+        controller.offerings.value!.current!.availablePackages.indexOf(package);
+    if (index != -1 && index < controller.prices.length) {
+      return controller.prices[index];
+    }
+    return 'Price not available';
   }
 }

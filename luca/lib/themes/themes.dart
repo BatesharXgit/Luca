@@ -6,7 +6,7 @@ ThemeData darkTheme = ThemeData(
     background: Color(0xFF111111),
     primary: Color(0xFFf1f1f1),
     secondary: Color(0xFF767676),
-    tertiary: Color(0xFF161a1f),
+    tertiary: Color(0xFF191919),
   ),
   iconTheme: const IconThemeData(color: Color(0xFFE6EDFF)),
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(

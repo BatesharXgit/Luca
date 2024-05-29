@@ -66,7 +66,8 @@ class MyHomePage extends StatelessWidget {
                       return Obx(() {
                         if (controller.isLoading.value &&
                             controller.wallpapers.isEmpty) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         }
                         return _buildImageGridFromRef(controller);
                       });
@@ -179,7 +180,7 @@ class CategoryPage extends StatelessWidget {
     return Obx(() {
       if (controller.isLoading.value &&
           controller.categoriesWallpapers.isEmpty) {
-        return const Center(child: CircularProgressIndicator());
+        return Center(child: Components.buildCircularIndicator());
       }
 
       return _buildImageGrid(controller);
@@ -241,8 +242,8 @@ class CategoryPage extends StatelessWidget {
                           controller.categoriesWallpapers[index].thumbnailUrl,
                       fit: BoxFit.cover,
                       placeholder: (context, url) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                        return Center(
+                          child: Components.buildShimmerEffect(context),
                         );
                       },
                     ),

@@ -38,14 +38,14 @@ class PremiumHomepage extends StatelessWidget {
                 )),
               ),
               TabBar(
-                padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                 tabAlignment: TabAlignment.start,
                 dividerColor: Colors.transparent,
                 physics: const BouncingScrollPhysics(),
                 indicatorPadding: const EdgeInsets.fromLTRB(0, 42, 0, 2),
                 controller: controller.tabController,
                 indicatorColor: primaryColor,
-                labelPadding: EdgeInsets.only(right: 10, left: 10),
+                labelPadding: const EdgeInsets.only(right: 10, left: 10),
                 indicator: BoxDecoration(
                   color: primaryColor,
                   borderRadius: BorderRadius.circular(20),
@@ -209,7 +209,7 @@ class CategoryPage extends StatelessWidget {
             color: Theme.of(context).colorScheme.primary,
           ),
         ),
-        actionsPadding: EdgeInsets.symmetric(horizontal: 12.0),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 12.0),
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -223,7 +223,7 @@ class CategoryPage extends StatelessWidget {
                 onComplete: onComplete,
               );
             },
-            child: Text('Watch Ad'),
+            child: const Text('Watch Ad'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -235,7 +235,7 @@ class CategoryPage extends StatelessWidget {
             onPressed: () {
               Get.to(() => SubscriptionPage());
             },
-            child: Text('Buy Pro'),
+            child: const Text('Buy Pro'),
           ),
         ],
       ),

@@ -210,7 +210,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   title,
                   Text(
                     'Customize Your Experience!',
-                    style: TextStyle(color: secondaryColor),
+                    style: TextStyle(color: primaryColor),
                   ),
                   const SizedBox(height: 20),
                   Container(
@@ -284,8 +284,15 @@ class _SettingsPageState extends State<SettingsPage> {
                             IconlyBold.buy,
                             size: 28,
                           ),
-                          title: const Text('Buy Pro Version'),
-                          subtitle: const Text('Access all premium features',
+                          trailing: Text(
+                            '80% off',
+                            style: GoogleFonts.kanit(
+                              color: Colors.red,
+                              fontSize: 14,
+                            ),
+                          ),
+                          title: const Text('Buy Luca Pro'),
+                          subtitle: const Text('Access all features',
                               style: TextStyle(color: Colors.grey)),
                           iconColor: primaryColor,
                           textColor: primaryColor,

@@ -273,7 +273,6 @@ class _EditWallpaperState extends State<EditWallpaper> {
   Widget _buildBrightness() {
     Color backgroundColor = Theme.of(context).colorScheme.background;
     Color primaryColor = Theme.of(context).colorScheme.primary;
-    Color secondaryColor = Theme.of(context).colorScheme.secondary;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 import 'package:async_wallpaper/async_wallpaper.dart';
@@ -6,26 +5,21 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:confetti/confetti.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 // ignore: depend_on_referenced_packages
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:luca/controllers/ad_controller.dart';
 import 'package:luca/pages/util/editor/editor.dart';
-import 'package:flutter/rendering.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:luca/subscription/subscription.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
 
@@ -560,7 +554,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
               backgroundColor: Theme.of(context).colorScheme.background,
               elevation: 0,
               actions: [
-                IconButton(onPressed: () {}, icon: Icon(Iconsax.share)),
+                IconButton(onPressed: () {}, icon: const Icon(Iconsax.share)),
               ],
             )
           : null,
@@ -629,7 +623,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                 child: Align(
                   alignment: Alignment.topRight,
                   child: Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                       top: 10,
                       right: 10,
                     ),
@@ -650,7 +644,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                 right: 0,
                 bottom: MediaQuery.of(context).padding.bottom + 80,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(14, 0, 14, 0),
+                  padding: const EdgeInsets.fromLTRB(14, 0, 14, 0),
                   child: AnimatedOpacity(
                     duration: const Duration(milliseconds: 500),
                     opacity: isInformationWidgetVisible ? 1.0 : 0.0,
@@ -663,7 +657,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return Center(
+                                return const Center(
                                   child: CircularProgressIndicator(),
                                 );
                               } else if (snapshot.hasError) {
@@ -679,7 +673,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                     color: Colors.white.withOpacity(0.15),
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  padding: EdgeInsets.all(16),
+                                  padding: const EdgeInsets.all(16),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -689,7 +683,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                         height: 68,
                                         child: GridView.builder(
                                           gridDelegate:
-                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                              const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 5,
                                           ),
                                           itemCount: 5,
@@ -704,7 +698,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                                   index % colorList.length];
                                             }
                                             return Container(
-                                              margin: EdgeInsets.all(2),
+                                              margin: const EdgeInsets.all(2),
                                               width: 50,
                                               height: 50,
                                               decoration: BoxDecoration(
@@ -715,11 +709,11 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                           },
                                         ),
                                       ),
-                                      Divider(
+                                      const Divider(
                                         color: Colors.grey,
                                         thickness: 2,
                                       ),
-                                      SizedBox(
+                                      const SizedBox(
                                         height: 8,
                                       ),
                                       Row(
@@ -728,12 +722,12 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                         children: [
                                           Row(
                                             children: [
-                                              Icon(Iconsax.image,
+                                              const Icon(Iconsax.image,
                                                   color: Colors.grey),
-                                              SizedBox(width: 5),
+                                              const SizedBox(width: 5),
                                               Text(
                                                 widget.title,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold,
@@ -743,12 +737,12 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                           ),
                                           Row(
                                             children: [
-                                              Icon(Iconsax.user,
+                                              const Icon(Iconsax.user,
                                                   color: Colors.grey),
-                                              SizedBox(width: 5),
+                                              const SizedBox(width: 5),
                                               Text(
                                                 widget.uploaderName,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 16,
                                                 ),
@@ -757,8 +751,8 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: 10),
-                                      Row(
+                                      const SizedBox(height: 10),
+                                      const Row(
                                         children: [
                                           Icon(Iconsax.size,
                                               color: Colors.grey),
@@ -809,7 +803,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       IconlyBold.close_square,
                                       color: Colors.white,
                                       size: 30,
@@ -829,7 +823,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                       });
                                     }
                                   },
-                                  icon: Icon(
+                                  icon: const Icon(
                                     IconlyBold.download,
                                     color: Colors.white,
                                     size: 34,
@@ -850,7 +844,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                         );
                                       }
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       IconlyBold.edit,
                                       color: Colors.white,
                                       size: 34,
@@ -922,9 +916,9 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                     foregroundColor:
                                         MaterialStateProperty.all(Colors.black),
                                     minimumSize:
-                                        MaterialStateProperty.all(Size(70, 36)),
+                                        MaterialStateProperty.all(const Size(70, 36)),
                                     padding: MaterialStateProperty.all(
-                                        EdgeInsets.symmetric(horizontal: 16)),
+                                        const EdgeInsets.symmetric(horizontal: 16)),
                                     shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
                                         borderRadius:
@@ -932,7 +926,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                       ),
                                     ),
                                   ),
-                                  child: Text('Apply'),
+                                  child: const Text('Apply'),
                                 ),
                               ],
                             ),
@@ -981,7 +975,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
             color: Theme.of(context).colorScheme.primary,
           ),
         ),
-        actionsPadding: EdgeInsets.symmetric(horizontal: 12.0),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 12.0),
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -995,7 +989,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                 onComplete: onComplete,
               );
             },
-            child: Text('Watch Ad'),
+            child: const Text('Watch Ad'),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -1007,7 +1001,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
             onPressed: () {
               Get.to(() => SubscriptionPage());
             },
-            child: Text('Buy Pro'),
+            child: const Text('Buy Pro'),
           ),
         ],
       ),
