@@ -134,24 +134,23 @@ class CategoryPage extends StatelessWidget {
                         transition: Transition.downToUp,
                       );
                     } else {
-                      _showSubscriptionDialog(context,
-                          onComplete: () => adController.showRewardedAd(
-                                onComplete: () => Get.to(
-                                  ApplyWallpaperPage(
-                                    url: controller
-                                        .categoriesWallpapers[index].url,
-                                    uploaderName: controller
-                                        .categoriesWallpapers[index]
-                                        .uploaderName,
-                                    title: controller
-                                        .categoriesWallpapers[index].title,
-                                    thumbnailUrl: controller
-                                        .categoriesWallpapers[index]
-                                        .thumbnailUrl,
-                                  ),
-                                  transition: Transition.downToUp,
-                                ),
-                              ));
+                      _showSubscriptionDialog(
+                        context,
+                        onComplete: () {
+                          Get.to(
+                            ApplyWallpaperPage(
+                              url: controller.categoriesWallpapers[index].url,
+                              uploaderName: controller
+                                  .categoriesWallpapers[index].uploaderName,
+                              title:
+                                  controller.categoriesWallpapers[index].title,
+                              thumbnailUrl: controller
+                                  .categoriesWallpapers[index].thumbnailUrl,
+                            ),
+                            transition: Transition.downToUp,
+                          );
+                        },
+                      );
                     }
                   },
                   child: ClipRRect(

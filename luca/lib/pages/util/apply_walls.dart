@@ -770,7 +770,7 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                               color: Colors.grey),
                                           SizedBox(width: 5),
                                           Text(
-                                            '1632x3264',
+                                            '4k',
                                             style: TextStyle(
                                               color: Colors.grey,
                                               fontSize: 16,
@@ -866,45 +866,104 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                   opacity: isWidgetsVisible ? 1.0 : 0.0,
                                   child: IconButton(
                                     onPressed: () {
-                                      FirebaseAuth auth = FirebaseAuth.instance;
-                                      User? user = auth.currentUser;
-                                      if (user != null) {
-                                        String userId = user.uid;
-                                        String imageUrl = widget.url;
-                                        String thumbnailUrl =
-                                            widget.thumbnailUrl;
-                                        String uploader = widget.uploaderName;
-                                        String title = widget.title;
+                                      if (controller.isSubscribed.value) {
+                                        FirebaseAuth auth =
+                                            FirebaseAuth.instance;
+                                        User? user = auth.currentUser;
+                                        if (user != null) {
+                                          String userId = user.uid;
+                                          String imageUrl = widget.url;
+                                          String thumbnailUrl =
+                                              widget.thumbnailUrl;
+                                          String uploader = widget.uploaderName;
+                                          String title = widget.title;
 
-                                        // Check if the image is already liked by the user
-                                        FirebaseFirestore.instance
-                                            .collection('Users')
-                                            .doc(userId)
-                                            .collection('LikedImages')
-                                            .where('url', isEqualTo: imageUrl)
-                                            .get()
-                                            .then((querySnapshot) {
-                                          if (querySnapshot.docs.isNotEmpty) {
-                                            // Image is liked, so remove it
-                                            toggleLikeImage(userId, imageUrl,
-                                                thumbnailUrl, uploader, title);
-                                          } else {
-                                            // Image is not liked, so add it
-                                            toggleLikeImage(userId, imageUrl,
-                                                thumbnailUrl, uploader, title);
-                                          }
-                                        }).catchError((error) {
+                                          // Check if the image is already liked by the user
+                                          FirebaseFirestore.instance
+                                              .collection('Users')
+                                              .doc(userId)
+                                              .collection('LikedImages')
+                                              .where('url', isEqualTo: imageUrl)
+                                              .get()
+                                              .then((querySnapshot) {
+                                            if (querySnapshot.docs.isNotEmpty) {
+                                              // Image is liked, so remove it
+                                              toggleLikeImage(
+                                                  userId,
+                                                  imageUrl,
+                                                  thumbnailUrl,
+                                                  uploader,
+                                                  title);
+                                            } else {
+                                              // Image is not liked, so add it
+                                              toggleLikeImage(
+                                                  userId,
+                                                  imageUrl,
+                                                  thumbnailUrl,
+                                                  uploader,
+                                                  title);
+                                            }
+                                          }).catchError((error) {
+                                            if (kDebugMode) {
+                                              print(
+                                                  'Error checking if image is already liked: $error');
+                                            }
+                                          });
+                                        } else {
                                           if (kDebugMode) {
-                                            print(
-                                              'Error checking if image is already liked: $error');
+                                            print("User is not authenticated.");
                                           }
-                                        });
-                                      } else {
-                                        if (kDebugMode) {
-                                          print("User is not authenticated.");
                                         }
+                                      } else {
+                                        FirebaseAuth auth =
+                                            FirebaseAuth.instance;
+                                        User? user = auth.currentUser;
+                                        if (user != null) {
+                                          String userId = user.uid;
+                                          String imageUrl = widget.url;
+                                          String thumbnailUrl =
+                                              widget.thumbnailUrl;
+                                          String uploader = widget.uploaderName;
+                                          String title = widget.title;
+
+                                          // Check if the image is already liked by the user
+                                          FirebaseFirestore.instance
+                                              .collection('Users')
+                                              .doc(userId)
+                                              .collection('LikedImages')
+                                              .where('url', isEqualTo: imageUrl)
+                                              .get()
+                                              .then((querySnapshot) {
+                                            if (querySnapshot.docs.isNotEmpty) {
+                                              // Image is liked, so remove it
+                                              toggleLikeImage(
+                                                  userId,
+                                                  imageUrl,
+                                                  thumbnailUrl,
+                                                  uploader,
+                                                  title);
+                                            } else {
+                                              // Image is not liked, so add it
+                                              toggleLikeImage(
+                                                  userId,
+                                                  imageUrl,
+                                                  thumbnailUrl,
+                                                  uploader,
+                                                  title);
+                                            }
+                                          }).catchError((error) {
+                                            if (kDebugMode) {
+                                              print(
+                                                  'Error checking if image is already liked: $error');
+                                            }
+                                          });
+                                        } else {
+                                          if (kDebugMode) {
+                                            print("User is not authenticated.");
+                                          }
+                                        }
+                                        adController.showInterstitialAd();
                                       }
-                                      adController.showInterstitialAd();
                                     },
                                     icon: Icon(
                                       _isImageLiked
@@ -931,10 +990,11 @@ class _ApplyWallpaperPageState extends State<ApplyWallpaperPage> {
                                         MaterialStateProperty.all(Colors.white),
                                     foregroundColor:
                                         MaterialStateProperty.all(Colors.black),
-                                    minimumSize:
-                                        MaterialStateProperty.all(const Size(70, 36)),
+                                    minimumSize: MaterialStateProperty.all(
+                                        const Size(70, 36)),
                                     padding: MaterialStateProperty.all(
-                                        const EdgeInsets.symmetric(horizontal: 16)),
+                                        const EdgeInsets.symmetric(
+                                            horizontal: 16)),
                                     shape: MaterialStateProperty.all(
                                       RoundedRectangleBorder(
                                         borderRadius:

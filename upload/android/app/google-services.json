@@ -1,0 +1,116 @@
+{
+  "project_info": {
+    "project_number": "803978399683",
+    "project_id": "luca-ui",
+    "storage_bucket": "luca-ui.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803978399683:android:e946fc3a3eada25b9d7776",
+        "android_client_info": {
+          "package_name": "com.example.upload"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803978399683-63m1if6dba64a1aujj8vkgqhn51fq6i9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlcFvKT-auh3Xp73-dPmEGSi2LGvi9qdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803978399683-33h36p6vtmk1b3t8p80p06968km0k59b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803978399683:android:f2ca5f5d55c12a4a9d7776",
+        "android_client_info": {
+          "package_name": "com.xd.luca"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803978399683-4bsb7sk9a8k00l6td92pnde70k0voggd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xd.luca",
+            "certificate_hash": "34f9373e773a90a5802cb347500192565e8e35f2"
+          }
+        },
+        {
+          "client_id": "803978399683-5ecrcdi68fopm9d4j0c7r5hrd4hoem9n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xd.luca",
+            "certificate_hash": "762dad8480e7decb8162c2758bdf9e613e95b742"
+          }
+        },
+        {
+          "client_id": "803978399683-8436masgel2kpdid2bbvc15ahgee8svd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xd.luca",
+            "certificate_hash": "5c1c2c27e18716ed3f1f32a3f7ae6dbf80a97e2f"
+          }
+        },
+        {
+          "client_id": "803978399683-8i0epnnvq0j8oiblvsam1rusk8ont13o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xd.luca",
+            "certificate_hash": "001065ddbefd03303fc3ba0c1ab7f6e683af0466"
+          }
+        },
+        {
+          "client_id": "803978399683-sudpishsvp1vnrm5qkk54nj5fsp3q1uf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xd.luca",
+            "certificate_hash": "0da602b7ed9f09136fa4fd32157c0038798677e1"
+          }
+        },
+        {
+          "client_id": "803978399683-sureofgm7lbi9ng0bfh3f3gu0n9hell4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xd.luca",
+            "certificate_hash": "f5f058d8d22f68c2b0d57d7503f35b1dda587b87"
+          }
+        },
+        {
+          "client_id": "803978399683-63m1if6dba64a1aujj8vkgqhn51fq6i9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlcFvKT-auh3Xp73-dPmEGSi2LGvi9qdQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803978399683-33h36p6vtmk1b3t8p80p06968km0k59b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
